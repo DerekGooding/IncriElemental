@@ -73,6 +73,10 @@ def run_ai_review(commands):
                 os.makedirs("review", exist_ok=True)
                 import shutil
                 shutil.copy(path, "review/screenshot.png")
+            
+            # For CI: If baseline exists and comparison failed, we return False
+            if os.path.exists(baseline_path):
+                return compare_images(path, baseline_path)
             return True
 
     print("Review failed! Screenshot not found.")
@@ -92,7 +96,10 @@ def compare_images(path1, path2):
             total = diff_array.size
             percent = (non_zero / total) * 100
             print(f"Image difference: {percent:.2f}%")
-            return percent < 1.0 # 1% threshold
+            
+            if percent >= 1.0:
+                print(f"[FAIL] Visual regression detected! Difference: {percent:.2f}%")
+                return False
         return True
     except ImportError:
         print("[WARNING] Pillow or NumPy not installed. Skipping visual regression.")
@@ -102,10 +109,15 @@ def compare_images(path1, path2):
         return True
 
 if __name__ == "__main__":
+    success = False
     if build_project():
         # Default scenario: Wake up and focus a few times
         scenario = ["focus", "focus", "focus", "focus", "focus"]
         if len(sys.argv) > 1:
             scenario = sys.argv[1:]
             
-        run_ai_review(scenario)
+        success = run_ai_review(scenario)
+    
+    if not success:
+        sys.exit(1)
+    sys.exit(0)

@@ -32,6 +32,7 @@ public class ManifestationManager
 
         // Discovery and Count Checks
         if (!string.IsNullOrEmpty(def.RequiredDiscovery) && !_state.Discoveries.GetValueOrDefault(def.RequiredDiscovery)) return false;
+        if (def.Id == "void_infusion" && !_state.VoidInfusionUnlocked) return false;
         if (_state.Manifestations.GetValueOrDefault(def.Id) >= def.MaxCount) return false;
         if (!string.IsNullOrEmpty(def.DiscoveryKey) && _state.Discoveries.GetValueOrDefault(def.DiscoveryKey) && def.MaxCount == 1) return false;
 
@@ -75,8 +76,15 @@ public class ManifestationManager
 
         // Initialize new state with multiplier
         _state.CosmicInsight = multiplier;
-        _state.Resources[ResourceType.Aether] = new Resource(ResourceType.Aether);
+        _state.VoidInfusionUnlocked = true;
+        
+        foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+        {
+            _state.Resources[type] = new Resource(type);
+        }
+        
         _state.History.Add($"You awaken with Cosmic Insight x{multiplier:F1}.");
+        _state.History.Add("The void feels thinner. Void Infusion is now possible.");
     }
 
     private bool TryManifest(string thing, Resource primary, double cost, Action? onComplete, string discovery)

@@ -64,6 +64,38 @@ jobs:
         name: coverage-report
         path: "**/TestResults/**/coverage.cobertura.xml"
 
+  visual_review:
+    name: Visual Regression Check
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-output
+        path: .
+    - name: Install Runtime Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libsdl2-2.0-0 libopenal1 xvfb
+    - name: Install Python Dependencies
+      run: pip install Pillow numpy
+    - name: Run Visual Review
+      run: |
+        # Run using xvfb for headless display support
+        xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" python scripts/agentic_review.py
+    - name: Upload Review Artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: visual-review-results
+        path: review/
+
   health:
     name: Project Health Check
     needs: test

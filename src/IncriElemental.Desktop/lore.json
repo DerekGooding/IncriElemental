@@ -23,5 +23,30 @@
     "Id": "familiar",
     "Text": "Dividing the self to observe the whole. We are many now.",
     "UnlockDiscovery": "familiar_manifested"
+  },
+  {
+    "Id": "fire",
+    "Text": "The spark of creation is also the flame of change. All things must burn.",
+    "UnlockDiscovery": "fire_unlocked"
+  },
+  {
+    "Id": "water",
+    "Text": "Fluidity is the essence of adaptation. We learn to flow through the void.",
+    "UnlockDiscovery": "water_unlocked"
+  },
+  {
+    "Id": "air",
+    "Text": "Expansion is the natural state of existence. The void grows with us.",
+    "UnlockDiscovery": "air_unlocked"
+  },
+  {
+    "Id": "ascend",
+    "Text": "The Spire is complete. The wizard's consciousness transcends this initial reality.",
+    "UnlockDiscovery": "ascended"
+  },
+  {
+    "Id": "insight",
+    "Text": "The cycle begins anew, but the wizard remembers. The void is thinner now.",
+    "UnlockDiscovery": "ascended"
   }
 ]

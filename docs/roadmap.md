@@ -81,14 +81,15 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Audio:** Implement `AudioManager` for magic actions, exploration, and UI.
 - [x] **Visuals:** Refactor `VisualManager` and `ParticleSystem` for consistent elemental feedback.
 
-## 17. Goal: Advanced Agentic DevOps (In Progress)
+## 17. Goal: Advanced Agentic DevOps (Completed)
 - [x] **Balance Simulator:** Fully functional test verifying the 20-minute loop.
 - [x] **Agentic UI:** Automated screenshot capture in `Game1.cs` for visual verification.
-- [ ] **Visual Regressions:** Implement screenshot diffing in the CI.
+- [x] **Visual Regressions:** Implement screenshot diffing in the CI using `xvfb` and `Pillow`.
 
-## 18. Goal: Narrative Expansion (In Progress)
+## 18. Goal: Narrative Expansion (Completed)
 - [x] **Lore Fragments:** Data-driven story bits in `lore.json` found through exploration.
-- [ ] **Deep Unfolding:** New tiers of reality beyond the initial Ascension.
+- [x] **Deep Unfolding:** New Post-Ascension tier ("Void Infusion") providing enhanced scaling in New Game+.
+
 
 ## 19. Goal: Code Health & Maintenance (New)
 - [x] **Decoupling:** Refactor `Game1.cs` to satisfy monolith constraints (< 250 lines).

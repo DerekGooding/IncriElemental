@@ -97,13 +97,6 @@ public class Game1 : Game
         try { _font = Content.Load<SpriteFont>("main_font"); } catch { }
     }
 
-    private void AddToLog(string message)
-    {
-        if (_log.Count > 0 && _log[0] == message) return;
-        _log.Insert(0, message);
-        if (_log.Count > MaxLogLines) _log.RemoveAt(MaxLogLines);
-    }
-
     protected override void Update(GameTime gameTime)
     {
         _input.Update();

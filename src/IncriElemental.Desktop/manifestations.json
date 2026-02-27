@@ -211,5 +211,20 @@
     "MaxCount": 1,
     "Costs": [],
     "Effects": []
+  },
+  {
+    "Id": "void_infusion",
+    "Name": "VOID INFUSION",
+    "Subtitle": "5K Aether",
+    "DiscoveryKey": "void_infused",
+    "MaxCount": 10,
+    "Costs": [{ "Type": "Aether", "Amount": 5000 }],
+    "Effects": [
+      { "Type": "Earth", "MaxAmountBonus": 5000 },
+      { "Type": "Fire", "MaxAmountBonus": 5000 },
+      { "Type": "Water", "MaxAmountBonus": 5000 },
+      { "Type": "Air", "MaxAmountBonus": 5000 },
+      { "Type": "Life", "MaxAmountBonus": 5000 }
+    ]
   }
 ]
