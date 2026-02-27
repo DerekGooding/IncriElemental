@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IncriElemental.Core/IncriElemental.Core.csproj" />
+    <Project Path="src/IncriElemental.Desktop/IncriElemental.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IncriElemental.Tests/IncriElemental.Tests.csproj" />
+  </Folder>
+</Solution>
