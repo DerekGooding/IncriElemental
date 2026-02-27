@@ -20,31 +20,27 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 | **Fire** | Energy, Transformation. | Manifested Sparks/Flames | Speeds up processes, transforms matter. |
 | **Water** | Flow, Connection. | Manifested Condensation | Automates transfer of resources. |
 | **Air** | Space, Expansion. | Manifested Gusts | Unlocks new UI areas/tabs (expanding perception). |
+| **Life** | Consciousness, Growth. | Manifested Gardens | Fuels Familiars and the Spire Foundation. |
 
 ## 3. Unfolding Progression
 
-### Phase 1: The Void (The Beginning)
-- **State:** A black screen. Single button: "Focus".
-- **Action:** Clicking "Focus" generates +1 Aether.
-- **Unlock:** At 10 Aether, button appears: "Manifest Speck" (Cost: 10 Aether).
-- **Effect:** A Speck exists. It generates 0.1 Earth Essence/sec.
+### Phase 3: The World Map (Exploration)
+- **Requirement:** Manifestation of a "Familiar".
+- **Interaction:** A grid-based map appears in the lower center of the screen.
+- **Exploration:** Click on grid cells to send Familiars to explore.
+- **Outcome:** Exploration unlocks Lore fragments and rare discoveries.
 
-### Phase 2: The Spark (Energy)
-- **Requirement:** 100 Earth Essence.
-- **Unlock:** "Manifest Spark" (Cost: 50 Aether, 50 Earth).
-- **Effect:** Fire Essence unlocks.
-- **Mechanic:** Fire consumes Earth to burn? Or just exists? (TBD: Balance burn rates).
-
-### Phase 3: The Spire & Ascension
+### Phase 4: The Spire & Ascension
 - **Goal:** Manifest the Great Spire in the center of the void.
 - **Stages:** Foundation (Earth/Life), Shaft (Fire/Air), Core (Aether/Water).
-- **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence and New Game+.
+- **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence.
+- **New Game Plus:** "A New Awakening" allows the wizard to restart with increased "Cosmic Insight," multipling all manual and passive resource gains.
 
 ---
 *Last Updated: Friday, February 27, 2026*
 - **Minimalist Magical:** Dark background. Text is glowing/spectral.
 - **Particles:** When manifesting, use particle effects (MonoGame) to show the magic condensing.
-- **Grid:** As reality forms, a grid/map might appear representing the physical space you've created.
+- **The Map:** A minimalist 10x10 grid visualizing the manifested reality. Explorations are marked by changing colors of the cells.
 
 ---
 *Keep this document updated with every mechanic change.*

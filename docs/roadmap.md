@@ -64,30 +64,37 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Ending:** Visual transition to a "Pure Light" state.
 - [x] **Credits:** Scrolling text acknowledging the user and the agent.
 
-## 13. Goal: Technical Decoupling (Next)
-- [ ] **Data-Driven:** Move all manifestation definitions to `manifestations.json`.
-- [ ] **Input & UI:** Implement `InputManager` and `ScreenManager` for tabbed UI (Void/Spire/Map).
-- [ ] **Font Portability:** Bundle a specific free font in the repo to remove system dependencies.
+## 13. Goal: Technical Decoupling (Completed)
+- [x] **Data-Driven:** Move all manifestation definitions to `manifestations.json`.
+- [x] **Input & UI:** Implement `InputManager` and specialized systems (`LogSystem`, `WorldMapSystem`).
+- [x] **Font Portability:** Automated font download script for CI/local builds.
 
-## 14. Goal: The Alchemist
-- [ ] **Elemental Reactions:** Implement a "Mix" mechanic for temporary resource boosts.
-- [ ] **Buff System:** Track active temporary modifiers in the `Core` logic.
+## 14. Goal: The Alchemist (Completed)
+- [x] **Elemental Reactions:** Implement a "Mix" mechanic for temporary resource boosts via `AlchemySystem`.
+- [x] **Buff System:** Track active temporary modifiers in the `Core` logic.
 
-## 15. Goal: Beyond the Spire
-- [ ] **World Map:** Implement a minimalist grid-based map of the manifested reality.
-- [ ] **Exploration:** Allow Familiars to explore grid cells to find Lore or rare Essences.
+## 15. Goal: Beyond the Spire (Completed)
+- [x] **World Map:** Implement a minimalist grid-based map of the manifested reality.
+- [x] **Exploration:** Allow Familiars to explore grid cells to find Lore or rare Essences.
 
-## 16. Goal: Sensory Immersion
-- [ ] **Procedural Audio:** Implement a minimalist sine-wave based audio engine for magical hums.
-- [ ] **Sound Effects:** Add audio triggers for Focus and Manifestation events.
+## 16. Goal: Sensory Immersion (Completed)
+- [x] **Audio:** Implement `AudioManager` for magic actions, exploration, and UI.
+- [x] **Visuals:** Refactor `VisualManager` and `ParticleSystem` for consistent elemental feedback.
 
-## 17. Goal: Advanced Agentic DevOps
-- [ ] **Auto-Balancing:** Update simulator to suggest optimal costs based on target loop time.
-- [ ] **Visual Regressions:** Implement screenshot diffing in the CI to catch UI layout bugs automatically.
+## 17. Goal: Advanced Agentic DevOps (In Progress)
+- [x] **Balance Simulator:** Fully functional test verifying the 20-minute loop.
+- [x] **Agentic UI:** Automated screenshot capture in `Game1.cs` for visual verification.
+- [ ] **Visual Regressions:** Implement screenshot diffing in the CI.
 
-## 18. Goal: Narrative Expansion
-- [ ] **Lore Fragments:** Data-driven story bits found through exploration.
+## 18. Goal: Narrative Expansion (In Progress)
+- [x] **Lore Fragments:** Data-driven story bits in `lore.json` found through exploration.
 - [ ] **Deep Unfolding:** New tiers of reality beyond the initial Ascension.
+
+## 19. Goal: Code Health & Maintenance (New)
+- [x] **Decoupling:** Refactor `Game1.cs` to satisfy monolith constraints (< 250 lines).
+- [x] **Test Robustness:** Ensure all tests load external data-driven definitions via `TestHelper`.
+- [x] **CI Reliability:** Ensure the shields deployment handles empty diffs gracefully.
+
 
 ---
 *Last Updated: Friday, February 27, 2026*

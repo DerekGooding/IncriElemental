@@ -30,7 +30,15 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Test Coverage:** Overall test coverage must remain above **70%**. No individual file should fall below **50%** coverage.
 - **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines** of code. If a file grows beyond this, it must be refactored into smaller, focused components.
 - **Documentation Staleness:** Documentation must be updated frequently. If more than **8 source files** have been changed since a documentation file was last updated, it is considered "stale" and must be reviewed.
+- **Health Integrity:** I must never "touch" files (e.g., appending whitespace) solely to satisfy staleness requirements. When a file is stale, I must actually review and update its content to reflect the current state of the codebase.
 - **Automated Checks:** I must run `scripts/check_health.py` before completing any significant feature to ensure no regressions in code health.
+
+### Resolving Health Failures
+1. **Monoliths:** Refactor the offending class into specialized systems or helper components. Move logic out of `Game1.cs` whenever possible.
+2. **Coverage:** Add unit tests in `tests/IncriElemental.Tests/` targeting the uncovered branches or methods.
+3. **Staleness:** Review the source changes since the last doc update. Summarize new features, architectural changes, or updated mechanics in the corresponding `.md` files.
+4. **Build/Test Errors:** Fix the root cause immediately. Use `TestHelper` in tests to ensure data-driven assets are loaded correctly.
+
 
 ## 6. Playability Goal (Current)
 - **Target:** A complete, polished 20-minute gameplay loop ending with "Ascension."
