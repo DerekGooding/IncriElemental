@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Project
@@ -24,9 +27,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-output
-        path: |
-          **/bin/Debug/
-          **/obj/Debug/
+        path: . # Upload the whole workspace after build to ensure paths are preserved
 
   test:
     name: Run Unit Tests
@@ -42,6 +43,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-output
+        path: .
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
     - name: Upload Coverage Report
@@ -57,11 +59,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0 # Required for git history checks in staleness script
+        fetch-depth: 0
     - name: Download Coverage Report
       uses: actions/download-artifact@v4
       with:
         name: coverage-report
+        path: .
     - name: Run Health Script
       run: python scripts/check_health.py
     - name: Upload Health Data
@@ -81,11 +84,17 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: health-data
+        path: .
     - name: Deploy to Shields Branch
       run: |
         git config --global user.name "Agent Gemini"
         git config --global user.email "agent-gemini@example.com"
-        git checkout --orphan shields
+        # Check if shields branch exists
+        if git fetch origin shields; then
+          git checkout shields
+        else
+          git checkout --orphan shields
+        fi
         git rm -rf .
         cp health_data.json index.json
         git add index.json
