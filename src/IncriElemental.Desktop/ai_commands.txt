@@ -1,0 +1,5 @@
+focus:30
+manifest:rune_of_attraction
+manifest:speck
+manifest:altar
+update:600
