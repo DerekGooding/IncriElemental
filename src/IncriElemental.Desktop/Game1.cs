@@ -1,9 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 using IncriElemental.Desktop.Visuals;
+using IncriElemental.Desktop.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ public class Game1 : Game
     private SpriteFont _font;
     private ParticleSystem _particles;
     private VisualManager _visuals;
+    private List<Button> _buttons = new();
     private MouseState _lastMouseState;
     private Texture2D _pixel;
     private List<string> _log = new();
@@ -43,21 +45,78 @@ public class Game1 : Game
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
         
+        SetupButtons();
         AddToLog("You awaken in the void.");
+    }
+
+    private void SetupButtons()
+    {
+        _buttons.Add(new Button(new Rectangle(412, 334, 200, 100), "FOCUS", Color.MediumPurple * 0.3f, () => {
+            _engine.Focus();
+            _particles.EmitFocus(new Vector2(512, 384));
+        }));
+
+        _buttons.Add(new Button(new Rectangle(412, 450, 200, 50), "MANIFEST SPECK (10A)", Color.SaddleBrown * 0.4f, () => {
+            if (_engine.Manifest("speck")) AddToLog("A speck of matter appears.");
+        }, () => _engine.State.GetResource(ResourceType.Aether).Amount >= 10 || _engine.State.Discoveries.ContainsKey("first_manifestation")));
+
+        _buttons.Add(new Button(new Rectangle(412, 510, 200, 50), "RUNE OF ATTRACTION (30A)", Color.MediumPurple * 0.4f, () => {
+            if (_engine.Manifest("rune_of_attraction")) AddToLog("The aether begins to flow of its own accord.");
+        }, () => _engine.State.GetResource(ResourceType.Aether).Amount >= 30 || _engine.State.Discoveries.ContainsKey("automation_unlocked")));
+        
+        _buttons.Add(new Button(new Rectangle(412, 630, 200, 50), "MANIFEST ALTAR (100A, 20E)", Color.Gray * 0.4f, () => {
+            if (_engine.Manifest("altar")) AddToLog("A monolithic altar rises. Your capacity expands.");
+        }, () => _engine.State.Discoveries.ContainsKey("first_manifestation")));
+
+        // Goal 8: Forge
+        _buttons.Add(new Button(new Rectangle(630, 334, 200, 50), "FORGE (50F, 100E)", Color.OrangeRed * 0.4f, () => {
+            if (_engine.Manifest("forge")) AddToLog("A magical forge ignites.");
+        }, () => _engine.State.Discoveries.ContainsKey("altar_constructed")));
+
+        // Goal 9 & 10
+        _buttons.Add(new Button(new Rectangle(630, 400, 150, 40), "WELL (300E, 100W)", Color.DodgerBlue * 0.4f, () => {
+            if (_engine.Manifest("well")) AddToLog("A deep Well manifests.");
+        }, () => _engine.State.Discoveries.ContainsKey("forge_constructed")));
+
+        _buttons.Add(new Button(new Rectangle(630, 450, 150, 40), "BRAZIER (300E, 100F)", Color.OrangeRed * 0.4f, () => {
+            if (_engine.Manifest("brazier")) AddToLog("A Brazier ignites.");
+        }, () => _engine.State.Discoveries.ContainsKey("forge_constructed")));
+
+        _buttons.Add(new Button(new Rectangle(845, 334, 150, 40), "GARDEN (500E, 500W)", Color.LimeGreen * 0.4f, () => {
+            if (_engine.Manifest("garden")) AddToLog("A magical Garden blooms.");
+        }, () => _engine.State.Discoveries.ContainsKey("forge_constructed")));
+
+        _buttons.Add(new Button(new Rectangle(845, 400, 150, 40), "FAMILIAR (1000A, 100L)", Color.MediumPurple * 0.6f, () => {
+            if (_engine.Manifest("familiar")) AddToLog("A Familiar manifests.");
+        }, () => _engine.State.Discoveries.ContainsKey("garden_manifested")));
+
+        // Goal 11: Spire
+        _buttons.Add(new Button(new Rectangle(845, 500, 150, 40), "FOUNDATION", Color.SaddleBrown * 0.5f, () => {
+            if (_engine.Manifest("spire_foundation")) AddToLog("The Spire Foundation is laid.");
+        }, () => _engine.State.Discoveries.ContainsKey("familiar_manifested")));
+
+        _buttons.Add(new Button(new Rectangle(845, 550, 150, 40), "SHAFT", Color.LightCyan * 0.5f, () => {
+            if (_engine.Manifest("spire_shaft")) AddToLog("The Spire Shaft rises.");
+        }, () => _engine.State.Discoveries.ContainsKey("spire_foundation_ready")));
+
+        _buttons.Add(new Button(new Rectangle(845, 600, 150, 40), "CORE", Color.MediumPurple * 0.5f, () => {
+            if (_engine.Manifest("spire_core")) AddToLog("The Spire Core is ignited.");
+        }, () => _engine.State.Discoveries.ContainsKey("spire_shaft_ready")));
+
+        _buttons.Add(new Button(new Rectangle(412, 100, 200, 80), "ASCEND", Color.Gold * 0.8f, () => {
+            if (_engine.Manifest("ascend")) AddToLog("Ascension begins...");
+        }, () => _engine.State.Discoveries.ContainsKey("spire_complete")));
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        // Note: We use .xnb files generated by MGCB. 
-        // If the font fails to load (e.g. build issues in CLI), we'll skip text rendering.
-        try {
-            _font = Content.Load<SpriteFont>("main_font");
-        } catch { }
+        try { _font = Content.Load<SpriteFont>("main_font"); } catch { }
     }
 
     private void AddToLog(string message)
     {
+        if (_log.Count > 0 && _log[0] == message) return;
         _log.Insert(0, message);
         if (_log.Count > MaxLogLines) _log.RemoveAt(MaxLogLines);
     }
@@ -67,73 +126,17 @@ public class Game1 : Game
         var mouseState = Mouse.GetState();
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        if (Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
 
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
 
-        // Sync history with log
         foreach (var message in _engine.State.History)
-        {
             if (!_log.Contains(message)) AddToLog(message);
-        }
 
-        // Interaction Logic
         if (mouseState.LeftButton == ButtonState.Pressed && _lastMouseState.LeftButton == ButtonState.Released)
         {
-            var center = new Vector2(512, 384);
-            var focusRect = new Rectangle(412, 334, 200, 100);
-            
-            if (focusRect.Contains(mouseState.Position))
-            {
-                _engine.Focus();
-                _particles.EmitFocus(center);
-                if (_engine.State.GetResource(ResourceType.Aether).Amount == 1) AddToLog("Aether flows...");
-                if (_engine.State.Discoveries["void_observed"] && _log[0] != "The void is thick with potential.") AddToLog("The void is thick with potential.");
-            }
-
-            if (_engine.State.GetResource(ResourceType.Aether).Amount >= 10 || _engine.State.Discoveries["first_manifestation"])
-            {
-                var manifestRect = new Rectangle(412, 450, 200, 50);
-                if (manifestRect.Contains(mouseState.Position))
-                {
-                    if (_engine.Manifest("speck"))
-                    {
-                        AddToLog("A speck of matter appears.");
-                        for (int i = 0; i < 20; i++)
-                            _particles.AddParticle(new Vector2(512, 475), new Vector2((float)(Random.Shared.NextDouble() - 0.5) * 200, (float)(Random.Shared.NextDouble() - 0.5) * 200), Color.SaddleBrown, 1f);
-                    }
-                }
-            }
-
-            if (_engine.State.GetResource(ResourceType.Aether).Amount >= 30 || _engine.State.Discoveries.GetValueOrDefault("automation_unlocked"))
-            {
-                var automationRect = new Rectangle(412, 510, 200, 50);
-                if (automationRect.Contains(mouseState.Position))
-                {
-                    if (_engine.Manifest("rune_of_attraction"))
-                    {
-                        AddToLog("The aether begins to flow of its own accord.");
-                        for (int i = 0; i < 20; i++)
-                            _particles.AddParticle(new Vector2(512, 535), new Vector2((float)(Random.Shared.NextDouble() - 0.5) * 200, (float)(Random.Shared.NextDouble() - 0.5) * 200), Color.Plum, 1f);
-                    }
-                }
-            }
-
-            if (_engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
-            {
-                var altarRect = new Rectangle(412, 630, 200, 50);
-                if (altarRect.Contains(mouseState.Position))
-                {
-                    if (_engine.Manifest("altar"))
-                    {
-                        AddToLog("A monolithic altar rises from the void. Your capacity expands.");
-                        for (int i = 0; i < 40; i++)
-                            _particles.AddParticle(new Vector2(512, 655), new Vector2((float)(Random.Shared.NextDouble() - 0.5) * 300, (float)(Random.Shared.NextDouble() - 0.5) * 300), Color.White, 2f);
-                    }
-                }
-            }
+            foreach (var btn in _buttons) btn.CheckClick(mouseState.Position);
         }
 
         _lastMouseState = mouseState;
@@ -142,64 +145,50 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(new Color(5, 5, 10));
-
-        _spriteBatch.Begin();
-
-        _particles.Draw(_spriteBatch);
-
-        // Focus Button
-        var pulse = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 3) * 0.1f + 0.9f;
-        _spriteBatch.Draw(_pixel, new Rectangle(412, 334, 200, 100), Color.MediumPurple * 0.3f * pulse);
-        
-        if (_font != null)
+        if (_engine.State.Discoveries.ContainsKey("ascended"))
         {
-            _spriteBatch.DrawString(_font, "FOCUS", new Vector2(512 - _font.MeasureString("FOCUS").X / 2, 384 - _font.MeasureString("FOCUS").Y / 2), Color.White);
-
-            // Resource Indicators
-            var aether = _engine.State.GetResource(ResourceType.Aether);
-            _visuals.DrawElement(_spriteBatch, ResourceType.Aether, new Vector2(390, 318), 8f);
-            _spriteBatch.DrawString(_font, $"Aether: {aether.Amount:F1} / {aether.MaxAmount:F0}", new Vector2(412, 310), Color.MediumPurple);
-
-            // Manifestation Button
-            if (aether.Amount >= 10 || _engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
+            GraphicsDevice.Clear(Color.White);
+            _spriteBatch.Begin();
+            if (_font != null)
             {
-                _spriteBatch.Draw(_pixel, new Rectangle(412, 450, 200, 50), Color.SaddleBrown * 0.4f);
-                _spriteBatch.DrawString(_font, "MANIFEST SPECK (10 Aether)", new Vector2(512 - _font.MeasureString("MANIFEST SPECK (10 Aether)").X / 2, 475 - _font.MeasureString("MANIFEST SPECK (10 Aether)").Y / 2), Color.Tan);
+                string msg = "ASCENSION COMPLETE";
+                _spriteBatch.DrawString(_font, msg, new Vector2(512 - _font.MeasureString(msg).X/2, 200), Color.Gold);
+                
+                string[] credits = { "Created by: Derek Gooding", "Developed by: Gemini CLI", "Made with MonoGame", "Thank you for playing!" };
+                float y = 300 + (float)gameTime.TotalGameTime.TotalSeconds * 20 % 400; // Simplified scrolling
+                for(int i=0; i<credits.Length; i++)
+                    _spriteBatch.DrawString(_font, credits[i], new Vector2(512 - _font.MeasureString(credits[i]).X/2, 400 + i*40 - (float)gameTime.TotalGameTime.TotalSeconds * 30), Color.DarkGray);
             }
-
-            // Rune of Attraction
-            if (aether.Amount >= 30 || _engine.State.Discoveries.GetValueOrDefault("automation_unlocked"))
-            {
-                _spriteBatch.Draw(_pixel, new Rectangle(412, 510, 200, 50), Color.MediumPurple * 0.4f);
-                _spriteBatch.DrawString(_font, "RUNE OF ATTRACTION (30 Aether)", new Vector2(512 - _font.MeasureString("RUNE OF ATTRACTION (30 Aether)").X / 2, 535 - _font.MeasureString("RUNE OF ATTRACTION (30 Aether)").Y / 2), Color.Plum);
-            }
-
-            // Earth Indicator
-            if (_engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
-            {
-                var earth = _engine.State.GetResource(ResourceType.Earth);
-                _visuals.DrawElement(_spriteBatch, ResourceType.Earth, new Vector2(390, 578), 8f);
-                _spriteBatch.DrawString(_font, $"Earth: {earth.Amount:F1} / {earth.MaxAmount:F0}", new Vector2(412, 570), Color.SaddleBrown);
-            }
-
-            // Altar Button
-            if (_engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
-            {
-                _spriteBatch.Draw(_pixel, new Rectangle(412, 630, 200, 50), Color.Gray * 0.4f);
-                _spriteBatch.DrawString(_font, "MANIFEST ALTAR (100 Aether, 20 Earth)", new Vector2(512 - _font.MeasureString("MANIFEST ALTAR (100 Aether, 20 Earth)").X / 2, 655 - _font.MeasureString("MANIFEST ALTAR (100 Aether, 20 Earth)").Y / 2), Color.White);
-            }
-
-            // Narrative Log
-            for (int i = 0; i < _log.Count; i++)
-            {
-                float alpha = 1.0f - (i * 0.2f);
-                _spriteBatch.DrawString(_font, _log[i], new Vector2(20, 20 + (i * 20)), Color.Gray * alpha);
-            }
+            _spriteBatch.End();
+            return;
         }
 
-        _spriteBatch.End();
+        GraphicsDevice.Clear(new Color(5, 5, 10));
+        _spriteBatch.Begin();
+        _particles.Draw(_spriteBatch);
 
+        if (_font != null)
+        {
+            foreach (var btn in _buttons) btn.Draw(_spriteBatch, _font, _pixel);
+
+            // Resources
+            float y = 310;
+            foreach (var res in _engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount > 1000))
+            {
+                _visuals.DrawElement(_spriteBatch, res.Type, new Vector2(390, y + 8), 8f);
+                _spriteBatch.DrawString(_font, $"{res.Type}: {res.Amount:F1} / {res.MaxAmount:F0}", new Vector2(412, y), _visuals.GetColor(res.Type));
+                y -= 30;
+            }
+
+            for (int i = 0; i < _log.Count; i++)
+                _spriteBatch.DrawString(_font, _log[i], new Vector2(20, 20 + (i * 20)), Color.Gray * (1.0f - i * 0.1f));
+        }
+
+        // Physical Spire (Goal 11)
+        if (_engine.State.Discoveries.ContainsKey("spire_foundation_ready"))
+            _spriteBatch.Draw(_pixel, new Rectangle(502, 384, 20, 100), Color.Gray);
+
+        _spriteBatch.End();
         base.Draw(gameTime);
     }
 }

@@ -14,7 +14,8 @@ public class VisualManager
         { ResourceType.Earth, Color.SaddleBrown },
         { ResourceType.Fire, Color.OrangeRed },
         { ResourceType.Water, Color.DodgerBlue },
-        { ResourceType.Air, Color.LightCyan }
+        { ResourceType.Air, Color.LightCyan },
+        { ResourceType.Life, Color.LimeGreen }
     };
 
     public VisualManager(GraphicsDevice graphicsDevice)

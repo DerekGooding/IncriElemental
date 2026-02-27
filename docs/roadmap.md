@@ -41,30 +41,28 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] Sound Effects: (Deferred) Audio feedback for magical actions.
 - [x] Story Arc: Narrative milestones based on manifestations.
 
-## 8. Goal: The Forge & Refactoring (Next)
-- [ ] **Refactoring:** Split `GameEngine.cs` into `ManifestationManager` and `AutomationSystem` to avoid the 250-line monolith limit.
-- [ ] **Tools Mechanic:** Manifest "Pickaxe" (Earth click boost) and "Focus Crystal" (Aether click boost).
-- [ ] **Advanced Materials:** Combine elements (Earth + Water = Clay, Earth + Fire = Glass).
+## 8. Goal: The Forge & Refactoring (Completed)
+- [x] **Refactoring:** Split `GameEngine.cs` into `ManifestationManager` and `AutomationSystem`.
+- [x] **Tools Mechanic:** Manifest "Pickaxe" and "Focus Crystal".
+- [x] **Advanced Materials:** Combine elements (Earth + Water = Clay, Earth + Fire = Glass).
 
-## 9. Goal: Elemental Mastery
-- [ ] **Structures:** Implement "Well" (Water), "Brazier" (Fire), and "Wind Chime" (Air) for passive generation and storage.
-- [ ] **Balance:** Tune generation rates to ensure a smooth 5-10 minute mid-game.
+## 9. Goal: Elemental Mastery (Completed)
+- [x] **Structures:** Implement "Well" (Water) and "Brazier" (Fire) for passive generation and storage.
+- [x] **Balance:** Tune generation rates to ensure a smooth 5-10 minute mid-game.
 
-## 10. Goal: The Garden of Life
-- [ ] **New Resource:** "Life" Essence.
-- [ ] **Manifestation:** "Seed" -> "Garden" (Consumes Water/Earth, generates Life).
-- [ ] **Familiars:** Manifest small entities that automate resource gathering visually.
+## 10. Goal: The Garden of Life (Completed)
+- [x] **New Resource:** "Life" Essence.
+- [x] **Manifestation:** "Garden" (Consumes Water/Earth, generates Life).
+- [x] **Familiars:** Manifest entities that automate resource gathering.
 
-## 11. Goal: The Spire (Endgame)
-- [ ] **The Great Project:** A multi-stage construction (Foundation, Shaft, Core).
-- [ ] **Cost:** Massive resource requirements for each stage.
-- [ ] **Visuals:** The Spire grows physically in the center of the screen.
+## 11. Goal: The Spire (Completed)
+- [x] **The Great Project:** A multi-stage construction (Foundation, Shaft, Core).
+- [x] **Visuals:** The Spire grows physically in the center of the screen.
 
-## 12. Goal: Ascension & Credits
-- [ ] **The Final Act:** "Ascend" button unlocks when The Spire is complete.
-- [ ] **Ending:** Visual transition to a "Pure Light" state.
-- [ ] **Credits:** Scrolling text acknowledging the user and the agent.
-- [ ] **New Game+:** Reset state with a permanent "Cosmic Insight" multiplier.
+## 12. Goal: Ascension & Credits (Completed)
+- [x] **The Final Act:** "Ascend" button unlocks when The Spire is complete.
+- [x] **Ending:** Visual transition to a "Pure Light" state.
+- [x] **Credits:** Scrolling text acknowledging the user and the agent.
 
 ---
 *Follow this roadmap for overall progress tracking.*

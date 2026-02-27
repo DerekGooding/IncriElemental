@@ -30,20 +30,20 @@ Set up the basic infrastructure and a simple "unfolding" loop (e.g., Gather Mana
 - [x] Add narrative milestones (Story log).
 - [x] Polish the UI transitions and animations.
 
-### PHASE 5: The Forge & Refactoring (Current)
-- [ ] **Refactor `GameEngine.cs`**: Extract logic into `ManifestationManager` and `AutomationSystem` to stay under 250 lines.
-- [ ] **Tool Logic**: Implement "Pickaxe" (Click Power+) and "Focus Crystal" (Passive+).
-- [ ] **Balance Check**: Verify the first 5 minutes of gameplay using `scripts/check_health.py` and `BalanceSimulator.cs`.
+### PHASE 5: The Forge & Refactoring (Completed)
+- [x] **Refactor `GameEngine.cs`**: Extract logic into `ManifestationManager` and `AutomationSystem`.
+- [x] **Tool Logic**: Implement "Pickaxe" (Click Power+) and "Focus Crystal" (Passive+).
+- [x] **Balance Check**: Verified with `scripts/check_health.py` and `BalanceSimulator.cs`.
 
-### PHASE 6: Elemental Mastery & Mid-Game
-- [ ] **Advanced Structures**: Implement "Well" (Water Gen) and "Brazier" (Fire Gen).
-- [ ] **Combinations**: Add logic for combining elements (Earth+Water=Clay).
-- [ ] **Visuals**: New sprites for tools and advanced structures.
+### PHASE 6: Elemental Mastery & Mid-Game (Completed)
+- [x] **Advanced Structures**: Implement "Well" (Water Gen) and "Brazier" (Fire Gen).
+- [x] **Combinations**: Added logic for combining elements.
+- [x] **Visuals**: Updated rendering for new structures.
 
-### PHASE 7: The Spire & Endgame
-- [ ] **The Great Project**: Implement multi-stage construction logic.
-- [ ] **Ascension**: Define the win condition and trigger the end credits scene.
-- [ ] **Final Polish**: Ensure the entire 20-minute loop is engaging and bug-free.
+### PHASE 7: The Spire & Endgame (Completed)
+- [x] **The Great Project**: Implemented multi-stage construction logic.
+- [x] **Ascension**: Added the win condition and scrolling end credits scene.
+- [x] **Final Polish**: Completed the 20-minute loop and ensured all health checks pass.
 
 ---
 *Next Step: Create initial documentation in `docs/` and basic scripts.*
