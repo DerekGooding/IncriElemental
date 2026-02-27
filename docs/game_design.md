@@ -35,9 +35,10 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 - **Stages:** Foundation (Earth/Life), Shaft (Fire/Air), Core (Aether/Water).
 - **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence.
 - **New Game Plus:** "A New Awakening" allows the wizard to restart with increased "Cosmic Insight," multipling all manual and passive resource gains.
+- **Void Infusion:** A Post-Ascension mechanic allowing the direct infusion of elemental storage using raw Aether.
 
 ---
-*Last Updated: Friday, February 27, 2026*
+*Last Updated: Friday, February 27, 2026 (Updated by Agent Gemini)*
 - **Minimalist Magical:** Dark background. Text is glowing/spectral.
 - **Particles:** When manifesting, use particle effects (MonoGame) to show the magic condensing.
 - **The Map:** A minimalist 10x10 grid visualizing the manifested reality. Explorations are marked by changing colors of the cells.

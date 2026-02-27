@@ -10,9 +10,10 @@ This document defines the DevOps and CI/CD strategy for **IncriElemental**, emph
 ## 2. CI/CD Pipeline
 The agent maintains a GitHub Actions pipeline (`.github/workflows/ci.yml`) that:
 - **Builds:** The entire solution on every push using .NET 10.0.
-- **Tests:** Runs all unit tests in `tests/IncriElemental.Tests` and collects code coverage.
+- **Tests:** Runs all unit tests and collects code coverage.
+- **Visual Review:** Executes `scripts/agentic_review.py` via `xvfb` to catch UI regressions.
 - **Health:** Executes `scripts/check_health.py` to enforce quality mandates.
-- **Shields:** Automatically updates health data on the `shields` branch for dynamic status badges in `README.md`.
+- **Shields:** Automatically updates health data on the `shields` branch for dynamic status badges.
 
 ## 3. Deployment
 - **Releases:** (Future) Automated generation of GitHub Releases with platform-specific binaries (Windows, Linux, macOS).

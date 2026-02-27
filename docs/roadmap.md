@@ -90,11 +90,12 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Lore Fragments:** Data-driven story bits in `lore.json` found through exploration.
 - [x] **Deep Unfolding:** New Post-Ascension tier ("Void Infusion") providing enhanced scaling in New Game+.
 
-
-## 19. Goal: Code Health & Maintenance (New)
-- [x] **Decoupling:** Refactor `Game1.cs` to satisfy monolith constraints (< 250 lines).
+## 19. Goal: Code Health & Maintenance (Completed)
+- [x] **Decoupling:** Refactor `Game1.cs` into specialized systems (`LogSystem`, `WorldMapSystem`) to satisfy monolith constraints (< 250 lines).
 - [x] **Test Robustness:** Ensure all tests load external data-driven definitions via `TestHelper`.
 - [x] **CI Reliability:** Ensure the shields deployment handles empty diffs gracefully.
+- [x] **Asset Portability:** Ensure data files are correctly copied to the output directory.
+
 
 
 ---
