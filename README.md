@@ -1,6 +1,8 @@
 # IncriElemental - An Unfolding Incremental Game
 
 ![.NET CI](https://github.com/DerekGooding/IncriElemental/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://img.shields.io/badge/Coverage-71%25-brightgreen)
+![Monoliths](https://img.shields.io/badge/Monoliths-None-brightgreen)
 
 > **Note:** This project is being developed with **heavy agentic support**. All code, documentation, and design decisions are a collaborative effort between the user and an AI agent (Gemini CLI), following the mandates defined in `GEMINI.md`.
 
@@ -9,6 +11,7 @@
 ### GitHub & DevOps
 - **Source:** [GitHub Repository](https://github.com/dgooding/IncriElemental)
 - **Agentic Ownership:** The agent is responsible for the entire DevOps lifecycle, including git commits, pushes, and CI/CD management (see [docs/devops.md](docs/devops.md)).
+- **Health Standards:** Overall Test Coverage >= 70%, no individual file < 50% coverage, and no source file > 250 lines (monolith check).
 
 ### Development Environment
 - **SDK:** .NET 10.0

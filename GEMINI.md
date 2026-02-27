@@ -26,5 +26,10 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Observability:** The game must be able to output its current `GameState` as JSON for my review.
 - **Balance Testing:** New mechanics must include a "simulation" script in `scripts/` to verify progression speed and identify potential bottlenecks.
 
+## 5. Project Health & Quality
+- **Test Coverage:** Overall test coverage must remain above **70%**. No individual file should fall below **50%** coverage.
+- **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines** of code. If a file grows beyond this, it must be refactored into smaller, focused components.
+- **Automated Checks:** I must run `scripts/check_health.py` before completing any significant feature to ensure no regressions in code health.
+
 ---
 *Follow these mandates strictly. If a request conflicts with these mandates, clarify with the user.*

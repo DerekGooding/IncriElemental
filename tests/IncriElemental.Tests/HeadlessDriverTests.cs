@@ -32,7 +32,7 @@ public class HeadlessDriverTests
 
         // State JSON
         var json = driver.ExecuteCommand("state");
-        Assert.Contains(""Aether"", json);
-        Assert.Contains(""Earth"", json);
+        Assert.Contains("Aether", json);
+        Assert.Contains("Earth", json);
     }
 }

@@ -21,5 +21,11 @@ The agent is responsible for setting up and maintaining a GitHub Actions pipelin
 - **Pushing:** I am responsible for staging, committing, and pushing my own work to the remote repository.
 - **Health:** I must monitor build/test results and fix any CI failures immediately.
 
+## 5. Health Enforcement
+The project maintains strict quality and coverage standards enforced via `scripts/check_health.py`:
+- **Coverage:** Overall >= 70% (via `dotnet test --collect:"XPlat Code Coverage"`).
+- **Monoliths:** No source file > 250 lines.
+- **Shields:** The current health status is reflected in the `README.md` shields.
+
 ---
 *Follow these patterns for all repository management.*
