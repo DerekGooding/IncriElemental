@@ -4,6 +4,10 @@
 
 **IncriElemental** is an unfolding incremental game built with **MonoGame** and **.NET 10.0**, focusing on elemental magic and world construction.
 
+### GitHub & DevOps
+- **Source:** [GitHub Repository](https://github.com/dgooding/IncriElemental)
+- **Agentic Ownership:** The agent is responsible for the entire DevOps lifecycle, including git commits, pushes, and CI/CD management (see [docs/devops.md](docs/devops.md)).
+
 ### Development Environment
 - **SDK:** .NET 10.0
 - **Framework:** MonoGame (DesktopGL)
