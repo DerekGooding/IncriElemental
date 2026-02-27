@@ -1,5 +1,7 @@
 # IncriElemental - An Unfolding Incremental Game
 
+> **Note:** This project is being developed with **heavy agentic support**. All code, documentation, and design decisions are a collaborative effort between the user and an AI agent (Gemini CLI), following the mandates defined in `GEMINI.md`.
+
 **IncriElemental** is an unfolding incremental game built with **MonoGame** and **.NET 10.0**, focusing on elemental magic and world construction.
 
 ### Development Environment

@@ -18,5 +18,10 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Discovery:** Features should be "locked" by default. The game state must track discovered elements and available actions.
 - **Narrative:** All text and narrative strings should be managed in a data-driven way (e.g., `Strings.json` or similar) to allow for easy editing.
 
+## 4. Agentic Piloting & Validation
+- **Piloting:** I must be able to "pilot" the game via the CLI. All actions must be executable through a text-based interface or a "headless" mode.
+- **Observability:** The game must be able to output its current `GameState` as JSON for my review.
+- **Balance Testing:** New mechanics must include a "simulation" script in `scripts/` to verify progression speed and identify potential bottlenecks.
+
 ---
 *Follow these mandates strictly. If a request conflicts with these mandates, clarify with the user.*
