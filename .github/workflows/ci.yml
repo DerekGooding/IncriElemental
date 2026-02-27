@@ -22,9 +22,17 @@ jobs:
     - name: Restore tools
       run: dotnet tool restore
       working-directory: src/IncriElemental.Desktop
+    - name: Install Build Dependencies
+      run: sudo apt-get update && sudo apt-get install -y libfontconfig1
     - name: Download Font
       run: |
-        curl -L -o src/IncriElemental.Desktop/Content/Arial.ttf https://github.com/google/fonts/raw/main/ofl/arimo/Arimo-Regular.ttf
+        curl -L -o src/IncriElemental.Desktop/Content/Arial.ttf "https://github.com/google/fonts/raw/main/ofl/arimo/Arimo-Regular.ttf"
+        ls -l src/IncriElemental.Desktop/Content/Arial.ttf
+        # Check if the file is at least 10KB (ensure not a 404 page)
+        if [ $(stat -c%s src/IncriElemental.Desktop/Content/Arial.ttf) -lt 10000 ]; then
+          echo "Font download failed or file too small"
+          exit 1
+        fi
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
