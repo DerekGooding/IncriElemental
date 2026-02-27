@@ -6,38 +6,37 @@
 ![Monoliths](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/index.json&query=$.monoliths&label=Monoliths&color=brightgreen)
 ![Docs](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/index.json&query=$.docs&label=Docs&color=brightgreen)
 
-> **Note:** This project is being developed with **heavy agentic support**. All code, documentation, and design decisions are a collaborative effort between the user and an AI agent (Gemini CLI), following the mandates defined in `GEMINI.md`.
+> **Note:** This project is developed with **heavy agentic support**. All code, documentation, and design decisions are a collaborative effort between the user and an AI agent (Gemini CLI), following the mandates defined in `GEMINI.md`.
 
-**IncriElemental** is an unfolding incremental game built with **MonoGame** and **.NET 10.0**, focusing on elemental magic and world construction.
+**IncriElemental** is an atmospheric, unfolding incremental game built with **MonoGame** and **.NET 10.0**. You play as a consciousness awakening in a void, manifesting physical reality through elemental magic.
 
-### GitHub & DevOps
-- **Source:** [GitHub Repository](https://github.com/dgooding/IncriElemental)
-- **Agentic Ownership:** The agent is responsible for the entire DevOps lifecycle, including git commits, pushes, and CI/CD management (see [docs/devops.md](docs/devops.md)).
-- **Health Standards:** Overall Test Coverage >= 70%, no individual file < 50% coverage, and no source file > 250 lines (monolith check).
+## 🌌 The Experience
+- **Unfolding Gameplay:** Start with a single "Focus" action and gradually manifest a complex elemental engine.
+- **20-Minute Loop:** A complete experience from awakening to "Ascension," with a balanced progression path.
+- **New Game+:** Reach Ascension to earn "Cosmic Insight," providing permanent multipliers for future incarnations.
+- **Atmospheric Visuals:** Minimalist UI with glowing particles and thematic narrative milestones.
 
-### Development Environment
-- **SDK:** .NET 10.0
-- **Framework:** MonoGame (DesktopGL)
-- **Editor:** Visual Studio / VS Code (any C# editor)
+## 🛠️ Technical Highlights
+- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. Logic is split into specialized systems (`ManifestationManager`, `AutomationSystem`).
+- **Health Suite:** Strict enforcement of 70% test coverage and 250-line monolith prevention via `scripts/check_health.py`.
+- **Agentic DevOps:** Automated CI/CD pipeline that manages build, test, health scans, and dynamic documentation shields.
+- **AI Review Mode:** Headless execution and automated screenshotting tools for agent-driven UI verification.
 
-### Project Structure
-- `src/IncriElemental.Core/`: Pure C# logic, state, and math (Shared).
-- `src/IncriElemental.Desktop/`: Platform-specific MonoGame runner and rendering.
-- `tests/IncriElemental.Tests/`: Unit tests for the core logic.
-- `docs/`: Design documents, architecture, and roadmap.
-- `prompts/`: Templates for agentic interaction.
-- `scripts/`: Development and validation automation.
+## 🚀 Quick Start
+1.  **Clone:** `git clone https://github.com/DerekGooding/IncriElemental`
+2.  **Build:** `dotnet build`
+3.  **Run:** `dotnet run --project src/IncriElemental.Desktop/IncriElemental.Desktop.csproj`
+4.  **Test:** `dotnet test`
 
-### Quick Start
-1.  **Build:** `dotnet build`
-2.  **Run:** `dotnet run --project src/IncriElemental.Desktop/IncriElemental.Desktop.csproj`
-3.  **Test:** `dotnet test`
+## 🤖 Agentic Review
+To run an automated UI review:
+```powershell
+python scripts/agentic_review.py focus:30 manifest:rune_of_attraction
+```
+The resulting snapshot will be saved to `review/screenshot.png`.
 
-### Agentic Support
-This project is designed for "heavy agentic support." See `GEMINI.md` for the mandates I follow.
-
-### License
-This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for the full text.
+## 📜 License
+This project is licensed under the **MIT License**.
 
 ---
-*Created on Friday, February 27, 2026.*
+*Last Updated: Friday, February 27, 2026*

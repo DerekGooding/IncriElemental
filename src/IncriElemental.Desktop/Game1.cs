@@ -194,6 +194,14 @@ public class Game1 : Game
         base.Update(gameTime);
     }
 
+    private string FormatValue(double value)
+    {
+        if (value >= 1_000_000_000) return $"{(value / 1_000_000_000):F2}G";
+        if (value >= 1_000_000) return $"{(value / 1_000_000):F2}M";
+        if (value >= 1_000) return $"{(value / 1_000):F2}K";
+        return value.ToString("F1");
+    }
+
     protected override void Draw(GameTime gameTime)
     {
         if (_engine.State.Discoveries.ContainsKey("ascended"))
@@ -206,14 +214,14 @@ public class Game1 : Game
                 _spriteBatch.DrawString(_font, msg, new Vector2(512 - _font.MeasureString(msg).X/2, 200), Color.Gold);
                 
                 string[] credits = { "Created by: Derek Gooding", "Developed by: Gemini CLI", "Made with MonoGame", "Thank you for playing!" };
-                float yScroll = 300 + (float)gameTime.TotalGameTime.TotalSeconds * 20 % 400; // Simplified scrolling
                 for(int i=0; i<credits.Length; i++)
                     _spriteBatch.DrawString(_font, credits[i], new Vector2(512 - _font.MeasureString(credits[i]).X/2, 400 + i*40 - (float)gameTime.TotalGameTime.TotalSeconds * 30), Color.DarkGray);
                 
                 // Add Reset/New Game+ Button
                 var resetRect = new Rectangle(412, 600, 200, 50);
                 _spriteBatch.Draw(_pixel, resetRect, Color.Gold * 0.4f);
-                _spriteBatch.DrawString(_font, "A NEW AWAKENING", new Vector2(512 - _font.MeasureString("A NEW AWAKENING").X/2, 625 - _font.MeasureString("A NEW AWAKENING").Y/2), Color.DarkGoldenrod);
+                string resetText = "A NEW AWAKENING";
+                _spriteBatch.DrawString(_font, resetText, new Vector2(512 - _font.MeasureString(resetText).X/2, 625 - _font.MeasureString(resetText).Y/2), Color.DarkGoldenrod);
                 
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed && _lastMouseState.LeftButton == ButtonState.Released && resetRect.Contains(Mouse.GetState().Position))
                 {
@@ -235,13 +243,19 @@ public class Game1 : Game
 
         if (_font != null)
         {
-            // Resources
-            float y = 310;
-            foreach (var res in _engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount > 1000))
+            // Resources - Layout them more cleanly
+            float startY = 310;
+            int count = 0;
+            foreach (var res in _engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000_000))
             {
+                float y = startY - (count * 30);
+                string amountStr = FormatValue(res.Amount);
+                string maxStr = res.MaxAmount > 1_000_000_000_000 ? "INF" : FormatValue(res.MaxAmount);
+                string label = $"{res.Type}: {amountStr} / {maxStr}";
+                
                 _visuals.DrawElement(_spriteBatch, res.Type, new Vector2(390, y + 8), 8f);
-                _spriteBatch.DrawString(_font, $"{res.Type}: {res.Amount:F1} / {res.MaxAmount:F0}", new Vector2(412, y), _visuals.GetColor(res.Type));
-                y -= 30;
+                _spriteBatch.DrawString(_font, label, new Vector2(412, y), _visuals.GetColor(res.Type));
+                count++;
             }
 
             for (int i = 0; i < _log.Count; i++)
