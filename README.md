@@ -17,7 +17,7 @@
 - **Atmospheric Visuals:** Minimalist UI with glowing particles and thematic narrative milestones.
 
 ## 🛠️ Technical Highlights
-- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. Logic is split into specialized systems (`ManifestationManager`, `AutomationSystem`).
+- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. Logic is split into specialized systems (`ManifestationManager`, `AutomationSystem`, `LogSystem`, `WorldMapSystem`).
 - **Health Suite:** Strict enforcement of 70% test coverage and 250-line monolith prevention via `scripts/check_health.py`.
 - **Agentic DevOps:** Automated CI/CD pipeline that manages build, test, health scans, and dynamic documentation shields.
 - **AI Review Mode:** Headless execution and automated screenshotting tools for agent-driven UI verification.
