@@ -160,10 +160,11 @@ public class Game1 : Game
 
         if (_font != null)
         {
+            _spriteBatch.DrawString(_font, "LOG", new Vector2(20, 20), Color.Gray * 0.5f);
             for (int i = 0; i < _log.Count; i++)
             {
                 float alpha = 1.0f - (i * 0.1f);
-                _spriteBatch.DrawString(_font, _log[i], new Vector2(20, 20 + (i * 25)), Color.LightGray * alpha);
+                _spriteBatch.DrawString(_font, _log[i], new Vector2(20, 60 + (i * 25)), Color.LightGray * alpha, 0f, Vector2.Zero, 0.9f, SpriteEffects.None, 0f);
             }
         }
 
