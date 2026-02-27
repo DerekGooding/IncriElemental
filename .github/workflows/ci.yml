@@ -25,3 +25,14 @@ jobs:
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
     - name: Health Check
       run: python scripts/check_health.py
+    - name: Deploy Shields Data
+      if: github.ref == 'refs/heads/main'
+      run: |
+        git config --global user.name "Agent Gemini"
+        git config --global user.email "agent-gemini@example.com"
+        git checkout --orphan shields
+        git rm -rf .
+        cp health_data.json index.json
+        git add index.json
+        git commit -m "Update health shields data"
+        git push origin shields --force
