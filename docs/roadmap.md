@@ -98,10 +98,23 @@ This document tracks the long-term goals and task history for **IncriElemental**
 
 ## 20. Goal: Technical Perfection & Immersion (Next)
 - [ ] **UI Pagination:** Implement a tab system (Void / Spire / World) to manage UI density.
+- [ ] **Dynamic Layout:** Implement relative positioning (anchors/margins) to support various resolutions.
 - [ ] **Procedural Atmosphere:** Implement a minimalist background "void hum" using dynamic sound generation.
-- [ ] **Balance Optimizer:** Update `BalanceSimulator` to suggest cost/gain adjustments for the target loop.
 - [ ] **CI Font Portability:** Replace the system-font hack in `ci.yml` with the portable download script.
+
+## 21. Goal: Architectural Decoupling & Stability
+- [ ] **EventBus:** Implement a lightweight event system for `ResourceGained`, `ThingManifested`, etc.
+- [ ] **Save Migration:** Add versioning to `GameState` and a migration layer to `SaveManager`.
 - [ ] **Auto-Healing CI:** (Research) Explore automated agent triggers for health regressions.
+
+## 22. Goal: Deep Unfolding & Synergies
+- [ ] **The Constellation:** Implement a prestige tree using "Void Embers" earned upon Ascension.
+- [ ] **Landmark Exploration:** Add fixed coordinates on the map with unique narrative and manifestations.
+- [ ] **Elemental Synergies:** Expand `AlchemySystem` with long-term structures like "Magma Forge" and "Clouds."
+
+## 23. Goal: Advanced Agentic Tooling
+- [ ] **Efficiency Observer:** A debug UI for the agent to visualize resource bottlenecks.
+- [ ] **Auto-Balancer V2:** Update the simulator to automatically tune costs in `manifestations.json`.
 
 
 
