@@ -8,7 +8,7 @@ public class GameEngineTests
     [Fact]
     public void Focus_IncreasesAether()
     {
-        var engine = new GameEngine();
+        var engine = TestHelper.CreateEngine();
 
         engine.Focus();
 
@@ -18,7 +18,7 @@ public class GameEngineTests
     [Fact]
     public void ManifestSpeck_ConsumesAether_And_IncreasesEarthPerSecond()
     {
-        var engine = new GameEngine();
+        var engine = TestHelper.CreateEngine();
 
         // Setup state to allow manifestation
         for (var i = 0; i < 15; i++) engine.Focus();
@@ -34,7 +34,7 @@ public class GameEngineTests
     [Fact]
     public void ManifestRuneOfAttraction_AutomatesAether()
     {
-        var engine = new GameEngine();
+        var engine = TestHelper.CreateEngine();
 
         // Setup state to allow manifestation (30 Aether)
         for (var i = 0; i < 30; i++) engine.Focus();

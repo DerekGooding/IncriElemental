@@ -8,7 +8,7 @@ public class HeadlessDriverTests
     [Fact]
     public void HeadlessDriver_ExecutesCommandsCorrectly()
     {
-        var engine = new GameEngine();
+        var engine = TestHelper.CreateEngine();
         var driver = new HeadlessDriver(engine);
 
         // Execute Focus

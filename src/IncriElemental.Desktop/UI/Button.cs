@@ -4,7 +4,7 @@ using System;
 
 namespace IncriElemental.Desktop.UI;
 
-public class Button(Rectangle bounds, string text, Color color, Action onClick, Func<bool> isVisible = null, string? subtitle = null)
+public class Button(Rectangle bounds, string text, Color color, Action onClick, Func<bool>? isVisible = null, string? subtitle = null)
 {
     public Rectangle Bounds = bounds;
     public string Text = text;

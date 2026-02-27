@@ -7,7 +7,7 @@ public class BalanceSimulator
     [Fact]
     public void Simulate_20Minute_Endgame_Progression()
     {
-        var engine = new GameEngine();
+        var engine = TestHelper.CreateEngine();
         var driver = new HeadlessDriver(engine);
 
         // --- PHASE 1: Manual Awakening ---

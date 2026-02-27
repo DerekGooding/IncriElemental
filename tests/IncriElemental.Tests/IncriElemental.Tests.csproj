@@ -19,6 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\src\IncriElemental.Desktop\manifestations.json" Link="manifestations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\src\IncriElemental.Desktop\lore.json" Link="lore.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\IncriElemental.Core\IncriElemental.Core.csproj" />
   </ItemGroup>
 

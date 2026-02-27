@@ -121,5 +121,9 @@ jobs:
         mv ../index.json ./index.json
         
         git add index.json
-        git commit -m "Update health shields data"
-        git push origin shields --force
+        if ! git diff --staged --quiet; then
+          git commit -m "Update health shields data"
+          git push origin shields --force
+        else
+          echo "No changes to commit to shields branch"
+        fi

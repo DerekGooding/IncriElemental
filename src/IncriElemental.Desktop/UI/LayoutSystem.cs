@@ -4,6 +4,7 @@ using IncriElemental.Core.Models;
 using IncriElemental.Desktop.Visuals;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IncriElemental.Desktop.UI;
 

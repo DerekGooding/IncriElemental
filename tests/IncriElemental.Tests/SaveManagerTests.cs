@@ -10,7 +10,7 @@ public class SaveManagerTests
     public void Serialize_Deserialize_RestoresStateCorrecty()
     {
         // Setup state with some progress
-        var engine = new GameEngine();
+        var engine = TestHelper.CreateEngine();
         for (var i = 0; i < 20; i++) engine.Focus();
         engine.Manifest("speck");
         engine.Update(10.0); // 1.0 Earth

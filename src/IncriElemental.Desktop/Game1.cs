@@ -14,15 +14,15 @@ namespace IncriElemental.Desktop;
 public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
-    private SpriteBatch _spriteBatch;
+    private SpriteBatch _spriteBatch = null!;
     private GameEngine _engine;
-    private SpriteFont _font;
-    private ParticleSystem _particles;
-    private VisualManager _visuals;
+    private SpriteFont _font = null!;
+    private ParticleSystem _particles = null!;
+    private VisualManager _visuals = null!;
     private InputManager _input = new();
     private AudioManager _audio = new();
     private List<Button> _buttons = new();
-    private Texture2D _pixel;
+    private Texture2D _pixel = null!;
     private List<string> _log = new();
     private const int MaxLogLines = 10;
     private bool _aiMode = false;

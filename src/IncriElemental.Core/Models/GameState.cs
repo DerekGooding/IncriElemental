@@ -15,7 +15,10 @@ public class GameState
     public GameState()
     {
         // Initial state
-        Resources[ResourceType.Aether] = new Resource(ResourceType.Aether);
+        foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+        {
+            Resources[type] = new Resource(type);
+        }
         Discoveries["void_observed"] = false;
         Discoveries["first_manifestation"] = false;
     }
