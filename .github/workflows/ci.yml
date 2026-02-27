@@ -25,21 +25,12 @@ jobs:
     - name: Install Build Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig
-    - name: Download and Install Font
+        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core
+    - name: Setup Font for MGCB
       run: |
-        # Download Arimo
-        curl -L -o Arimo-Regular.ttf "https://github.com/google/fonts/raw/main/ofl/arimo/Arimo-Regular.ttf"
-        
-        # Install to local fonts directory
-        mkdir -p ~/.local/share/fonts
-        cp Arimo-Regular.ttf ~/.local/share/fonts/
-        
-        # Update font cache
-        fc-cache -f -v
-        
-        # Also keep a copy in the Content folder for MGCB local reference
-        cp Arimo-Regular.ttf src/IncriElemental.Desktop/Content/Arimo.ttf
+        # Use the local system's DejaVuSans as our 'Arimo' replacement
+        cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf src/IncriElemental.Desktop/Content/Arimo.ttf
+        ls -l src/IncriElemental.Desktop/Content/Arimo.ttf
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
