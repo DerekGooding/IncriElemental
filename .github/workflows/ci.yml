@@ -8,9 +8,8 @@ on:
 
 jobs:
   build:
-
+    name: Build Project
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -21,12 +20,68 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-output
+        path: |
+          **/bin/Debug/
+          **/obj/Debug/
+
+  test:
+    name: Run Unit Tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-output
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
-    - name: Health Check
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: "**/TestResults/**/coverage.cobertura.xml"
+
+  health:
+    name: Project Health Check
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Required for git history checks in staleness script
+    - name: Download Coverage Report
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-report
+    - name: Run Health Script
       run: python scripts/check_health.py
-    - name: Deploy Shields Data
-      if: github.ref == 'refs/heads/main'
+    - name: Upload Health Data
+      uses: actions/upload-artifact@v4
+      with:
+        name: health-data
+        path: health_data.json
+
+  shields:
+    name: Deploy Shields Data
+    needs: health
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Download Health Data
+      uses: actions/download-artifact@v4
+      with:
+        name: health-data
+    - name: Deploy to Shields Branch
       run: |
         git config --global user.name "Agent Gemini"
         git config --global user.email "agent-gemini@example.com"
