@@ -41,29 +41,6 @@ jobs:
         name: build-output
         path: . # Upload the whole workspace after build to ensure paths are preserved
 
-  test:
-    name: Run Unit Tests
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
-    - name: Download Build Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: build-output
-        path: .
-    - name: Test
-      run: dotnet test --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./TestResults
-    - name: Upload Coverage Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        path: "TestResults/**/coverage.cobertura.xml"
-
   visual_review:
     name: Visual Regression Check
     needs: build
@@ -98,23 +75,31 @@ jobs:
 
   health:
     name: Project Health Check
-    needs: test
-    if: always() # Run even if Test (or Build) fails/skips
+    needs: [build, visual_review]
+    if: always()
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - name: Download Coverage Report
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+    - name: Download Build Artifacts
       uses: actions/download-artifact@v4
       with:
-        name: coverage-report
+        name: build-output
         path: .
-      continue-on-error: true # Coverage might not exist if build/test failed
     - name: Run Health Script
       run: python scripts/check_health.py
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: "TestResults/**/coverage.cobertura.xml"
     - name: Upload Health Data
-      if: always() # Ensure data is uploaded even if checks fail so shields update to "Red"
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: health-data
