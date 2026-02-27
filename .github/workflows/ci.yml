@@ -122,6 +122,9 @@ jobs:
         git config --global user.name "Agent Gemini"
         git config --global user.email "agent-gemini@example.com"
         
+        # Move files outside the git context so they aren't deleted by git rm
+        mv shields_deploy ../shields_temp
+        
         # Fetch and switch to shields branch, or create it
         git fetch origin shields || true
         if git show-ref --verify --quiet refs/remotes/origin/shields; then
@@ -132,7 +135,7 @@ jobs:
         
         # Clean everything and restore the new files
         git rm -rf . --ignore-unmatch
-        cp -r shields_deploy/* .
+        cp -r ../shields_temp/* .
         
         git add .
         if ! git diff --staged --quiet; then
