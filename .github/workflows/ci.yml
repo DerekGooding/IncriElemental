@@ -82,6 +82,7 @@ jobs:
     - name: Run Health Script
       run: python scripts/check_health.py
     - name: Upload Health Data
+      if: always() # Ensure data is uploaded even if checks fail so shields update to "Red"
       uses: actions/upload-artifact@v4
       with:
         name: health-data
