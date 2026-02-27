@@ -19,6 +19,15 @@ public class VisualManager
         { ResourceType.Life, Color.LimeGreen }
     };
 
+    private readonly Dictionary<CellType, Color> _cellColors = new()
+    {
+        { CellType.Void, Color.Black },
+        { CellType.Plain, Color.DarkGreen },
+        { CellType.Mountain, Color.SlateGray },
+        { CellType.Ocean, Color.MidnightBlue },
+        { CellType.Ruins, Color.DarkGoldenrod }
+    };
+
     public VisualManager(GraphicsDevice graphicsDevice)
     {
         _pixel = new Texture2D(graphicsDevice, 1, 1);
@@ -26,6 +35,41 @@ public class VisualManager
     }
 
     public Color GetColor(ResourceType type) => _elementColors.GetValueOrDefault(type, Color.White);
+    public Color GetCellColor(CellType type) => _cellColors.GetValueOrDefault(type, Color.Black);
+
+    public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel)
+    {
+        int size = 20;
+        int padding = 2;
+        int startX = 350;
+        int startY = 400;
+
+        for (int x = 0; x < map.Width; x++)
+        {
+            for (int y = 0; y < map.Height; y++)
+            {
+                var cell = map.GetCell(x, y);
+                var rect = new Rectangle(startX + x * (size + padding), startY + y * (size + padding), size, size);
+                
+                Color color = cell.IsExplored ? GetCellColor(cell.Type) : Color.DarkSlateGray * 0.3f;
+                
+                // Highlight if mouse is over
+                if (rect.Contains(mousePos)) color *= 1.5f;
+
+                spriteBatch.Draw(pixel, rect, color);
+                
+                // Border for unexplored but visible
+                if (!cell.IsExplored)
+                {
+                    int t = 1;
+                    spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, rect.Width, t), Color.Gray * 0.1f);
+                    spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Bottom - t, rect.Width, t), Color.Gray * 0.1f);
+                    spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, t, rect.Height), Color.Gray * 0.1f);
+                    spriteBatch.Draw(pixel, new Rectangle(rect.Right - t, rect.Top, t, rect.Height), Color.Gray * 0.1f);
+                }
+            }
+        }
+    }
 
     public void DrawElement(SpriteBatch spriteBatch, ResourceType type, Vector2 position, float scale = 10f)
     {

@@ -10,89 +10,96 @@ namespace IncriElemental.Desktop.UI;
 
 public class LayoutSystem
 {
-    public static void SetupButtons(List<Button> buttons, GameEngine engine, ParticleSystem particles, Action<string> logCallback)
+    public static void SetupButtons(List<Button> buttons, GameEngine engine, ParticleSystem particles, AudioManager audio, Action<string> logCallback)
     {
-        int centerX = 512;
-        int startY = 200;
-        int spacing = 65;
+        buttons.Clear();
 
-        buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 80), "FOCUS", Color.MediumPurple, () => {
+        // Standard Focus Button
+        buttons.Add(new Button(new Rectangle(412, 200, 200, 80), "FOCUS", Color.MediumPurple, () => {
             engine.Focus();
-            particles.EmitFocus(new Vector2(centerX, startY + 40));
+            particles.EmitFocus(new Vector2(512, 240));
+            audio.PlayFocus();
         }));
 
-        startY += 100;
-
-        buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 50), "MANIFEST SPECK", Color.SaddleBrown, () => {
-            if (engine.Manifest("speck")) logCallback("A speck of matter appears.");
-        }, () => engine.State.GetResource(ResourceType.Aether).Amount >= 10 || engine.State.Discoveries.ContainsKey("first_manifestation"), "10 Aether"));
-
-        startY += spacing;
-
-        buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 50), "RUNE OF ATTRACTION", Color.MediumPurple, () => {
-            if (engine.Manifest("rune_of_attraction")) logCallback("The aether begins to flow of its own accord.");
-        }, () => engine.State.GetResource(ResourceType.Aether).Amount >= 30 || engine.State.Discoveries.ContainsKey("automation_unlocked"), "30 Aether"));
+        var defs = engine.GetDefinitions();
+        int leftX = 412;
+        int rightX = 675;
+        int farRightX = 855;
         
-        startY += spacing;
-
-        buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 50), "MANIFEST ALTAR", Color.Gray, () => {
-            if (engine.Manifest("altar")) logCallback("A monolithic altar rises. Your capacity expands.");
-        }, () => engine.State.Discoveries.ContainsKey("first_manifestation"), "100A / 20E"));
-
-        // Column 2
-        int rightX = 750;
+        int lY = 300;
         int rY = 200;
-
-        buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 50), "FORGE", Color.OrangeRed, () => {
-            if (engine.Manifest("forge")) logCallback("A magical forge ignites.");
-        }, () => engine.State.Discoveries.ContainsKey("altar_constructed"), "50F / 100E"));
-
-        rY += spacing;
-
-        buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 50), "WELL", Color.DodgerBlue, () => {
-            if (engine.Manifest("well")) logCallback("A deep Well manifests.");
-        }, () => engine.State.Discoveries.ContainsKey("forge_constructed"), "300E / 100W"));
-
-        rY += spacing;
-
-        buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 50), "BRAZIER", Color.OrangeRed, () => {
-            if (engine.Manifest("brazier")) logCallback("A Brazier ignites.");
-        }, () => engine.State.Discoveries.ContainsKey("forge_constructed"), "300E / 100F"));
-
-        rY += spacing;
-
-        buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 50), "GARDEN", Color.LimeGreen, () => {
-            if (engine.Manifest("garden")) logCallback("A magical Garden blooms.");
-        }, () => engine.State.Discoveries.ContainsKey("forge_constructed"), "500E / 500W"));
-
-        rY += spacing;
-
-        buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 50), "FAMILIAR", Color.MediumPurple, () => {
-            if (engine.Manifest("familiar")) logCallback("A Familiar manifests.");
-        }, () => engine.State.Discoveries.ContainsKey("garden_manifested"), "1K A / 100L"));
-
-        // Column 3
-        int farRightX = 930;
         int sY = 500;
 
-        buttons.Add(new Button(new Rectangle(farRightX - 75, sY, 150, 45), "FOUNDATION", Color.SaddleBrown, () => {
-            if (engine.Manifest("spire_foundation")) logCallback("The Spire Foundation is laid.");
-        }, () => engine.State.Discoveries.ContainsKey("familiar_manifested"), "1K E / 200L"));
+        foreach (var def in defs)
+        {
+            if (def.Id == "ascend")
+            {
+                buttons.Add(new Button(new Rectangle(412, 50, 200, 80), def.Name, Color.Gold, () => {
+                    if (engine.Manifest(def.Id)) 
+                    {
+                        logCallback("Ascension begins...");
+                        audio.PlayAscend();
+                    }
+                }, () => engine.State.Discoveries.ContainsKey(def.RequiredDiscovery)));
+                continue;
+            }
 
-        sY += 55;
+            // Categorize and position based on ID or discovery patterns
+            Rectangle bounds;
+            if (def.Id.Contains("spire")) 
+            {
+                bounds = new Rectangle(farRightX, sY, 150, 45);
+                sY += 55;
+            }
+            else if (def.Id.Contains("well") || def.Id.Contains("brazier") || def.Id.Contains("garden") || def.Id.Contains("familiar") || def.Id.Contains("forge"))
+            {
+                bounds = new Rectangle(rightX, rY, 150, 50);
+                rY += 65;
+            }
+            else
+            {
+                bounds = new Rectangle(leftX, lY, 200, 50);
+                lY += 65;
+            }
 
-        buttons.Add(new Button(new Rectangle(farRightX - 75, sY, 150, 45), "SHAFT", Color.LightCyan, () => {
-            if (engine.Manifest("spire_shaft")) logCallback("The Spire Shaft rises.");
-        }, () => engine.State.Discoveries.ContainsKey("spire_foundation_ready"), "2K F / 1K Air"));
+            buttons.Add(new Button(bounds, def.Name, GetColorForId(def.Id), () => {
+                if (engine.Manifest(def.Id)) 
+                {
+                    audio.PlayManifest();
+                    if (def.Id == "speck") logCallback("A speck of matter appears.");
+                    else logCallback($"{def.Name} manifested.");
+                }
+            }, () => {
+                bool req = string.IsNullOrEmpty(def.RequiredDiscovery) || engine.State.Discoveries.ContainsKey(def.RequiredDiscovery);
+                bool cost = engine.State.GetResource(def.Costs.FirstOrDefault()?.Type ?? ResourceType.Aether).Amount >= (def.Costs.FirstOrDefault()?.Amount ?? 0);
+                bool discovery = !string.IsNullOrEmpty(def.DiscoveryKey) && engine.State.Discoveries.ContainsKey(def.DiscoveryKey);
+                return req && (cost || discovery);
+            }, def.Subtitle));
+        }
 
-        sY += 55;
+        // --- Alchemy (Center Column bottom) ---
+        int alchY = lY + 20;
+        buttons.Add(new Button(new Rectangle(412, alchY, 200, 45), "COMBUSTION", Color.OrangeRed, () => {
+            engine.Mix(ResourceType.Fire, ResourceType.Air);
+            audio.PlayManifest();
+        }, () => engine.State.Discoveries.ContainsKey("fire_unlocked") && engine.State.Discoveries.ContainsKey("air_unlocked"), "100F / 100Air"));
 
-        buttons.Add(new Button(new Rectangle(farRightX - 75, sY, 150, 45), "CORE", Color.MediumPurple, () => {
-            if (engine.Manifest("spire_core")) logCallback("The Spire Core is ignited.");
-        }, () => engine.State.Discoveries.ContainsKey("spire_shaft_ready"), "5K A / 3K W"));
-
-        buttons.Add(new Button(new Rectangle(centerX - 100, 50, 200, 80), "ASCEND", Color.Gold, () => {
-            if (engine.Manifest("ascend")) logCallback("Ascension begins...");
-        }, () => engine.State.Discoveries.ContainsKey("spire_complete")));
+        alchY += 55;
+        buttons.Add(new Button(new Rectangle(412, alchY, 200, 45), "FERTILITY", Color.LimeGreen, () => {
+            engine.Mix(ResourceType.Water, ResourceType.Earth);
+            audio.PlayManifest();
+        }, () => engine.State.Discoveries.ContainsKey("water_unlocked") && engine.State.Discoveries.ContainsKey("garden_manifested"), "100W / 100E"));
     }
+
+    private static Color GetColorForId(string id)
+    {
+        if (id.Contains("aether") || id.Contains("attraction")) return Color.MediumPurple;
+        if (id.Contains("speck") || id.Contains("foundation") || id.Contains("pickaxe")) return Color.SaddleBrown;
+        if (id.Contains("spark") || id.Contains("forge") || id.Contains("brazier")) return Color.OrangeRed;
+        if (id.Contains("droplet") || id.Contains("well")) return Color.DodgerBlue;
+        if (id.Contains("breeze") || id.Contains("shaft")) return Color.LightCyan;
+        if (id.Contains("garden")) return Color.LimeGreen;
+        return Color.Gray;
+    }
+}
 }

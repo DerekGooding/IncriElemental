@@ -12,19 +12,20 @@ public class AutomationSystem
         _state = state;
     }
 
-    public void Update(double deltaTime)
+    public void Update(double deltaTime, AlchemySystem alchemy)
     {
-        ProcessPassiveGeneration(deltaTime);
+        ProcessPassiveGeneration(deltaTime, alchemy);
         ProcessManaFlow(deltaTime);
     }
 
-    private void ProcessPassiveGeneration(double deltaTime)
+    private void ProcessPassiveGeneration(double deltaTime, AlchemySystem alchemy)
     {
         foreach (var resource in _state.Resources.Values)
         {
             if (resource.PerSecond > 0)
             {
-                resource.Add(resource.PerSecond * deltaTime);
+                double multiplier = alchemy.GetMultiplier(resource.Type);
+                resource.Add(resource.PerSecond * multiplier * deltaTime);
             }
         }
     }

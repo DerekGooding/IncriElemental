@@ -7,6 +7,8 @@ public class GameState
     public Dictionary<ResourceType, Resource> Resources { get; set; } = new();
     public Dictionary<string, bool> Discoveries { get; set; } = new();
     public Dictionary<string, int> Manifestations { get; set; } = new();
+    public List<Buff> ActiveBuffs { get; set; } = new();
+    public WorldMap Map { get; set; } = new();
     
     public List<string> History { get; set; } = new();
     public double TotalGameTime { get; set; } = 0;

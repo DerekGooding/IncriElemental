@@ -20,8 +20,9 @@ public class Game1 : Game
     private SpriteFont _font;
     private ParticleSystem _particles;
     private VisualManager _visuals;
+    private InputManager _input = new();
+    private AudioManager _audio = new();
     private List<Button> _buttons = new();
-    private MouseState _lastMouseState;
     private Texture2D _pixel;
     private List<string> _log = new();
     private const int MaxLogLines = 10;
@@ -34,6 +35,19 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _engine = new GameEngine();
+
+        // Load Data-Driven Manifestations
+        string jsonPath = "manifestations.json";
+        if (File.Exists(jsonPath))
+        {
+            _engine.LoadDefinitions(File.ReadAllText(jsonPath));
+        }
+
+        string lorePath = "lore.json";
+        if (File.Exists(lorePath))
+        {
+            _engine.LoadLore(File.ReadAllText(lorePath));
+        }
 
         if (Environment.GetCommandLineArgs().Contains("--ai-mode"))
         {
@@ -53,7 +67,7 @@ public class Game1 : Game
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
         
-        LayoutSystem.SetupButtons(_buttons, _engine, _particles, AddToLog);
+        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, AddToLog);
         AddToLog("You awaken in the void.");
 
         if (_aiMode) new AiModeSystem(_engine).Process("ai_commands.txt");
@@ -92,16 +106,16 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
+        _input.Update();
+
         if (_aiMode && gameTime.TotalGameTime.TotalSeconds > 1.0)
         {
             TakeScreenshot(_screenshotPath);
             Exit();
         }
 
-        var mouseState = Mouse.GetState();
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-        
-        if (Keyboard.GetState().IsKeyDown(Keys.Escape)) Exit();
+        if (_input.IsKeyPressed(Keys.Escape)) Exit();
 
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
@@ -109,12 +123,32 @@ public class Game1 : Game
         foreach (var message in _engine.State.History)
             if (!_log.Contains(message)) AddToLog(message);
 
-        if (mouseState.LeftButton == ButtonState.Pressed && _lastMouseState.LeftButton == ButtonState.Released)
+        if (_input.IsLeftClick())
         {
-            foreach (var btn in _buttons) btn.CheckClick(mouseState.Position);
+            foreach (var btn in _buttons) btn.CheckClick(_input.MousePosition);
+
+            // Map interaction
+            if (_engine.State.Manifestations.GetValueOrDefault("familiar") > 0)
+            {
+                int size = 20;
+                int padding = 2;
+                int startX = 350;
+                int startY = 400;
+
+                for (int x = 0; x < _engine.State.Map.Width; x++)
+                {
+                    for (int y = 0; y < _engine.State.Map.Height; y++)
+                    {
+                        var rect = new Rectangle(startX + x * (size + padding), startY + y * (size + padding), size, size);
+                        if (rect.Contains(_input.MousePosition))
+                        {
+                            if (_engine.Explore(x, y)) _audio.PlayExplore();
+                        }
+                    }
+                }
+            }
         }
 
-        _lastMouseState = mouseState;
         base.Update(gameTime);
     }
 
@@ -139,14 +173,13 @@ public class Game1 : Game
                 string resetText = "A NEW AWAKENING";
                 _spriteBatch.DrawString(_font, resetText, new Vector2(512 - _font.MeasureString(resetText).X/2, 625 - _font.MeasureString(resetText).Y/2), Color.DarkGoldenrod);
                 
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _lastMouseState.LeftButton == ButtonState.Released && resetRect.Contains(Mouse.GetState().Position))
+                if (_input.IsLeftClick() && resetRect.Contains(_input.MousePosition))
                 {
                     _engine.Manifest("reset");
                     _log.Clear(); // Clear log for new game
                 }
             }
             _spriteBatch.End();
-            _lastMouseState = Mouse.GetState();
             return;
         }
 
@@ -164,7 +197,11 @@ public class Game1 : Game
             for (int i = 0; i < _log.Count; i++)
             {
                 float alpha = 1.0f - (i * 0.1f);
-                _spriteBatch.DrawString(_font, _log[i], new Vector2(20, 60 + (i * 25)), Color.LightGray * alpha, 0f, Vector2.Zero, 0.9f, SpriteEffects.None, 0f);
+                Color textColor = Color.LightGray;
+                if (_log[i].Contains("void is not") || _log[i].Contains("consciousness") || _log[i].Contains("We are not the first"))
+                    textColor = Color.Cyan;
+
+                _spriteBatch.DrawString(_font, _log[i], new Vector2(20, 60 + (i * 25)), textColor * alpha, 0f, Vector2.Zero, 0.9f, SpriteEffects.None, 0f);
             }
         }
 
@@ -173,6 +210,13 @@ public class Game1 : Game
         foreach (var btn in _buttons) btn.Draw(_spriteBatch, _font, _pixel);
 
         _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
+
+        // --- SECTION 2.5: WORLD MAP ---
+        if (_engine.State.Manifestations.GetValueOrDefault("familiar") > 0)
+        {
+            _spriteBatch.DrawString(_font, "WORLD EXPLORATION (Click cells to send Familiars)", new Vector2(350, 370), Color.Gray * 0.5f);
+            _visuals.DrawMap(_spriteBatch, _engine.State.Map, _input.MousePosition, _pixel);
+        }
 
         // --- SECTION 3: RESOURCE AREA (Right) ---
         int resX = 800;
@@ -200,6 +244,16 @@ public class Game1 : Game
                 }
                 
                 y += 40;
+            }
+
+            // Active Buffs
+            y += 20;
+            _spriteBatch.DrawString(_font, "ACTIVE REACTION", new Vector2(resX, y), Color.Gray * 0.5f);
+            y += 30;
+            foreach (var buff in _engine.State.ActiveBuffs)
+            {
+                _spriteBatch.DrawString(_font, $"{buff.Id}: {buff.RemainingTime:F0}s", new Vector2(resX, y), Color.Gold * 0.8f);
+                y += 25;
             }
         }
 

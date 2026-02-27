@@ -1,0 +1,14 @@
+{
+    "schemaVersion": 1,
+    "label": "health",
+    "message": "Project Healthy",
+    "color": "brightgreen",
+    "monoliths": "None",
+    "monoliths_color": "brightgreen",
+    "coverage": "77%",
+    "coverage_color": "brightgreen",
+    "docs": "Up to Date",
+    "docs_color": "brightgreen",
+    "tests": "Passing",
+    "tests_color": "brightgreen"
+}

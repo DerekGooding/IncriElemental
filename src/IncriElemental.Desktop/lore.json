@@ -1,0 +1,27 @@
+[
+  {
+    "Id": "start",
+    "Text": "The void is not empty. It is a canvas of unformed thoughts.",
+    "UnlockDiscovery": "void_observed"
+  },
+  {
+    "Id": "earth",
+    "Text": "Matter is the anchor of consciousness. Without it, we drift.",
+    "UnlockDiscovery": "first_manifestation"
+  },
+  {
+    "Id": "ruins",
+    "Text": "We are not the first to manifest here. The void remembers.",
+    "UnlockCellType": "Ruins"
+  },
+  {
+    "Id": "spire",
+    "Text": "A pillar to pierce the silence. A monument to existence.",
+    "UnlockDiscovery": "spire_foundation_ready"
+  },
+  {
+    "Id": "familiar",
+    "Text": "Dividing the self to observe the whole. We are many now.",
+    "UnlockDiscovery": "familiar_manifested"
+  }
+]

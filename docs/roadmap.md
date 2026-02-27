@@ -64,6 +64,31 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Ending:** Visual transition to a "Pure Light" state.
 - [x] **Credits:** Scrolling text acknowledging the user and the agent.
 
+## 13. Goal: Technical Decoupling (Next)
+- [ ] **Data-Driven:** Move all manifestation definitions to `manifestations.json`.
+- [ ] **Input & UI:** Implement `InputManager` and `ScreenManager` for tabbed UI (Void/Spire/Map).
+- [ ] **Font Portability:** Bundle a specific free font in the repo to remove system dependencies.
+
+## 14. Goal: The Alchemist
+- [ ] **Elemental Reactions:** Implement a "Mix" mechanic for temporary resource boosts.
+- [ ] **Buff System:** Track active temporary modifiers in the `Core` logic.
+
+## 15. Goal: Beyond the Spire
+- [ ] **World Map:** Implement a minimalist grid-based map of the manifested reality.
+- [ ] **Exploration:** Allow Familiars to explore grid cells to find Lore or rare Essences.
+
+## 16. Goal: Sensory Immersion
+- [ ] **Procedural Audio:** Implement a minimalist sine-wave based audio engine for magical hums.
+- [ ] **Sound Effects:** Add audio triggers for Focus and Manifestation events.
+
+## 17. Goal: Advanced Agentic DevOps
+- [ ] **Auto-Balancing:** Update simulator to suggest optimal costs based on target loop time.
+- [ ] **Visual Regressions:** Implement screenshot diffing in the CI to catch UI layout bugs automatically.
+
+## 18. Goal: Narrative Expansion
+- [ ] **Lore Fragments:** Data-driven story bits found through exploration.
+- [ ] **Deep Unfolding:** New tiers of reality beyond the initial Ascension.
+
 ---
 *Last Updated: Friday, February 27, 2026*
 

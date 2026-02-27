@@ -55,14 +55,51 @@ def run_ai_review(commands):
     for path in search_paths:
         if os.path.exists(path):
             print(f"Review completed. Screenshot found at {path}")
+            
+            # Visual Regression Check
+            baseline_path = "review/baseline.png"
+            if os.path.exists(baseline_path):
+                print("Performing visual regression check...")
+                if not compare_images(path, baseline_path):
+                    print("[WARNING] Visual regression detected! UI layout has changed.")
+            else:
+                print("[INFO] No baseline found. Saving current screenshot as baseline.")
+                os.makedirs("review", exist_ok=True)
+                import shutil
+                shutil.copy(path, baseline_path)
+
             # Ensure it's in the root review folder for the user
-            os.makedirs("review", exist_ok=True)
-            import shutil
-            shutil.copy(path, "review/screenshot.png")
+            if path != "review/screenshot.png":
+                os.makedirs("review", exist_ok=True)
+                import shutil
+                shutil.copy(path, "review/screenshot.png")
             return True
 
     print("Review failed! Screenshot not found.")
     return False
+
+def compare_images(path1, path2):
+    try:
+        from PIL import Image, ImageChops
+        img1 = Image.open(path1).convert('RGB')
+        img2 = Image.open(path2).convert('RGB')
+        diff = ImageChops.difference(img1, img2)
+        if diff.getbbox():
+            # Calculate percentage difference
+            import numpy as np
+            diff_array = np.array(diff)
+            non_zero = np.count_nonzero(diff_array)
+            total = diff_array.size
+            percent = (non_zero / total) * 100
+            print(f"Image difference: {percent:.2f}%")
+            return percent < 1.0 # 1% threshold
+        return True
+    except ImportError:
+        print("[WARNING] Pillow or NumPy not installed. Skipping visual regression.")
+        return True
+    except Exception as e:
+        print(f"Error comparing images: {e}")
+        return True
 
 if __name__ == "__main__":
     if build_project():
