@@ -15,6 +15,18 @@ public class GameEngineTests
     }
 
     [Fact]
+    public void Focus_WithPickaxe_IncreasesAetherMore()
+    {
+        var engine = TestHelper.CreateEngine();
+        engine.State.Discoveries["pickaxe_manifested"] = true;
+
+        engine.Focus();
+
+        // (1.0 + 2.0) * 1.0 = 3.0
+        Assert.Equal(3, engine.State.GetResource(ResourceType.Aether).Amount);
+    }
+
+    [Fact]
     public void ManifestSpeck_ConsumesAether_And_IncreasesEarthPerSecond()
     {
         var engine = TestHelper.CreateEngine();

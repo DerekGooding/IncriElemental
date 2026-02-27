@@ -59,7 +59,7 @@ public class GameEngine
         CheckLoreUnlocks();
     }
 
-    public void Mix(ResourceType a, ResourceType b) => _alchemy.Mix(a, b);
+    public bool Mix(ResourceType a, ResourceType b) => _alchemy.Mix(a, b);
 
     public bool Explore(int x, int y)
     {
