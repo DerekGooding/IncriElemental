@@ -9,7 +9,7 @@ import json
 MAX_LINES_PER_FILE = 250
 MIN_OVERALL_COVERAGE = 70.0
 MIN_FILE_COVERAGE = 50.0
-DOCS_STALENESS_THRESHOLD = 15
+DOCS_STALENESS_THRESHOLD = 8
 SOURCE_DIR = "src"
 COVERAGE_REPORT_PATTERN = r"coverage\.cobertura\.xml"
 DOC_FILES = ["README.md", "docs/architecture.md", "docs/game_design.md", "docs/roadmap.md", "docs/devops.md", "GEMINI.md"]

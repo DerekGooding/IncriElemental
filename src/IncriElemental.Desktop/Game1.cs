@@ -53,28 +53,10 @@ public class Game1 : Game
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
         
-        SetupButtons();
+        LayoutSystem.SetupButtons(_buttons, _engine, _particles, AddToLog);
         AddToLog("You awaken in the void.");
 
-        if (_aiMode) ProcessAiMode();
-    }
-
-    private void ProcessAiMode()
-    {
-        string commandPath = "ai_commands.txt";
-        if (File.Exists(commandPath))
-        {
-            var commands = File.ReadAllLines(commandPath);
-            foreach (var cmd in commands)
-            {
-                var parts = cmd.Split(':');
-                if (parts[0].ToLower() == "focus") _engine.Focus();
-                if (parts[0].ToLower() == "manifest") _engine.Manifest(parts[1]);
-                if (parts[0].ToLower() == "update") {
-                    if (double.TryParse(parts[1], out double dt)) _engine.Update(dt);
-                }
-            }
-        }
+        if (_aiMode) new AiModeSystem(_engine).Process("ai_commands.txt");
     }
 
     private void TakeScreenshot(string path)
@@ -93,92 +75,6 @@ public class Game1 : Game
         using FileStream stream = File.Open(path, FileMode.Create);
         target.SaveAsPng(stream, w, h);
         Console.WriteLine($"[AI MODE] Screenshot saved to: {Path.GetFullPath(path)}");
-    }
-
-    private void SetupButtons()
-    {
-        int centerX = 512;
-        int startY = 200;
-        int spacing = 50;
-
-        _buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 80), "FOCUS", Color.MediumPurple, () => {
-            _engine.Focus();
-            _particles.EmitFocus(new Vector2(centerX, startY + 40));
-        }));
-
-        startY += 100;
-
-        _buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 40), "MANIFEST SPECK (10A)", Color.SaddleBrown, () => {
-            if (_engine.Manifest("speck")) AddToLog("A speck of matter appears.");
-        }, () => _engine.State.GetResource(ResourceType.Aether).Amount >= 10 || _engine.State.Discoveries.ContainsKey("first_manifestation")));
-
-        startY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 40), "RUNE OF ATTRACTION (30A)", Color.MediumPurple, () => {
-            if (_engine.Manifest("rune_of_attraction")) AddToLog("The aether begins to flow of its own accord.");
-        }, () => _engine.State.GetResource(ResourceType.Aether).Amount >= 30 || _engine.State.Discoveries.ContainsKey("automation_unlocked")));
-        
-        startY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(centerX - 100, startY, 200, 40), "MANIFEST ALTAR (100A, 20E)", Color.Gray, () => {
-            if (_engine.Manifest("altar")) AddToLog("A monolithic altar rises. Your capacity expands.");
-        }, () => _engine.State.Discoveries.ContainsKey("first_manifestation")));
-
-        // Column 2 (Right Side)
-        int rightX = 750;
-        int rY = 200;
-
-        _buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 40), "FORGE (50F, 100E)", Color.OrangeRed, () => {
-            if (_engine.Manifest("forge")) AddToLog("A magical forge ignites.");
-        }, () => _engine.State.Discoveries.ContainsKey("altar_constructed")));
-
-        rY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 40), "WELL (300E, 100W)", Color.DodgerBlue, () => {
-            if (_engine.Manifest("well")) AddToLog("A deep Well manifests.");
-        }, () => _engine.State.Discoveries.ContainsKey("forge_constructed")));
-
-        rY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 40), "BRAZIER (300E, 100F)", Color.OrangeRed, () => {
-            if (_engine.Manifest("brazier")) AddToLog("A Brazier ignites.");
-        }, () => _engine.State.Discoveries.ContainsKey("forge_constructed")));
-
-        rY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 40), "GARDEN (500E, 500W)", Color.LimeGreen, () => {
-            if (_engine.Manifest("garden")) AddToLog("A magical Garden blooms.");
-        }, () => _engine.State.Discoveries.ContainsKey("forge_constructed")));
-
-        rY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(rightX - 75, rY, 150, 40), "FAMILIAR (1000A, 100L)", Color.MediumPurple, () => {
-            if (_engine.Manifest("familiar")) AddToLog("A Familiar manifests.");
-        }, () => _engine.State.Discoveries.ContainsKey("garden_manifested")));
-
-        // Column 3 (Far Right - Spire)
-        int farRightX = 930;
-        int sY = 500;
-
-        _buttons.Add(new Button(new Rectangle(farRightX - 75, sY, 150, 40), "FOUNDATION", Color.SaddleBrown, () => {
-            if (_engine.Manifest("spire_foundation")) AddToLog("The Spire Foundation is laid.");
-        }, () => _engine.State.Discoveries.ContainsKey("familiar_manifested")));
-
-        sY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(farRightX - 75, sY, 150, 40), "SHAFT", Color.LightCyan, () => {
-            if (_engine.Manifest("spire_shaft")) AddToLog("The Spire Shaft rises.");
-        }, () => _engine.State.Discoveries.ContainsKey("spire_foundation_ready")));
-
-        sY += spacing;
-
-        _buttons.Add(new Button(new Rectangle(farRightX - 75, sY, 150, 40), "CORE", Color.MediumPurple, () => {
-            if (_engine.Manifest("spire_core")) AddToLog("The Spire Core is ignited.");
-        }, () => _engine.State.Discoveries.ContainsKey("spire_shaft_ready")));
-
-        _buttons.Add(new Button(new Rectangle(centerX - 100, 50, 200, 80), "ASCEND", Color.Gold, () => {
-            if (_engine.Manifest("ascend")) AddToLog("Ascension begins...");
-        }, () => _engine.State.Discoveries.ContainsKey("spire_complete")));
     }
 
     protected override void LoadContent()
@@ -220,14 +116,6 @@ public class Game1 : Game
 
         _lastMouseState = mouseState;
         base.Update(gameTime);
-    }
-
-    private string FormatValue(double value)
-    {
-        if (value >= 1_000_000_000) return $"{(value / 1_000_000_000):F2}G";
-        if (value >= 1_000_000) return $"{(value / 1_000_000):F2}M";
-        if (value >= 1_000) return $"{(value / 1_000):F2}K";
-        return value.ToString("F1");
     }
 
     protected override void Draw(GameTime gameTime)
@@ -283,16 +171,7 @@ public class Game1 : Game
         _particles.Draw(_spriteBatch);
         foreach (var btn in _buttons) btn.Draw(_spriteBatch, _font, _pixel);
 
-        // Physical Spire (Goal 11) - Rendered as a minimalist abstract tower
-        if (_engine.State.Discoveries.ContainsKey("spire_foundation_ready"))
-            _spriteBatch.Draw(_pixel, new Rectangle(502, 600, 20, 100), Color.Gray * 0.5f);
-        if (_engine.State.Discoveries.ContainsKey("spire_shaft_ready"))
-            _spriteBatch.Draw(_pixel, new Rectangle(505, 500, 14, 100), Color.LightGray * 0.5f);
-        if (_engine.State.Discoveries.ContainsKey("spire_complete"))
-        {
-            var pulse = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 2) * 0.2f + 0.8f;
-            _spriteBatch.Draw(_pixel, new Rectangle(502, 480, 20, 20), Color.Gold * pulse);
-        }
+        _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
 
         // --- SECTION 3: RESOURCE AREA (Right) ---
         int resX = 800;
@@ -304,8 +183,8 @@ public class Game1 : Game
 
             foreach (var res in _engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000))
             {
-                string amountStr = FormatValue(res.Amount);
-                string maxStr = res.MaxAmount > 1_000_000_000_000 ? "INF" : FormatValue(res.MaxAmount);
+                string amountStr = _visuals.FormatValue(res.Amount);
+                string maxStr = res.MaxAmount > 1_000_000_000_000 ? "INF" : _visuals.FormatValue(res.MaxAmount);
                 string label = $"{res.Type}: {amountStr}";
                 
                 _visuals.DrawElement(_spriteBatch, res.Type, new Vector2(resX - 15, y + 8), 6f);

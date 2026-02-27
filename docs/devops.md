@@ -25,7 +25,7 @@ The agent is responsible for setting up and maintaining a GitHub Actions pipelin
 The project maintains strict quality and coverage standards enforced via `scripts/check_health.py`:
 - **Coverage:** Overall >= 70% (via `dotnet test --collect:"XPlat Code Coverage"`).
 - **Monoliths:** No source file > 250 lines.
-- **Documentation Staleness:** Documentation files (README.md, docs/*.md, etc.) are monitored for staleness. A doc is considered "stale" if more than **15 source files** have been changed since its last update.
+- **Documentation Staleness:** Documentation files (README.md, docs/*.md, etc.) are monitored for staleness. A doc is considered "stale" if more than **8 source files** have been changed since its last update.
 - **Shields:** The current health status is reflected in the `README.md` shields.
 
 ---

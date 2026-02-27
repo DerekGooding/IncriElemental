@@ -35,12 +35,13 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 - **Effect:** Fire Essence unlocks.
 - **Mechanic:** Fire consumes Earth to burn? Or just exists? (TBD: Balance burn rates).
 
-### Phase 3: Matter & Form
-- **Concept:** Unlike "Wood -> Plank", you manifest "Geometric Forms" or "Runes".
-- **Example:** Manifest "Rune of Solidity" (Uses Earth) -> Increases Max Aether.
-- **Example:** Manifest "Rune of Attraction" (Uses Aether) -> Automates passive Aether gathering.
+### Phase 3: The Spire & Ascension
+- **Goal:** Manifest the Great Spire in the center of the void.
+- **Stages:** Foundation (Earth/Life), Shaft (Fire/Air), Core (Aether/Water).
+- **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence and New Game+.
 
-## 4. Visual Style
+---
+*Last Updated: Friday, February 27, 2026*
 - **Minimalist Magical:** Dark background. Text is glowing/spectral.
 - **Particles:** When manifesting, use particle effects (MonoGame) to show the magic condensing.
 - **Grid:** As reality forms, a grid/map might appear representing the physical space you've created.

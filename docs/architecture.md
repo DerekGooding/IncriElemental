@@ -25,13 +25,11 @@ The `GameState` class in `IncriElemental.Core` is the single source of truth.
 - **Binding:** The Desktop layer reads the `GameState` and renders UI elements based on the discovery state.
 
 ## 5. Agentic Piloting & Headless Mode
-To support heavy agentic development, the architecture must allow for "Headless" execution:
-- **GameEngine Driver:** The `GameEngine` in `Core` is the primary interface. All player actions (Focus, Manifest, etc.) must be accessible through public methods.
-- **CLI Driver:** A separate entry point or a "Headless Mode" in the Desktop runner that can:
-    1. Load a `GameState` from JSON.
-    2. Execute a sequence of commands (e.g., `["Focus", "Focus", "Manifest:speck"]`).
-    3. Export the resulting `GameState` back to JSON.
-- **Validation:** Automated scripts in `scripts/` will use this driver to verify game balance and progression without manual play.
+To support heavy agentic development, the architecture allows for automated execution and UI verification:
+- **GameEngine Driver:** The `GameEngine` in `Core` is the primary interface.
+- **AiModeSystem:** A Desktop-layer system that reads `ai_commands.txt` and drives the engine during agentic review.
+- **LayoutSystem:** Decouples button configuration and positioning from the main `Game1` class.
+- **Validation:** Automated scripts in `scripts/` use these drivers to verify game balance and UI layout via screenshots.
 
 ## 6. Source Control & DevOps
 See [docs/devops.md](docs/devops.md) for details on the agentic ownership of the GitHub repository, CI/CD, and deployment strategy.

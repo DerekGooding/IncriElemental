@@ -29,7 +29,7 @@ This document contains foundational mandates that I (Gemini) must follow through
 ## 5. Project Health & Quality
 - **Test Coverage:** Overall test coverage must remain above **70%**. No individual file should fall below **50%** coverage.
 - **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines** of code. If a file grows beyond this, it must be refactored into smaller, focused components.
-- **Documentation Staleness:** Documentation must be updated frequently. If more than **15 source files** have been changed since a documentation file was last updated, it is considered "stale" and must be reviewed.
+- **Documentation Staleness:** Documentation must be updated frequently. If more than **8 source files** have been changed since a documentation file was last updated, it is considered "stale" and must be reviewed.
 - **Automated Checks:** I must run `scripts/check_health.py` before completing any significant feature to ensure no regressions in code health.
 
 ## 6. Playability Goal (Current)
