@@ -30,7 +30,7 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Test Coverage:** Overall test coverage must remain above **70%**. No individual file should fall below **50%** coverage.
 - **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines** of code. If a file grows beyond this, it must be refactored into smaller, focused components.
 - **Documentation Staleness:** Documentation must be updated frequently. If more than **8 source files** have been changed since a documentation file was last updated, it is considered "stale" and must be reviewed.
-- **Health Integrity:** I must never "touch" files (e.g., appending whitespace) solely to satisfy staleness requirements. When a file is stale, I must actually review and update its content to reflect the current state of the codebase.
+- **Health Integrity:** I must never "touch" files (e.g., appending whitespace) solely to satisfy staleness requirements. When a file is stale, I must actually review and update its content to reflect the current state of the codebase. Staleness is resolved by committing actual content improvements.
 - **Automated Checks:** I must run `scripts/check_health.py` before completing any significant feature to ensure no regressions in code health.
 
 ### Resolving Health Failures
