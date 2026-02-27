@@ -19,6 +19,9 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 10.0.x
+    - name: Restore tools
+      run: dotnet tool restore
+      working-directory: src/IncriElemental.Desktop
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -45,7 +48,7 @@ jobs:
         name: build-output
         path: .
     - name: Test
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      run: dotnet test --verbosity normal --collect:"XPlat Code Coverage"
     - name: Upload Coverage Report
       uses: actions/upload-artifact@v4
       with:
@@ -89,14 +92,22 @@ jobs:
       run: |
         git config --global user.name "Agent Gemini"
         git config --global user.email "agent-gemini@example.com"
-        # Check if shields branch exists
-        if git fetch origin shields; then
+        
+        # Create a temporary directory for the health data
+        mkdir temp_shields
+        cp health_data.json temp_shields/index.json
+        
+        # Fetch and switch to shields branch, or create it
+        git fetch origin shields || true
+        if git show-ref --verify --quiet refs/remotes/origin/shields; then
           git checkout shields
         else
           git checkout --orphan shields
         fi
-        git rm -rf .
-        cp health_data.json index.json
+        
+        # Clean the branch and add the new data
+        git rm -rf . --ignore-unmatch
+        cp temp_shields/index.json .
         git add index.json
         git commit -m "Update health shields data"
         git push origin shields --force
