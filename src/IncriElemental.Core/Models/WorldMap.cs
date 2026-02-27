@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace IncriElemental.Core.Models;
 
 public enum CellType
@@ -31,7 +28,7 @@ public class WorldMap
 
     public WorldCell GetCell(int x, int y)
     {
-        string key = GetKey(x, y);
+        var key = GetKey(x, y);
         if (!Cells.ContainsKey(key))
         {
             Cells[key] = new WorldCell { X = x, Y = y };

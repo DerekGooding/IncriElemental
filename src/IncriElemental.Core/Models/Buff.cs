@@ -1,5 +1,3 @@
-using System;
-
 namespace IncriElemental.Core.Models;
 
 public enum BuffType
@@ -20,8 +18,5 @@ public class Buff
 
     public bool IsActive => RemainingTime > 0;
 
-    public void Update(double deltaTime)
-    {
-        RemainingTime = Math.Max(0, RemainingTime - deltaTime);
-    }
+    public void Update(double deltaTime) => RemainingTime = Math.Max(0, RemainingTime - deltaTime);
 }

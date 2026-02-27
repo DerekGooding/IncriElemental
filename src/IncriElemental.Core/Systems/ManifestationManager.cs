@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using IncriElemental.Core.Models;
 
 namespace IncriElemental.Core.Systems;
@@ -63,19 +60,19 @@ public class ManifestationManager
 
         if (def.Id == "speck" && _state.Manifestations["speck"] == 1)
             _state.History.Add("A speck of matter appears.");
-        
+
         return true;
     }
 
     private void ResetForNewGamePlus()
     {
-        double multiplier = _state.CosmicInsight + 0.5;
+        var multiplier = _state.CosmicInsight + 0.5;
         _state.Resources.Clear();
         _state.Discoveries.Clear();
         _state.Manifestations.Clear();
         _state.History.Clear();
         _state.TotalGameTime = 0;
-        
+
         // Initialize new state with multiplier
         _state.CosmicInsight = multiplier;
         _state.Resources[ResourceType.Aether] = new Resource(ResourceType.Aether);

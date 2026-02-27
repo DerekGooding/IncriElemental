@@ -31,7 +31,7 @@ public class VisualManager
     public VisualManager(GraphicsDevice graphicsDevice)
     {
         _pixel = new Texture2D(graphicsDevice, 1, 1);
-        _pixel.SetData(new[] { Color.White });
+        _pixel.SetData([Color.White]);
     }
 
     public Color GetColor(ResourceType type) => _elementColors.GetValueOrDefault(type, Color.White);
@@ -39,29 +39,29 @@ public class VisualManager
 
     public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel)
     {
-        int size = 20;
-        int padding = 2;
-        int startX = 350;
-        int startY = 400;
+        var size = 20;
+        var padding = 2;
+        var startX = 350;
+        var startY = 400;
 
-        for (int x = 0; x < map.Width; x++)
+        for (var x = 0; x < map.Width; x++)
         {
-            for (int y = 0; y < map.Height; y++)
+            for (var y = 0; y < map.Height; y++)
             {
                 var cell = map.GetCell(x, y);
                 var rect = new Rectangle(startX + x * (size + padding), startY + y * (size + padding), size, size);
-                
-                Color color = cell.IsExplored ? GetCellColor(cell.Type) : Color.DarkSlateGray * 0.3f;
-                
+
+                var color = cell.IsExplored ? GetCellColor(cell.Type) : Color.DarkSlateGray * 0.3f;
+
                 // Highlight if mouse is over
                 if (rect.Contains(mousePos)) color *= 1.5f;
 
                 spriteBatch.Draw(pixel, rect, color);
-                
+
                 // Border for unexplored but visible
                 if (!cell.IsExplored)
                 {
-                    int t = 1;
+                    var t = 1;
                     spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, rect.Width, t), Color.Gray * 0.1f);
                     spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Bottom - t, rect.Width, t), Color.Gray * 0.1f);
                     spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, t, rect.Height), Color.Gray * 0.1f);
@@ -73,7 +73,7 @@ public class VisualManager
 
     public void DrawElement(SpriteBatch spriteBatch, ResourceType type, Vector2 position, float scale = 10f)
     {
-        Color color = GetColor(type);
+        var color = GetColor(type);
         spriteBatch.Draw(_pixel, position, null, color, 0f, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
     }
 

@@ -1,22 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using IncriElemental.Core.Models;
 
 namespace IncriElemental.Core.Systems;
 
-public class AlchemySystem
+public class AlchemySystem(GameState state)
 {
-    private readonly GameState _state;
-
-    public AlchemySystem(GameState state)
-    {
-        _state = state;
-    }
+    private readonly GameState _state = state;
 
     public void Update(double deltaTime)
     {
-        for (int i = _state.ActiveBuffs.Count - 1; i >= 0; i--)
+        for (var i = _state.ActiveBuffs.Count - 1; i >= 0; i--)
         {
             _state.ActiveBuffs[i].Update(deltaTime);
             if (!_state.ActiveBuffs[i].IsActive)
@@ -37,7 +29,7 @@ public class AlchemySystem
         resA.Add(-100);
         resB.Add(-100);
 
-        if ((elementA == ResourceType.Fire && elementB == ResourceType.Air) || 
+        if ((elementA == ResourceType.Fire && elementB == ResourceType.Air) ||
             (elementA == ResourceType.Air && elementB == ResourceType.Fire))
         {
             ApplyBuff("Combustion", BuffType.GenerationMultiplier, ResourceType.Aether, 2.0, 60);
@@ -45,7 +37,7 @@ public class AlchemySystem
             return true;
         }
 
-        if ((elementA == ResourceType.Water && elementB == ResourceType.Earth) || 
+        if ((elementA == ResourceType.Water && elementB == ResourceType.Earth) ||
             (elementA == ResourceType.Earth && elementB == ResourceType.Water))
         {
             ApplyBuff("Fertility", BuffType.GenerationMultiplier, ResourceType.Life, 3.0, 60);
@@ -71,7 +63,7 @@ public class AlchemySystem
 
     public double GetMultiplier(ResourceType type)
     {
-        double mult = 1.0;
+        var mult = 1.0;
         foreach (var buff in _state.ActiveBuffs.Where(b => b.Type == BuffType.GenerationMultiplier && b.TargetResource == type))
         {
             mult *= buff.Multiplier;

@@ -1,20 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 using IncriElemental.Core.Persistence;
 
 namespace IncriElemental.Core.Engine;
 
-public class HeadlessDriver
+public class HeadlessDriver(GameEngine engine)
 {
-    private readonly GameEngine _engine;
-
-    public HeadlessDriver(GameEngine engine)
-    {
-        _engine = engine;
-    }
+    private readonly GameEngine _engine = engine;
 
     public string ExecuteCommand(string command)
     {
@@ -28,10 +19,10 @@ public class HeadlessDriver
                 _engine.Focus();
                 return "Focused.";
             case "manifest":
-                bool success = _engine.Manifest(parameter);
+                var success = _engine.Manifest(parameter);
                 return success ? $"Manifested {parameter}." : $"Failed to manifest {parameter}.";
             case "update":
-                if (double.TryParse(parameter, out double deltaTime))
+                if (double.TryParse(parameter, out var deltaTime))
                 {
                     _engine.Update(deltaTime);
                     return $"Updated by {deltaTime}s.";

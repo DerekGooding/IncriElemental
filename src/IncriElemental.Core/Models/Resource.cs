@@ -24,8 +24,5 @@ public class Resource
         Amount = amount;
     }
 
-    public void Add(double amount)
-    {
-        Amount = Math.Clamp(Amount + amount, 0, MaxAmount);
-    }
+    public void Add(double amount) => Amount = Math.Clamp(Amount + amount, 0, MaxAmount);
 }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace IncriElemental.Core.Models;
 
 public class GameState
@@ -9,7 +7,7 @@ public class GameState
     public Dictionary<string, int> Manifestations { get; set; } = new();
     public List<Buff> ActiveBuffs { get; set; } = new();
     public WorldMap Map { get; set; } = new();
-    
+
     public List<string> History { get; set; } = new();
     public double TotalGameTime { get; set; } = 0;
     public double CosmicInsight { get; set; } = 1.0;

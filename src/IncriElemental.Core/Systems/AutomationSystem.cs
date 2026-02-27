@@ -1,16 +1,10 @@
-using System;
 using IncriElemental.Core.Models;
 
 namespace IncriElemental.Core.Systems;
 
-public class AutomationSystem
+public class AutomationSystem(GameState state)
 {
-    private readonly GameState _state;
-
-    public AutomationSystem(GameState state)
-    {
-        _state = state;
-    }
+    private readonly GameState _state = state;
 
     public void Update(double deltaTime, AlchemySystem alchemy)
     {
@@ -24,7 +18,7 @@ public class AutomationSystem
         {
             if (resource.PerSecond > 0)
             {
-                double multiplier = alchemy.GetMultiplier(resource.Type);
+                var multiplier = alchemy.GetMultiplier(resource.Type);
                 resource.Add(resource.PerSecond * multiplier * deltaTime);
             }
         }

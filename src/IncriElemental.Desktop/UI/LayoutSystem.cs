@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 using IncriElemental.Desktop.Visuals;
@@ -22,20 +21,20 @@ public class LayoutSystem
         }));
 
         var defs = engine.GetDefinitions();
-        int leftX = 412;
-        int rightX = 675;
-        int farRightX = 855;
-        
-        int lY = 300;
-        int rY = 200;
-        int sY = 500;
+        var leftX = 412;
+        var rightX = 675;
+        var farRightX = 855;
+
+        var lY = 300;
+        var rY = 200;
+        var sY = 500;
 
         foreach (var def in defs)
         {
             if (def.Id == "ascend")
             {
                 buttons.Add(new Button(new Rectangle(412, 50, 200, 80), def.Name, Color.Gold, () => {
-                    if (engine.Manifest(def.Id)) 
+                    if (engine.Manifest(def.Id))
                     {
                         logCallback("Ascension begins...");
                         audio.PlayAscend();
@@ -46,7 +45,7 @@ public class LayoutSystem
 
             // Categorize and position based on ID or discovery patterns
             Rectangle bounds;
-            if (def.Id.Contains("spire")) 
+            if (def.Id.Contains("spire"))
             {
                 bounds = new Rectangle(farRightX, sY, 150, 45);
                 sY += 55;
@@ -63,22 +62,22 @@ public class LayoutSystem
             }
 
             buttons.Add(new Button(bounds, def.Name, GetColorForId(def.Id), () => {
-                if (engine.Manifest(def.Id)) 
+                if (engine.Manifest(def.Id))
                 {
                     audio.PlayManifest();
                     if (def.Id == "speck") logCallback("A speck of matter appears.");
                     else logCallback($"{def.Name} manifested.");
                 }
             }, () => {
-                bool req = string.IsNullOrEmpty(def.RequiredDiscovery) || engine.State.Discoveries.ContainsKey(def.RequiredDiscovery);
-                bool cost = engine.State.GetResource(def.Costs.FirstOrDefault()?.Type ?? ResourceType.Aether).Amount >= (def.Costs.FirstOrDefault()?.Amount ?? 0);
-                bool discovery = !string.IsNullOrEmpty(def.DiscoveryKey) && engine.State.Discoveries.ContainsKey(def.DiscoveryKey);
+                var req = string.IsNullOrEmpty(def.RequiredDiscovery) || engine.State.Discoveries.ContainsKey(def.RequiredDiscovery);
+                var cost = engine.State.GetResource(def.Costs.FirstOrDefault()?.Type ?? ResourceType.Aether).Amount >= (def.Costs.FirstOrDefault()?.Amount ?? 0);
+                var discovery = !string.IsNullOrEmpty(def.DiscoveryKey) && engine.State.Discoveries.ContainsKey(def.DiscoveryKey);
                 return req && (cost || discovery);
             }, def.Subtitle));
         }
 
         // --- Alchemy (Center Column bottom) ---
-        int alchY = lY + 20;
+        var alchY = lY + 20;
         buttons.Add(new Button(new Rectangle(412, alchY, 200, 45), "COMBUSTION", Color.OrangeRed, () => {
             engine.Mix(ResourceType.Fire, ResourceType.Air);
             audio.PlayManifest();
@@ -101,5 +100,4 @@ public class LayoutSystem
         if (id.Contains("garden")) return Color.LimeGreen;
         return Color.Gray;
     }
-}
 }

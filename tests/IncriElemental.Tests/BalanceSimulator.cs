@@ -1,9 +1,4 @@
-using Xunit;
 using IncriElemental.Core.Engine;
-using IncriElemental.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IncriElemental.Tests;
 
@@ -14,16 +9,16 @@ public class BalanceSimulator
     {
         var engine = new GameEngine();
         var driver = new HeadlessDriver(engine);
-        
+
         // --- PHASE 1: Manual Awakening ---
-        for (int i = 0; i < 30; i++) engine.Focus();
+        for (var i = 0; i < 30; i++) engine.Focus();
         engine.Manifest("rune_of_attraction");
-        
+
         // --- PHASE 2: Passive Unfolding ---
-        for (int i = 0; i < 1200; i++)
+        for (var i = 0; i < 1200; i++)
         {
             engine.Update(1.0);
-            
+
             if (i % 60 == 0) Console.WriteLine($"[Min {i/60}] {driver.ExecuteCommand("status")}");
 
             // The simulator tries everything every tick.
@@ -41,7 +36,7 @@ public class BalanceSimulator
             engine.Manifest("pickaxe");
             engine.Manifest("focus_crystal");
             engine.Manifest("familiar");
-            
+
             // Endgame
             engine.Manifest("spire_foundation");
             engine.Manifest("spire_shaft");
@@ -51,8 +46,8 @@ public class BalanceSimulator
 
         // Final State Check
         var state = engine.State;
-        bool won = state.Discoveries.ContainsKey("ascended");
-        
+        var won = state.Discoveries.ContainsKey("ascended");
+
         if (!won)
         {
             Console.WriteLine("[BALANCER] Loop too slow. Current bottleneck resources:");

@@ -1,7 +1,5 @@
-using Xunit;
 using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
-using IncriElemental.Core.Persistence;
 
 namespace IncriElemental.Tests;
 
@@ -12,7 +10,7 @@ public class HeadlessDriverTests
     {
         var engine = new GameEngine();
         var driver = new HeadlessDriver(engine);
-        
+
         // Execute Focus
         driver.ExecuteCommand("focus");
         Assert.Equal(1, engine.State.GetResource(ResourceType.Aether).Amount);

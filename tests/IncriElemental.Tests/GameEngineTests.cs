@@ -1,4 +1,3 @@
-using Xunit;
 using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 
@@ -10,9 +9,9 @@ public class GameEngineTests
     public void Focus_IncreasesAether()
     {
         var engine = new GameEngine();
-        
+
         engine.Focus();
-        
+
         Assert.Equal(1, engine.State.GetResource(ResourceType.Aether).Amount);
     }
 
@@ -20,12 +19,12 @@ public class GameEngineTests
     public void ManifestSpeck_ConsumesAether_And_IncreasesEarthPerSecond()
     {
         var engine = new GameEngine();
-        
+
         // Setup state to allow manifestation
-        for (int i = 0; i < 15; i++) engine.Focus();
-        
+        for (var i = 0; i < 15; i++) engine.Focus();
+
         var success = engine.Manifest("speck");
-        
+
         Assert.True(success);
         Assert.Equal(5, engine.State.GetResource(ResourceType.Aether).Amount);
         Assert.Equal(1.0, engine.State.GetResource(ResourceType.Earth).PerSecond);
@@ -36,16 +35,16 @@ public class GameEngineTests
     public void ManifestRuneOfAttraction_AutomatesAether()
     {
         var engine = new GameEngine();
-        
+
         // Setup state to allow manifestation (30 Aether)
-        for (int i = 0; i < 30; i++) engine.Focus();
-        
+        for (var i = 0; i < 30; i++) engine.Focus();
+
         var success = engine.Manifest("rune_of_attraction");
-        
+
         Assert.True(success);
         Assert.Equal(0, engine.State.GetResource(ResourceType.Aether).Amount);
         Assert.Equal(2.0, engine.State.GetResource(ResourceType.Aether).PerSecond);
-        
+
         // Simulating 10 seconds of passive aether (10s * 2.0/s = 20 Aether)
         engine.Update(10.0);
         Assert.Equal(20.0, engine.State.GetResource(ResourceType.Aether).Amount);

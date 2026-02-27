@@ -1,6 +1,4 @@
-using System.IO;
 using System.Text.Json;
-using System.Collections.Generic;
 using IncriElemental.Core.Models;
 using IncriElemental.Core.Systems;
 
@@ -24,10 +22,7 @@ public class GameEngine
         _exploration = new ExplorationSystem(State);
     }
 
-    public void LoadLore(string json)
-    {
-        _lore = JsonSerializer.Deserialize<List<LoreFragment>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
-    }
+    public void LoadLore(string json) => _lore = JsonSerializer.Deserialize<List<LoreFragment>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
 
     public void CheckLoreUnlocks(string cellType = "")
     {
@@ -35,7 +30,7 @@ public class GameEngine
         {
             if (State.History.Contains(frag.Text)) continue;
 
-            bool unlock = false;
+            var unlock = false;
             if (!string.IsNullOrEmpty(frag.UnlockDiscovery) && State.Discoveries.GetValueOrDefault(frag.UnlockDiscovery)) unlock = true;
             if (!string.IsNullOrEmpty(frag.UnlockCellType) && frag.UnlockCellType == cellType) unlock = true;
 
@@ -79,11 +74,11 @@ public class GameEngine
 
     public void Focus()
     {
-        double aetherGain = 1.0 * State.CosmicInsight;
+        var aetherGain = 1.0 * State.CosmicInsight;
         if (State.Discoveries.GetValueOrDefault("pickaxe_manifested")) aetherGain += 2.0 * State.CosmicInsight;
 
         State.GetResource(ResourceType.Aether).Add(aetherGain);
-        
+
         if (State.GetResource(ResourceType.Aether).Amount >= 10 && !State.Discoveries.GetValueOrDefault("void_observed"))
         {
             State.Discoveries["void_observed"] = true;

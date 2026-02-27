@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace IncriElemental.Core.Models;
 
 public class ManifestationCost

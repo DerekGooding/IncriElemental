@@ -10,19 +10,16 @@ public class AudioManager
     private const int Channels = 1;
     private float _phase = 0;
 
-    public AudioManager()
-    {
-        _instance = new DynamicSoundEffectInstance(SampleRate, Channels == 1 ? AudioChannels.Mono : AudioChannels.Stereo);
-    }
+    public AudioManager() => _instance = new DynamicSoundEffectInstance(SampleRate, Channels == 1 ? AudioChannels.Mono : AudioChannels.Stereo);
 
     public void PlayTone(float frequency, float duration, float volume = 0.1f)
     {
-        int sampleCount = (int)(SampleRate * duration);
-        byte[] buffer = new byte[sampleCount * 2];
+        var sampleCount = (int)(SampleRate * duration);
+        var buffer = new byte[sampleCount * 2];
 
-        for (int i = 0; i < sampleCount; i++)
+        for (var i = 0; i < sampleCount; i++)
         {
-            short sample = (short)(Math.Sin(_phase) * volume * short.MaxValue);
+            var sample = (short)(Math.Sin(_phase) * volume * short.MaxValue);
             buffer[i * 2] = (byte)(sample & 0xFF);
             buffer[i * 2 + 1] = (byte)(sample >> 8);
 

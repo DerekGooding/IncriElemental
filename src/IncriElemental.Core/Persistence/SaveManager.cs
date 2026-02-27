@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using IncriElemental.Core.Models;
@@ -14,10 +12,7 @@ public class SaveManager
         Converters = { new JsonStringEnumConverter() }
     };
 
-    public static string Serialize(GameState state)
-    {
-        return JsonSerializer.Serialize(state, _options);
-    }
+    public static string Serialize(GameState state) => JsonSerializer.Serialize(state, _options);
 
     public static GameState? Deserialize(string json)
     {
@@ -34,14 +29,14 @@ public class SaveManager
 
     public static void SaveToFile(GameState state, string filePath)
     {
-        string json = Serialize(state);
+        var json = Serialize(state);
         File.WriteAllText(filePath, json);
     }
 
     public static GameState? LoadFromFile(string filePath)
     {
         if (!File.Exists(filePath)) return null;
-        string json = File.ReadAllText(filePath);
+        var json = File.ReadAllText(filePath);
         return Deserialize(json);
     }
 }

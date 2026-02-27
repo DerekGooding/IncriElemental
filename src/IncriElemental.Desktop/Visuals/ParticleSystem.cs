@@ -32,25 +32,22 @@ public class ParticleSystem
     public ParticleSystem(GraphicsDevice graphicsDevice)
     {
         _pixel = new Texture2D(graphicsDevice, 1, 1);
-        _pixel.SetData(new[] { Color.White });
+        _pixel.SetData([Color.White]);
     }
 
-    public void AddParticle(Vector2 position, Vector2 velocity, Color color, float lifespan, float scale = 2f)
+    public void AddParticle(Vector2 position, Vector2 velocity, Color color, float lifespan, float scale = 2f) => _particles.Add(new Particle
     {
-        _particles.Add(new Particle
-        {
-            Position = position,
-            Velocity = velocity,
-            Color = color,
-            Lifespan = lifespan,
-            Age = 0,
-            Scale = scale
-        });
-    }
+        Position = position,
+        Velocity = velocity,
+        Color = color,
+        Lifespan = lifespan,
+        Age = 0,
+        Scale = scale
+    });
 
     public void Update(float deltaTime)
     {
-        for (int i = _particles.Count - 1; i >= 0; i--)
+        for (var i = _particles.Count - 1; i >= 0; i--)
         {
             _particles[i].Update(deltaTime);
             if (_particles[i].IsDead)
@@ -64,7 +61,7 @@ public class ParticleSystem
     {
         foreach (var particle in _particles)
         {
-            float alpha = 1f - (particle.Age / particle.Lifespan);
+            var alpha = 1f - (particle.Age / particle.Lifespan);
             spriteBatch.Draw(_pixel, particle.Position, null, particle.Color * alpha, 0f, Vector2.Zero, particle.Scale, SpriteEffects.None, 0f);
         }
     }
@@ -72,13 +69,13 @@ public class ParticleSystem
     public void EmitFocus(Vector2 center)
     {
         // Particles flying INTO the center
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
         {
-            float angle = (float)(_random.NextDouble() * Math.PI * 2);
-            float distance = 100f + (float)_random.NextDouble() * 100f;
-            Vector2 startPos = center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
-            Vector2 velocity = (center - startPos) * 2f;
-            
+            var angle = (float)(_random.NextDouble() * Math.PI * 2);
+            var distance = 100f + (float)_random.NextDouble() * 100f;
+            var startPos = center + new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * distance;
+            var velocity = (center - startPos) * 2f;
+
             AddParticle(startPos, velocity, Color.MediumPurple, 0.5f, 2f);
         }
     }

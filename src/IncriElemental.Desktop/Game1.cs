@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using IncriElemental.Core.Engine;
-using IncriElemental.Core.Models;
 using IncriElemental.Desktop.Visuals;
 using IncriElemental.Desktop.UI;
 using System;
@@ -37,13 +36,13 @@ public class Game1 : Game
         _engine = new GameEngine();
 
         // Load Data-Driven Manifestations
-        string jsonPath = "manifestations.json";
+        var jsonPath = "manifestations.json";
         if (File.Exists(jsonPath))
         {
             _engine.LoadDefinitions(File.ReadAllText(jsonPath));
         }
 
-        string lorePath = "lore.json";
+        var lorePath = "lore.json";
         if (File.Exists(lorePath))
         {
             _engine.LoadLore(File.ReadAllText(lorePath));
@@ -65,8 +64,8 @@ public class Game1 : Game
         _particles = new ParticleSystem(GraphicsDevice);
         _visuals = new VisualManager(GraphicsDevice);
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
-        _pixel.SetData(new[] { Color.White });
-        
+        _pixel.SetData([Color.White]);
+
         LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, AddToLog);
         AddToLog("You awaken in the void.");
 
@@ -75,18 +74,18 @@ public class Game1 : Game
 
     private void TakeScreenshot(string path)
     {
-        string dir = Path.GetDirectoryName(path);
+        var dir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-        
-        int w = GraphicsDevice.PresentationParameters.BackBufferWidth;
-        int h = GraphicsDevice.PresentationParameters.BackBufferHeight;
-        using RenderTarget2D target = new RenderTarget2D(GraphicsDevice, w, h);
-        
+
+        var w = GraphicsDevice.PresentationParameters.BackBufferWidth;
+        var h = GraphicsDevice.PresentationParameters.BackBufferHeight;
+        using var target = new RenderTarget2D(GraphicsDevice, w, h);
+
         GraphicsDevice.SetRenderTarget(target);
         Draw(new GameTime());
         GraphicsDevice.SetRenderTarget(null);
-        
-        using FileStream stream = File.Open(path, FileMode.Create);
+
+        using var stream = File.Open(path, FileMode.Create);
         target.SaveAsPng(stream, w, h);
         Console.WriteLine($"[AI MODE] Screenshot saved to: {Path.GetFullPath(path)}");
     }
@@ -130,14 +129,14 @@ public class Game1 : Game
             // Map interaction
             if (_engine.State.Manifestations.GetValueOrDefault("familiar") > 0)
             {
-                int size = 20;
-                int padding = 2;
-                int startX = 350;
-                int startY = 400;
+                var size = 20;
+                var padding = 2;
+                var startX = 350;
+                var startY = 400;
 
-                for (int x = 0; x < _engine.State.Map.Width; x++)
+                for (var x = 0; x < _engine.State.Map.Width; x++)
                 {
-                    for (int y = 0; y < _engine.State.Map.Height; y++)
+                    for (var y = 0; y < _engine.State.Map.Height; y++)
                     {
                         var rect = new Rectangle(startX + x * (size + padding), startY + y * (size + padding), size, size);
                         if (rect.Contains(_input.MousePosition))
@@ -160,19 +159,19 @@ public class Game1 : Game
             _spriteBatch.Begin();
             if (_font != null)
             {
-                string msg = "ASCENSION COMPLETE";
+                var msg = "ASCENSION COMPLETE";
                 _spriteBatch.DrawString(_font, msg, new Vector2(512 - _font.MeasureString(msg).X/2, 200), Color.Gold);
-                
-                string[] credits = { "Created by: Derek Gooding", "Developed by: Gemini CLI", "Made with MonoGame", "Thank you for playing!" };
-                for(int i=0; i<credits.Length; i++)
+
+                string[] credits = ["Created by: Derek Gooding", "Developed by: Gemini CLI", "Made with MonoGame", "Thank you for playing!"];
+                for(var i=0; i<credits.Length; i++)
                     _spriteBatch.DrawString(_font, credits[i], new Vector2(512 - _font.MeasureString(credits[i]).X/2, 400 + i*40 - (float)gameTime.TotalGameTime.TotalSeconds * 30), Color.DarkGray);
-                
+
                 // Add Reset/New Game+ Button
                 var resetRect = new Rectangle(412, 600, 200, 50);
                 _spriteBatch.Draw(_pixel, resetRect, Color.Gold * 0.4f);
-                string resetText = "A NEW AWAKENING";
+                var resetText = "A NEW AWAKENING";
                 _spriteBatch.DrawString(_font, resetText, new Vector2(512 - _font.MeasureString(resetText).X/2, 625 - _font.MeasureString(resetText).Y/2), Color.DarkGoldenrod);
-                
+
                 if (_input.IsLeftClick() && resetRect.Contains(_input.MousePosition))
                 {
                     _engine.Manifest("reset");
@@ -185,19 +184,19 @@ public class Game1 : Game
 
         GraphicsDevice.Clear(new Color(5, 5, 10));
         _spriteBatch.Begin();
-        
+
         // --- SECTION 1: LOG AREA (Left) ---
-        int logWidth = 300;
+        var logWidth = 300;
         _spriteBatch.Draw(_pixel, new Rectangle(0, 0, logWidth, 768), Color.Black * 0.3f);
         _spriteBatch.Draw(_pixel, new Rectangle(logWidth, 0, 1, 768), Color.Gray * 0.2f); // Border
 
         if (_font != null)
         {
             _spriteBatch.DrawString(_font, "LOG", new Vector2(20, 20), Color.Gray * 0.5f);
-            for (int i = 0; i < _log.Count; i++)
+            for (var i = 0; i < _log.Count; i++)
             {
-                float alpha = 1.0f - (i * 0.1f);
-                Color textColor = Color.LightGray;
+                var alpha = 1.0f - (i * 0.1f);
+                var textColor = Color.LightGray;
                 if (_log[i].Contains("void is not") || _log[i].Contains("consciousness") || _log[i].Contains("We are not the first"))
                     textColor = Color.Cyan;
 
@@ -219,7 +218,7 @@ public class Game1 : Game
         }
 
         // --- SECTION 3: RESOURCE AREA (Right) ---
-        int resX = 800;
+        var resX = 800;
         if (_font != null)
         {
             float y = 20;
@@ -228,21 +227,21 @@ public class Game1 : Game
 
             foreach (var res in _engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000))
             {
-                string amountStr = _visuals.FormatValue(res.Amount);
-                string maxStr = res.MaxAmount > 1_000_000_000_000 ? "INF" : _visuals.FormatValue(res.MaxAmount);
-                string label = $"{res.Type}: {amountStr}";
-                
+                var amountStr = _visuals.FormatValue(res.Amount);
+                var maxStr = res.MaxAmount > 1_000_000_000_000 ? "INF" : _visuals.FormatValue(res.MaxAmount);
+                var label = $"{res.Type}: {amountStr}";
+
                 _visuals.DrawElement(_spriteBatch, res.Type, new Vector2(resX - 15, y + 8), 6f);
                 _spriteBatch.DrawString(_font, label, new Vector2(resX, y), _visuals.GetColor(res.Type));
-                
+
                 // Subtle storage bar
                 if (res.MaxAmount < 1_000_000_000_000)
                 {
-                    float percent = (float)(res.Amount / res.MaxAmount);
+                    var percent = (float)(res.Amount / res.MaxAmount);
                     _spriteBatch.Draw(_pixel, new Rectangle(resX, (int)y + 22, 150, 2), Color.Gray * 0.2f);
                     _spriteBatch.Draw(_pixel, new Rectangle(resX, (int)y + 22, (int)(150 * percent), 2), _visuals.GetColor(res.Type) * 0.5f);
                 }
-                
+
                 y += 40;
             }
 

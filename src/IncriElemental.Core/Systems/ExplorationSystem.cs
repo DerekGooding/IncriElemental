@@ -1,18 +1,11 @@
-using System;
-using System.Linq;
 using IncriElemental.Core.Models;
 
 namespace IncriElemental.Core.Systems;
 
-public class ExplorationSystem
+public class ExplorationSystem(GameState state)
 {
-    private readonly GameState _state;
+    private readonly GameState _state = state;
     private readonly Random _random = new();
-
-    public ExplorationSystem(GameState state)
-    {
-        _state = state;
-    }
 
     public bool Explore(int x, int y)
     {
@@ -31,10 +24,10 @@ public class ExplorationSystem
         cell.Type = (CellType)_random.Next(1, 5); // Discover a type other than Void
 
         _state.History.Add($"Exploration: Found {cell.Type} at ({x}, {y}).");
-        
+
         // Grant a random reward
         GrantReward(cell.Type);
-        
+
         return true;
     }
 
