@@ -52,16 +52,21 @@ def check_monoliths():
 
 def parse_coverage():
     print("\n--- Checking Test Coverage ---")
-    coverage_file = None
+    coverage_files = []
     for root, _, files in os.walk("."):
         for file in files:
             if re.match(COVERAGE_REPORT_PATTERN, file):
-                coverage_file = os.path.join(root, file)
-                break
+                path = os.path.join(root, file)
+                coverage_files.append((path, os.path.getmtime(path)))
     
-    if not coverage_file:
+    if not coverage_files:
         print("[ERROR] Coverage report not found.")
         return 0.0, False
+
+    # Sort by modification time descending to get the newest one
+    coverage_files.sort(key=lambda x: x[1], reverse=True)
+    coverage_file = coverage_files[0][0]
+    print(f"Using coverage report: {coverage_file}")
 
     tree = ET.parse(coverage_file)
     root = tree.getroot()
