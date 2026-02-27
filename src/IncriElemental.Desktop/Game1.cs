@@ -17,10 +17,11 @@ public class Game1 : Game
     private GameEngine _engine;
     private SpriteFont _font;
     private ParticleSystem _particles;
+    private VisualManager _visuals;
     private MouseState _lastMouseState;
     private Texture2D _pixel;
     private List<string> _log = new();
-    private const int MaxLogLines = 5;
+    private const int MaxLogLines = 10;
 
     public Game1()
     {
@@ -38,6 +39,7 @@ public class Game1 : Game
 
         base.Initialize();
         _particles = new ParticleSystem(GraphicsDevice);
+        _visuals = new VisualManager(GraphicsDevice);
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData(new[] { Color.White });
         
@@ -71,6 +73,12 @@ public class Game1 : Game
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
 
+        // Sync history with log
+        foreach (var message in _engine.State.History)
+        {
+            if (!_log.Contains(message)) AddToLog(message);
+        }
+
         // Interaction Logic
         if (mouseState.LeftButton == ButtonState.Pressed && _lastMouseState.LeftButton == ButtonState.Released)
         {
@@ -99,7 +107,7 @@ public class Game1 : Game
                 }
             }
 
-            if (_engine.State.GetResource(ResourceType.Aether).Amount >= 30 || _engine.State.Discoveries["automation_unlocked"])
+            if (_engine.State.GetResource(ResourceType.Aether).Amount >= 30 || _engine.State.Discoveries.GetValueOrDefault("automation_unlocked"))
             {
                 var automationRect = new Rectangle(412, 510, 200, 50);
                 if (automationRect.Contains(mouseState.Position))
@@ -109,6 +117,20 @@ public class Game1 : Game
                         AddToLog("The aether begins to flow of its own accord.");
                         for (int i = 0; i < 20; i++)
                             _particles.AddParticle(new Vector2(512, 535), new Vector2((float)(Random.Shared.NextDouble() - 0.5) * 200, (float)(Random.Shared.NextDouble() - 0.5) * 200), Color.Plum, 1f);
+                    }
+                }
+            }
+
+            if (_engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
+            {
+                var altarRect = new Rectangle(412, 630, 200, 50);
+                if (altarRect.Contains(mouseState.Position))
+                {
+                    if (_engine.Manifest("altar"))
+                    {
+                        AddToLog("A monolithic altar rises from the void. Your capacity expands.");
+                        for (int i = 0; i < 40; i++)
+                            _particles.AddParticle(new Vector2(512, 655), new Vector2((float)(Random.Shared.NextDouble() - 0.5) * 300, (float)(Random.Shared.NextDouble() - 0.5) * 300), Color.White, 2f);
                     }
                 }
             }
@@ -136,27 +158,36 @@ public class Game1 : Game
 
             // Resource Indicators
             var aether = _engine.State.GetResource(ResourceType.Aether);
-            _spriteBatch.DrawString(_font, $"Aether: {aether.Amount:F1}", new Vector2(412, 310), Color.MediumPurple);
+            _visuals.DrawElement(_spriteBatch, ResourceType.Aether, new Vector2(390, 318), 8f);
+            _spriteBatch.DrawString(_font, $"Aether: {aether.Amount:F1} / {aether.MaxAmount:F0}", new Vector2(412, 310), Color.MediumPurple);
 
             // Manifestation Button
-            if (aether.Amount >= 10 || _engine.State.Discoveries["first_manifestation"])
+            if (aether.Amount >= 10 || _engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
             {
                 _spriteBatch.Draw(_pixel, new Rectangle(412, 450, 200, 50), Color.SaddleBrown * 0.4f);
                 _spriteBatch.DrawString(_font, "MANIFEST SPECK (10 Aether)", new Vector2(512 - _font.MeasureString("MANIFEST SPECK (10 Aether)").X / 2, 475 - _font.MeasureString("MANIFEST SPECK (10 Aether)").Y / 2), Color.Tan);
             }
 
             // Rune of Attraction
-            if (aether.Amount >= 30 || _engine.State.Discoveries["automation_unlocked"])
+            if (aether.Amount >= 30 || _engine.State.Discoveries.GetValueOrDefault("automation_unlocked"))
             {
                 _spriteBatch.Draw(_pixel, new Rectangle(412, 510, 200, 50), Color.MediumPurple * 0.4f);
                 _spriteBatch.DrawString(_font, "RUNE OF ATTRACTION (30 Aether)", new Vector2(512 - _font.MeasureString("RUNE OF ATTRACTION (30 Aether)").X / 2, 535 - _font.MeasureString("RUNE OF ATTRACTION (30 Aether)").Y / 2), Color.Plum);
             }
 
             // Earth Indicator
-            if (_engine.State.Discoveries["first_manifestation"])
+            if (_engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
             {
                 var earth = _engine.State.GetResource(ResourceType.Earth);
-                _spriteBatch.DrawString(_font, $"Earth Essence: {earth.Amount:F1}", new Vector2(412, 570), Color.SaddleBrown);
+                _visuals.DrawElement(_spriteBatch, ResourceType.Earth, new Vector2(390, 578), 8f);
+                _spriteBatch.DrawString(_font, $"Earth: {earth.Amount:F1} / {earth.MaxAmount:F0}", new Vector2(412, 570), Color.SaddleBrown);
+            }
+
+            // Altar Button
+            if (_engine.State.Discoveries.GetValueOrDefault("first_manifestation"))
+            {
+                _spriteBatch.Draw(_pixel, new Rectangle(412, 630, 200, 50), Color.Gray * 0.4f);
+                _spriteBatch.DrawString(_font, "MANIFEST ALTAR (100 Aether, 20 Earth)", new Vector2(512 - _font.MeasureString("MANIFEST ALTAR (100 Aether, 20 Earth)").X / 2, 655 - _font.MeasureString("MANIFEST ALTAR (100 Aether, 20 Earth)").Y / 2), Color.White);
             }
 
             // Narrative Log

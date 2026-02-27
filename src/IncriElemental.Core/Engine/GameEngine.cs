@@ -43,9 +43,10 @@ public class GameEngine
         double aetherGain = 1.0;
         State.GetResource(ResourceType.Aether).Add(aetherGain);
         
-        if (State.GetResource(ResourceType.Aether).Amount >= 10 && !State.Discoveries["void_observed"])
+        if (State.GetResource(ResourceType.Aether).Amount >= 10 && !State.Discoveries.GetValueOrDefault("void_observed"))
         {
             State.Discoveries["void_observed"] = true;
+            State.History.Add("The void feels thick with potential.");
         }
     }
 
