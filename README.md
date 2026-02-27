@@ -29,5 +29,8 @@
 ### Agentic Support
 This project is designed for "heavy agentic support." See `GEMINI.md` for the mandates I follow.
 
+### License
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for the full text.
+
 ---
 *Created on Friday, February 27, 2026.*
