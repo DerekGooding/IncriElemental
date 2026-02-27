@@ -28,7 +28,7 @@ public class GameEngineTests
         
         Assert.True(success);
         Assert.Equal(5, engine.State.GetResource(ResourceType.Aether).Amount);
-        Assert.Equal(0.1, engine.State.GetResource(ResourceType.Earth).PerSecond);
+        Assert.Equal(1.0, engine.State.GetResource(ResourceType.Earth).PerSecond);
         Assert.True(engine.State.Discoveries["first_manifestation"]);
     }
 
@@ -44,10 +44,10 @@ public class GameEngineTests
         
         Assert.True(success);
         Assert.Equal(0, engine.State.GetResource(ResourceType.Aether).Amount);
-        Assert.Equal(0.5, engine.State.GetResource(ResourceType.Aether).PerSecond);
+        Assert.Equal(2.0, engine.State.GetResource(ResourceType.Aether).PerSecond);
         
-        // Simulating 10 seconds of passive aether (10s * 0.5/s = 5 Aether)
+        // Simulating 10 seconds of passive aether (10s * 2.0/s = 20 Aether)
         engine.Update(10.0);
-        Assert.Equal(5.0, engine.State.GetResource(ResourceType.Aether).Amount);
+        Assert.Equal(20.0, engine.State.GetResource(ResourceType.Aether).Amount);
     }
 }
