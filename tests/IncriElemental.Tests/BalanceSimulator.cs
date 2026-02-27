@@ -3,52 +3,57 @@ using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IncriElemental.Tests;
 
 public class BalanceSimulator
 {
     [Fact]
-    public void Simulate_OneHour_Progression()
+    public void Simulate_20Minute_Endgame_Progression()
     {
         var engine = new GameEngine();
         var driver = new HeadlessDriver(engine);
         
-        // Initial manual push
-        driver.ExecuteBatch(Enumerable.Repeat("focus", 30));
+        // --- PHASE 1: Manual Awakening ---
+        for (int i = 0; i < 30; i++) engine.Focus();
+        engine.Manifest("rune_of_attraction");
         
-        // Manifest first automation (Rune of Attraction)
-        bool runeSuccess = engine.Manifest("rune_of_attraction");
-        Assert.True(runeSuccess);
-        
-        // Simulate 1 hour (3600 seconds) in 1-second ticks
-        for (int i = 0; i < 3600; i++)
+        // --- PHASE 2: Passive Unfolding ---
+        for (int i = 0; i < 1200; i++)
         {
             engine.Update(1.0);
             
-            // Auto-manifest speck if enough Aether and we need more earth gen
-            if (engine.State.GetResource(ResourceType.Aether).Amount >= 10 && engine.State.Manifestations.GetValueOrDefault("speck") < 10)
-            {
-                engine.Manifest("speck");
-            }
+            if (i % 60 == 0) Console.WriteLine($"[Min {i/60}] {driver.ExecuteCommand("status")}");
 
-            // Auto-manifest Altar if enough resources
-            if (engine.State.GetResource(ResourceType.Aether).Amount >= 100 && engine.State.GetResource(ResourceType.Earth).Amount >= 20 && !engine.State.Discoveries.GetValueOrDefault("altar_constructed"))
-            {
-                engine.Manifest("altar");
-            }
+            // The simulator tries everything every tick.
+            engine.Manifest("rune_of_attraction");
+            engine.Manifest("speck");
+            engine.Manifest("spark");
+            engine.Manifest("droplet");
+            engine.Manifest("breeze");
+            engine.Manifest("altar");
+            engine.Manifest("forge");
+            engine.Manifest("garden");
+            engine.Manifest("well");
+            engine.Manifest("brazier");
+            engine.Manifest("wind_chime");
+            engine.Manifest("pickaxe");
+            engine.Manifest("focus_crystal");
+            engine.Manifest("familiar");
+            
+            // Endgame
+            engine.Manifest("spire_foundation");
+            engine.Manifest("spire_shaft");
+            engine.Manifest("spire_core");
+            engine.Manifest("ascend");
         }
 
         // Final State Check
-        double aether = engine.State.GetResource(ResourceType.Aether).Amount;
-        double earth = engine.State.GetResource(ResourceType.Earth).Amount;
-        int specks = engine.State.Manifestations.GetValueOrDefault("speck");
-        bool altar = engine.State.Discoveries.GetValueOrDefault("altar_constructed");
-
-        // Use Assert with message to see values on failure
-        Assert.True(aether > 0, $"Aether should be > 0, was {aether}");
-        Assert.True(earth > 0, $"Earth should be > 0, was {earth}");
-        Assert.True(specks > 0, $"Specks should be > 0, was {specks}");
-        Assert.True(altar, "Altar should be constructed");
+        var state = engine.State;
+        Assert.True(state.Discoveries.ContainsKey("spire_foundation_ready"), "Should have reached Spire Foundation");
+        Assert.True(state.Discoveries.ContainsKey("spire_shaft_ready"), "Should have reached Spire Shaft");
+        Assert.True(state.Discoveries.ContainsKey("spire_complete"), "Should have reached Spire Core");
+        Assert.True(state.Discoveries.ContainsKey("ascended"), "Should have Ascended");
     }
 }

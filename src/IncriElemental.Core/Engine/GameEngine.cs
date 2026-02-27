@@ -26,8 +26,8 @@ public class GameEngine
 
     public void Focus()
     {
-        double aetherGain = 1.0;
-        if (State.Discoveries.GetValueOrDefault("pickaxe_manifested")) aetherGain += 2.0;
+        double aetherGain = 1.0 * State.CosmicInsight;
+        if (State.Discoveries.GetValueOrDefault("pickaxe_manifested")) aetherGain += 2.0 * State.CosmicInsight;
 
         State.GetResource(ResourceType.Aether).Add(aetherGain);
         

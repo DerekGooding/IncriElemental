@@ -10,6 +10,7 @@ public class GameState
     
     public List<string> History { get; set; } = new();
     public double TotalGameTime { get; set; } = 0;
+    public double CosmicInsight { get; set; } = 1.0;
 
     public GameState()
     {

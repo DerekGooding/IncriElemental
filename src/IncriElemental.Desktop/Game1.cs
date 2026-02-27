@@ -206,11 +206,23 @@ public class Game1 : Game
                 _spriteBatch.DrawString(_font, msg, new Vector2(512 - _font.MeasureString(msg).X/2, 200), Color.Gold);
                 
                 string[] credits = { "Created by: Derek Gooding", "Developed by: Gemini CLI", "Made with MonoGame", "Thank you for playing!" };
-                float y = 300 + (float)gameTime.TotalGameTime.TotalSeconds * 20 % 400; // Simplified scrolling
+                float yScroll = 300 + (float)gameTime.TotalGameTime.TotalSeconds * 20 % 400; // Simplified scrolling
                 for(int i=0; i<credits.Length; i++)
                     _spriteBatch.DrawString(_font, credits[i], new Vector2(512 - _font.MeasureString(credits[i]).X/2, 400 + i*40 - (float)gameTime.TotalGameTime.TotalSeconds * 30), Color.DarkGray);
+                
+                // Add Reset/New Game+ Button
+                var resetRect = new Rectangle(412, 600, 200, 50);
+                _spriteBatch.Draw(_pixel, resetRect, Color.Gold * 0.4f);
+                _spriteBatch.DrawString(_font, "A NEW AWAKENING", new Vector2(512 - _font.MeasureString("A NEW AWAKENING").X/2, 625 - _font.MeasureString("A NEW AWAKENING").Y/2), Color.DarkGoldenrod);
+                
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _lastMouseState.LeftButton == ButtonState.Released && resetRect.Contains(Mouse.GetState().Position))
+                {
+                    _engine.Manifest("reset");
+                    _log.Clear(); // Clear log for new game
+                }
             }
             _spriteBatch.End();
+            _lastMouseState = Mouse.GetState();
             return;
         }
 

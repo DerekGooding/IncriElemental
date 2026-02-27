@@ -39,6 +39,9 @@ public class HeadlessDriver
                 return "Invalid delta time.";
             case "state":
                 return SaveManager.Serialize(_engine.State);
+            case "status":
+                var res = _engine.State.Resources;
+                return $"A:{res[ResourceType.Aether].Amount:F0} E:{res[ResourceType.Earth].Amount:F0} F:{res[ResourceType.Fire].Amount:F0} W:{res[ResourceType.Water].Amount:F0} L:{res.GetValueOrDefault(ResourceType.Life)?.Amount ?? 0:F0}";
             default:
                 return "Unknown command.";
         }

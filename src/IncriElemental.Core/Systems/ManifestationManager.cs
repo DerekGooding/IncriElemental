@@ -23,81 +23,101 @@ public class ManifestationManager
 
         switch (thing.ToLower())
         {
-            case "speck":
-                return TryManifest(thing, aether, 10, () => _state.GetResource(ResourceType.Earth).PerSecond += 0.1, "first_manifestation");
-            case "spark":
-                return TryManifest(thing, aether, 50, earth, 50, () => _state.GetResource(ResourceType.Fire).PerSecond += 0.05, "fire_unlocked");
-            case "droplet":
-                return TryManifest(thing, aether, 100, fire, 50, () => _state.GetResource(ResourceType.Water).PerSecond += 0.02, "water_unlocked");
-            case "breeze":
-                return TryManifest(thing, aether, 200, water, 50, () => _state.GetResource(ResourceType.Air).PerSecond += 0.01, "air_unlocked");
             case "rune_of_attraction":
-                return TryManifest(thing, aether, 30, () => _state.GetResource(ResourceType.Aether).PerSecond += 0.5, "automation_unlocked");
+                if (_state.Discoveries.GetValueOrDefault("automation_unlocked")) return false;
+                return TryManifest(thing, aether, 30, () => _state.GetResource(ResourceType.Aether).PerSecond += 2.0, "automation_unlocked");
+            
+            case "speck":
+                if (_state.Manifestations.GetValueOrDefault("speck") >= 20) return false;
+                return TryManifest(thing, aether, 10, () => {
+                    var earthRes = _state.GetResource(ResourceType.Earth);
+                    earthRes.PerSecond += 1.0;
+                }, "first_manifestation");
+
+            case "spark":
+                if (_state.Manifestations.GetValueOrDefault("spark") >= 10) return false;
+                return TryManifest(thing, aether, 50, earth, 50, () => _state.GetResource(ResourceType.Fire).PerSecond += 0.5, "fire_unlocked");
+
+            case "droplet":
+                if (_state.Manifestations.GetValueOrDefault("droplet") >= 10) return false;
+                return TryManifest(thing, aether, 100, fire, 50, () => _state.GetResource(ResourceType.Water).PerSecond += 0.5, "water_unlocked");
+            
+            case "breeze":
+                if (_state.Manifestations.GetValueOrDefault("breeze") >= 10) return false;
+                return TryManifest(thing, aether, 200, water, 50, () => _state.GetResource(ResourceType.Air).PerSecond += 1.0, "air_unlocked");
+
             case "altar":
-                return TryManifest(thing, aether, 100, earth, 20, () => ExpandStorage(500), "altar_constructed");
+                if (_state.Discoveries.GetValueOrDefault("altar_constructed")) return false;
+                return TryManifest(thing, aether, 100, earth, 20, () => ExpandStorage(1000), "altar_constructed");
+
             case "forge":
+                if (_state.Discoveries.GetValueOrDefault("forge_constructed")) return false;
                 return TryManifest(thing, fire, 50, earth, 100, null, "forge_constructed");
             
             // --- Tools ---
             case "pickaxe":
-                if (_state.Discoveries.GetValueOrDefault("forge_constructed"))
-                {
-                    return TryManifest(thing, earth, 200, () => _state.GetResource(ResourceType.Earth).Amount += 5, "pickaxe_manifested");
-                }
-                return false;
+                if (!_state.Discoveries.GetValueOrDefault("forge_constructed") || _state.Discoveries.GetValueOrDefault("pickaxe_manifested")) return false;
+                return TryManifest(thing, earth, 200, () => _state.GetResource(ResourceType.Earth).Amount += 50, "pickaxe_manifested");
+
             case "focus_crystal":
-                if (_state.Discoveries.GetValueOrDefault("forge_constructed"))
-                {
-                    return TryManifest(thing, fire, 100, aether, 200, () => _state.GetResource(ResourceType.Aether).PerSecond += 1.0, "crystal_manifested");
-                }
-                return false;
+                if (!_state.Discoveries.GetValueOrDefault("forge_constructed") || _state.Discoveries.GetValueOrDefault("crystal_manifested")) return false;
+                return TryManifest(thing, fire, 100, aether, 200, () => _state.GetResource(ResourceType.Aether).PerSecond += 5.0, "crystal_manifested");
 
             // --- Advanced Materials ---
             case "clay":
-                return TryManifest(thing, earth, 50, water, 50, () => _state.GetResource(ResourceType.Earth).MaxAmount += 100, "clay_discovered");
+                if (_state.Discoveries.GetValueOrDefault("clay_discovered")) return false;
+                return TryManifest(thing, earth, 50, water, 50, () => _state.GetResource(ResourceType.Earth).MaxAmount += 500, "clay_discovered");
+
             case "glass":
-                return TryManifest(thing, fire, 100, earth, 100, () => _state.GetResource(ResourceType.Aether).MaxAmount += 100, "glass_discovered");
+                if (_state.Discoveries.GetValueOrDefault("glass_discovered")) return false;
+                return TryManifest(thing, fire, 100, earth, 100, () => _state.GetResource(ResourceType.Aether).MaxAmount += 500, "glass_discovered");
             
             // --- Goal 9: Mastery Structures ---
             case "well":
-                return TryManifest(thing, earth, 300, water, 100, () => _state.GetResource(ResourceType.Water).PerSecond += 0.5, "well_manifested");
+                if (_state.Manifestations.GetValueOrDefault("well") >= 5) return false;
+                return TryManifest(thing, earth, 300, water, 100, () => _state.GetResource(ResourceType.Water).PerSecond += 5.0, "well_manifested");
+
             case "brazier":
-                return TryManifest(thing, earth, 300, fire, 100, () => _state.GetResource(ResourceType.Fire).PerSecond += 0.5, "brazier_manifested");
+                if (_state.Manifestations.GetValueOrDefault("brazier") >= 5) return false;
+                return TryManifest(thing, earth, 300, fire, 100, () => _state.GetResource(ResourceType.Fire).PerSecond += 5.0, "brazier_manifested");
+
             case "wind_chime":
-                if (_state.Discoveries.GetValueOrDefault("glass_discovered"))
-                {
-                    return TryManifest(thing, aether, 500, _state.GetResource(ResourceType.Air), 100, () => _state.GetResource(ResourceType.Air).PerSecond += 0.2, "chime_manifested");
-                }
-                return false;
+                if (!_state.Discoveries.GetValueOrDefault("glass_discovered") || _state.Manifestations.GetValueOrDefault("wind_chime") >= 5) return false;
+                return TryManifest(thing, aether, 500, _state.GetResource(ResourceType.Air), 100, () => _state.GetResource(ResourceType.Air).PerSecond += 5.0, "chime_manifested");
 
             // --- Goal 10: Garden of Life ---
             case "garden":
-                return TryManifest(thing, earth, 500, water, 500, () => _state.GetResource(ResourceType.Life).PerSecond += 0.1, "garden_manifested");
+                if (_state.Manifestations.GetValueOrDefault("garden") >= 5) return false;
+                return TryManifest(thing, earth, 500, water, 500, () => _state.GetResource(ResourceType.Life).PerSecond += 2.0, "garden_manifested");
+
             case "familiar":
+                if (_state.Manifestations.GetValueOrDefault("familiar") >= 5) return false;
                 return TryManifest(thing, aether, 1000, _state.GetResource(ResourceType.Life), 100, () => {
-                    _state.GetResource(ResourceType.Aether).PerSecond += 2.0;
-                    _state.GetResource(ResourceType.Earth).PerSecond += 1.0;
+                    _state.GetResource(ResourceType.Aether).PerSecond += 20.0;
+                    _state.GetResource(ResourceType.Earth).PerSecond += 10.0;
                 }, "familiar_manifested");
 
             // --- Goal 11: The Spire ---
             case "spire_foundation":
-                return TryManifest(thing, earth, 2000, _state.GetResource(ResourceType.Life), 500, null, "spire_foundation_ready");
+                if (_state.Discoveries.GetValueOrDefault("spire_foundation_ready")) return false;
+                return TryManifest(thing, earth, 1000, _state.GetResource(ResourceType.Life), 200, null, "spire_foundation_ready");
+
             case "spire_shaft":
-                if (_state.Discoveries.GetValueOrDefault("spire_foundation_ready"))
-                {
-                    return TryManifest(thing, fire, 2000, _state.GetResource(ResourceType.Air), 1000, null, "spire_shaft_ready");
-                }
-                return false;
+                if (!_state.Discoveries.GetValueOrDefault("spire_foundation_ready") || _state.Discoveries.GetValueOrDefault("spire_shaft_ready")) return false;
+                return TryManifest(thing, fire, 2000, _state.GetResource(ResourceType.Air), 1000, null, "spire_shaft_ready");
+
             case "spire_core":
-                if (_state.Discoveries.GetValueOrDefault("spire_shaft_ready"))
-                {
-                    return TryManifest(thing, aether, 5000, water, 3000, null, "spire_complete");
-                }
-                return false;
+                if (!_state.Discoveries.GetValueOrDefault("spire_shaft_ready") || _state.Discoveries.GetValueOrDefault("spire_complete")) return false;
+                return TryManifest(thing, aether, 5000, water, 3000, null, "spire_complete");
+
             case "ascend":
-                if (_state.Discoveries.GetValueOrDefault("spire_complete"))
+                if (!_state.Discoveries.GetValueOrDefault("spire_complete") || _state.Discoveries.GetValueOrDefault("ascended")) return false;
+                _state.Discoveries["ascended"] = true;
+                return true;
+            case "reset":
+                if (_state.Discoveries.GetValueOrDefault("ascended"))
                 {
-                    _state.Discoveries["ascended"] = true;
+                    ResetForNewGamePlus();
                     return true;
                 }
                 return false;
@@ -105,6 +125,21 @@ public class ManifestationManager
             default:
                 return false;
         }
+    }
+
+    private void ResetForNewGamePlus()
+    {
+        double multiplier = _state.CosmicInsight + 0.5;
+        _state.Resources.Clear();
+        _state.Discoveries.Clear();
+        _state.Manifestations.Clear();
+        _state.History.Clear();
+        _state.TotalGameTime = 0;
+        
+        // Initialize new state with multiplier
+        _state.CosmicInsight = multiplier;
+        _state.Resources[ResourceType.Aether] = new Resource(ResourceType.Aether);
+        _state.History.Add($"You awaken with Cosmic Insight x{multiplier:F1}.");
     }
 
     private bool TryManifest(string thing, Resource primary, double cost, Action? onComplete, string discovery)
