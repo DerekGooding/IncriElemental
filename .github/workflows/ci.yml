@@ -67,6 +67,7 @@ jobs:
   health:
     name: Project Health Check
     needs: test
+    if: always() # Run even if Test (or Build) fails/skips
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -77,6 +78,7 @@ jobs:
       with:
         name: coverage-report
         path: .
+      continue-on-error: true # Coverage might not exist if build/test failed
     - name: Run Health Script
       run: python scripts/check_health.py
     - name: Upload Health Data
@@ -88,7 +90,7 @@ jobs:
   shields:
     name: Deploy Shields Data
     needs: health
-    if: github.ref == 'refs/heads/main'
+    if: always() && github.ref == 'refs/heads/main' # Run even if Health fails (e.g. coverage too low)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
