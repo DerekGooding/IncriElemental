@@ -38,7 +38,7 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 ### Phase 3: Matter & Form
 - **Concept:** Unlike "Wood -> Plank", you manifest "Geometric Forms" or "Runes".
 - **Example:** Manifest "Rune of Solidity" (Uses Earth) -> Increases Max Aether.
-- **Example:** Manifest "Rune of Ignorance" (Uses Fire) -> Automates "Focus".
+- **Example:** Manifest "Rune of Attraction" (Uses Aether) -> Automates passive Aether gathering.
 
 ## 4. Visual Style
 - **Minimalist Magical:** Dark background. Text is glowing/spectral.

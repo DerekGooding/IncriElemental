@@ -33,17 +33,21 @@ public class GameEngineTests
     }
 
     [Fact]
-    public void Update_GeneratesResourcesOverTime()
+    public void ManifestRuneOfAttraction_AutomatesAether()
     {
         var engine = new GameEngine();
         
-        // Setup state to allow manifestation
-        for (int i = 0; i < 15; i++) engine.Focus();
-        engine.Manifest("speck");
+        // Setup state to allow manifestation (30 Aether)
+        for (int i = 0; i < 30; i++) engine.Focus();
         
-        // Update for 10 seconds (10s * 0.1 Earth/s = 1.0 Earth)
+        var success = engine.Manifest("rune_of_attraction");
+        
+        Assert.True(success);
+        Assert.Equal(0, engine.State.GetResource(ResourceType.Aether).Amount);
+        Assert.Equal(0.5, engine.State.GetResource(ResourceType.Aether).PerSecond);
+        
+        // Simulating 10 seconds of passive aether (10s * 0.5/s = 5 Aether)
         engine.Update(10.0);
-        
-        Assert.Equal(1.0, engine.State.GetResource(ResourceType.Earth).Amount);
+        Assert.Equal(5.0, engine.State.GetResource(ResourceType.Aether).Amount);
     }
 }

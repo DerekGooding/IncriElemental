@@ -87,6 +87,15 @@ public class GameEngine
             return true;
         }
 
+        if (thing == "rune_of_attraction" && aether.Amount >= 30)
+        {
+            aether.Add(-30);
+            State.Manifestations["rune_of_attraction"] = State.Manifestations.GetValueOrDefault("rune_of_attraction") + 1;
+            State.Discoveries["automation_unlocked"] = true;
+            State.GetResource(ResourceType.Aether).PerSecond += 0.5;
+            return true;
+        }
+
         return false;
     }
 }
