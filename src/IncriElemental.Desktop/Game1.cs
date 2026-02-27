@@ -15,6 +15,7 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private GameEngine _engine;
+    private SpriteFont _font;
     private ParticleSystem _particles;
     private MouseState _lastMouseState;
     private Texture2D _pixel;
