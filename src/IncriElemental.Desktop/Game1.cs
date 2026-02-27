@@ -8,6 +8,7 @@ using IncriElemental.Desktop.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace IncriElemental.Desktop;
 
@@ -24,6 +25,8 @@ public class Game1 : Game
     private Texture2D _pixel;
     private List<string> _log = new();
     private const int MaxLogLines = 10;
+    private bool _aiMode = false;
+    private string _screenshotPath = "review/screenshot.png";
 
     public Game1()
     {
@@ -31,6 +34,11 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _engine = new GameEngine();
+
+        if (Environment.GetCommandLineArgs().Contains("--ai-mode"))
+        {
+            _aiMode = true;
+        }
     }
 
     protected override void Initialize()
@@ -47,6 +55,43 @@ public class Game1 : Game
         
         SetupButtons();
         AddToLog("You awaken in the void.");
+
+        if (_aiMode) ProcessAiMode();
+    }
+
+    private void ProcessAiMode()
+    {
+        string commandPath = "ai_commands.txt";
+        if (File.Exists(commandPath))
+        {
+            var commands = File.ReadAllLines(commandPath);
+            foreach (var cmd in commands)
+            {
+                var parts = cmd.Split(':');
+                if (parts[0].ToLower() == "focus") _engine.Focus();
+                if (parts[0].ToLower() == "manifest") _engine.Manifest(parts[1]);
+                if (parts[0].ToLower() == "update") {
+                    if (double.TryParse(parts[1], out double dt)) _engine.Update(dt);
+                }
+            }
+        }
+    }
+
+    private void TakeScreenshot(string path)
+    {
+        string dir = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+        
+        int w = GraphicsDevice.PresentationParameters.BackBufferWidth;
+        int h = GraphicsDevice.PresentationParameters.BackBufferHeight;
+        using RenderTarget2D target = new RenderTarget2D(GraphicsDevice, w, h);
+        
+        GraphicsDevice.SetRenderTarget(target);
+        Draw(new GameTime());
+        GraphicsDevice.SetRenderTarget(null);
+        
+        using FileStream stream = File.OpenWrite(path);
+        target.SaveAsPng(stream, w, h);
     }
 
     private void SetupButtons()
@@ -123,6 +168,12 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
+        if (_aiMode && gameTime.TotalGameTime.TotalSeconds > 1.0)
+        {
+            TakeScreenshot(_screenshotPath);
+            Exit();
+        }
+
         var mouseState = Mouse.GetState();
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         
