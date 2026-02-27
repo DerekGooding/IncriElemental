@@ -22,6 +22,6 @@ public class ManifestationDefinition
     public string DiscoveryKey { get; set; } = string.Empty;
     public string RequiredDiscovery { get; set; } = string.Empty;
     public int MaxCount { get; set; } = int.MaxValue;
-    public List<ManifestationCost> Costs { get; set; } = new();
-    public List<ManifestationEffect> Effects { get; set; } = new();
+    public List<ManifestationCost> Costs { get; set; } = [];
+    public List<ManifestationEffect> Effects { get; set; } = [];
 }

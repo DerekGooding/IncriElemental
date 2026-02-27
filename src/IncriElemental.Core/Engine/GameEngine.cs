@@ -11,7 +11,7 @@ public class GameEngine
     private readonly AutomationSystem _automation;
     private readonly AlchemySystem _alchemy;
     private readonly ExplorationSystem _exploration;
-    private List<LoreFragment> _lore = new();
+    private List<LoreFragment> _lore = [];
 
     public GameEngine(GameState? initialState = null)
     {
@@ -22,7 +22,7 @@ public class GameEngine
         _exploration = new ExplorationSystem(State);
     }
 
-    public void LoadLore(string json) => _lore = JsonSerializer.Deserialize<List<LoreFragment>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new();
+    public void LoadLore(string json) => _lore = JsonSerializer.Deserialize<List<LoreFragment>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? [];
 
     public void CheckLoreUnlocks(string cellType = "")
     {

@@ -5,7 +5,7 @@ namespace IncriElemental.Core.Systems;
 public class ManifestationManager
 {
     private readonly GameState _state;
-    private readonly Dictionary<string, ManifestationDefinition> _definitions = new();
+    private readonly Dictionary<string, ManifestationDefinition> _definitions = [];
 
     public ManifestationManager(GameState state, IEnumerable<ManifestationDefinition>? definitions = null)
     {
@@ -22,7 +22,7 @@ public class ManifestationManager
     {
         if (!_definitions.TryGetValue(id.ToLower(), out var def))
         {
-            if (id.ToLower() == "reset" && _state.Discoveries.GetValueOrDefault("ascended"))
+            if (id.Equals("reset", StringComparison.CurrentCultureIgnoreCase) && _state.Discoveries.GetValueOrDefault("ascended"))
             {
                 ResetForNewGamePlus();
                 return true;
@@ -77,12 +77,12 @@ public class ManifestationManager
         // Initialize new state with multiplier
         _state.CosmicInsight = multiplier;
         _state.VoidInfusionUnlocked = true;
-        
+
         foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
         {
             _state.Resources[type] = new Resource(type);
         }
-        
+
         _state.History.Add($"You awaken with Cosmic Insight x{multiplier:F1}.");
         _state.History.Add("The void feels thinner. Void Infusion is now possible.");
     }

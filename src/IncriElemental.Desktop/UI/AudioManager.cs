@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework.Audio;
 
 namespace IncriElemental.Desktop.UI;

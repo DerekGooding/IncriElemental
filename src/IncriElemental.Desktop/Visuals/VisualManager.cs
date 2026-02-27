@@ -1,8 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Models;
-using System;
-using System.Collections.Generic;
 
 namespace IncriElemental.Desktop.Visuals;
 
@@ -92,9 +90,9 @@ public class VisualManager
 
     public string FormatValue(double value)
     {
-        if (value >= 1_000_000_000) return $"{(value / 1_000_000_000):F2}G";
-        if (value >= 1_000_000) return $"{(value / 1_000_000):F2}M";
-        if (value >= 1_000) return $"{(value / 1_000):F2}K";
+        if (value >= 1_000_000_000) return $"{value / 1_000_000_000:F2}G";
+        if (value >= 1_000_000) return $"{value / 1_000_000:F2}M";
+        if (value >= 1_000) return $"{value / 1_000:F2}K";
         return value.ToString("F1");
     }
 }

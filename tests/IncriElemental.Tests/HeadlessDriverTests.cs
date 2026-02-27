@@ -16,7 +16,7 @@ public class HeadlessDriverTests
         Assert.Equal(1, engine.State.GetResource(ResourceType.Aether).Amount);
 
         // Execute Batch
-        driver.ExecuteBatch(new List<string> { "focus", "focus", "focus" });
+        driver.ExecuteBatch(["focus", "focus", "focus"]);
         Assert.Equal(4, engine.State.GetResource(ResourceType.Aether).Amount);
 
         // Execute Manifest (Not enough aether yet)

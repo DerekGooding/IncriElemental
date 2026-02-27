@@ -1,6 +1,5 @@
 using IncriElemental.Core.Models;
 using IncriElemental.Core.Persistence;
-using IncriElemental.Core.Engine;
 
 namespace IncriElemental.Tests;
 

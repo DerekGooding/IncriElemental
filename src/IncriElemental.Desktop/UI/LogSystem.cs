@@ -1,12 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 
 namespace IncriElemental.Desktop.UI;
 
 public class LogSystem
 {
-    private readonly List<string> _log = new();
+    private readonly List<string> _log = [];
     private const int MaxLogLines = 10;
 
     public void AddToLog(string message)

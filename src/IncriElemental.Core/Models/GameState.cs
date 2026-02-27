@@ -2,13 +2,13 @@ namespace IncriElemental.Core.Models;
 
 public class GameState
 {
-    public Dictionary<ResourceType, Resource> Resources { get; set; } = new();
-    public Dictionary<string, bool> Discoveries { get; set; } = new();
-    public Dictionary<string, int> Manifestations { get; set; } = new();
-    public List<Buff> ActiveBuffs { get; set; } = new();
+    public Dictionary<ResourceType, Resource> Resources { get; set; } = [];
+    public Dictionary<string, bool> Discoveries { get; set; } = [];
+    public Dictionary<string, int> Manifestations { get; set; } = [];
+    public List<Buff> ActiveBuffs { get; set; } = [];
     public WorldMap Map { get; set; } = new();
 
-    public List<string> History { get; set; } = new();
+    public List<string> History { get; set; } = [];
     public double TotalGameTime { get; set; } = 0;
     public double CosmicInsight { get; set; } = 1.0;
     public bool VoidInfusionUnlocked { get; set; } = false;

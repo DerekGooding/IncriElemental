@@ -1,4 +1,3 @@
-using System.IO;
 using IncriElemental.Core.Engine;
 
 namespace IncriElemental.Desktop.UI;
@@ -15,9 +14,9 @@ public class AiModeSystem(GameEngine engine)
             foreach (var cmd in commands)
             {
                 var parts = cmd.Split(':');
-                if (parts[0].ToLower() == "focus") _engine.Focus();
-                if (parts[0].ToLower() == "manifest") _engine.Manifest(parts[1]);
-                if (parts[0].ToLower() == "update") {
+                if (parts[0].Equals("focus", StringComparison.CurrentCultureIgnoreCase)) _engine.Focus();
+                if (parts[0].Equals("manifest", StringComparison.CurrentCultureIgnoreCase)) _engine.Manifest(parts[1]);
+                if (parts[0].Equals("update", StringComparison.CurrentCultureIgnoreCase)) {
                     if (double.TryParse(parts[1], out var dt)) _engine.Update(dt);
                 }
             }

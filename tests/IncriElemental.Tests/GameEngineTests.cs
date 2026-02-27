@@ -1,4 +1,3 @@
-using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 
 namespace IncriElemental.Tests;

@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Engine;
 using IncriElemental.Desktop.Visuals;
-using System.Collections.Generic;
 
 namespace IncriElemental.Desktop.UI;
 
@@ -42,8 +41,5 @@ public class WorldMapSystem
         visuals.DrawMap(spriteBatch, engine.State.Map, mousePos, pixel);
     }
 
-    private Rectangle GetCellBounds(int x, int y)
-    {
-        return new Rectangle(StartX + x * (CellSize + CellPadding), StartY + y * (CellSize + CellPadding), CellSize, CellSize);
-    }
+    private Rectangle GetCellBounds(int x, int y) => new Rectangle(StartX + x * (CellSize + CellPadding), StartY + y * (CellSize + CellPadding), CellSize, CellSize);
 }

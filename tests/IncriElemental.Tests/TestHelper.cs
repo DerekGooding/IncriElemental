@@ -1,5 +1,4 @@
 using IncriElemental.Core.Engine;
-using System.IO;
 
 namespace IncriElemental.Tests;
 
@@ -8,7 +7,7 @@ public static class TestHelper
     public static GameEngine CreateEngine()
     {
         var engine = new GameEngine();
-        
+
         var jsonPath = "manifestations.json";
         if (File.Exists(jsonPath))
         {

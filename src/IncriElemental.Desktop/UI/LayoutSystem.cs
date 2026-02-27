@@ -2,9 +2,6 @@ using Microsoft.Xna.Framework;
 using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 using IncriElemental.Desktop.Visuals;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IncriElemental.Desktop.UI;
 
@@ -40,7 +37,7 @@ public class LayoutSystem
                         logCallback("Ascension begins...");
                         audio.PlayAscend();
                     }
-                }, () => engine.State.Discoveries.ContainsKey(def.RequiredDiscovery)));
+                }, () => engine.State.Discoveries.GetValueOrDefault(def.RequiredDiscovery)));
                 continue;
             }
 
@@ -70,9 +67,9 @@ public class LayoutSystem
                     else logCallback($"{def.Name} manifested.");
                 }
             }, () => {
-                var req = string.IsNullOrEmpty(def.RequiredDiscovery) || engine.State.Discoveries.ContainsKey(def.RequiredDiscovery);
-                var cost = engine.State.GetResource(def.Costs.FirstOrDefault()?.Type ?? ResourceType.Aether).Amount >= (def.Costs.FirstOrDefault()?.Amount ?? 0);
-                var discovery = !string.IsNullOrEmpty(def.DiscoveryKey) && engine.State.Discoveries.ContainsKey(def.DiscoveryKey);
+                var req = string.IsNullOrEmpty(def.RequiredDiscovery) || engine.State.Discoveries.GetValueOrDefault(def.RequiredDiscovery);
+                var cost = def.Costs.All(c => engine.State.GetResource(c.Type).Amount >= c.Amount);
+                var discovery = !string.IsNullOrEmpty(def.DiscoveryKey) && engine.State.Discoveries.GetValueOrDefault(def.DiscoveryKey);
                 return req && (cost || discovery);
             }, def.Subtitle));
         }

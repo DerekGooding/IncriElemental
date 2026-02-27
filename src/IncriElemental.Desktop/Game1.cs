@@ -4,10 +4,6 @@ using Microsoft.Xna.Framework.Input;
 using IncriElemental.Core.Engine;
 using IncriElemental.Desktop.Visuals;
 using IncriElemental.Desktop.UI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 
 namespace IncriElemental.Desktop;
 
@@ -21,11 +17,11 @@ public class Game1 : Game
     private VisualManager _visuals = null!;
     private InputManager _input = new();
     private AudioManager _audio = new();
-    private List<Button> _buttons = new();
+    private List<Button> _buttons = [];
     private Texture2D _pixel = null!;
     private LogSystem _log = new();
     private WorldMapSystem _map = new();
-    private const int MaxLogLines = 10;
+    private int _lastProcessedHistoryCount = 0;
     private bool _aiMode = false;
     private string _screenshotPath = "screenshot.png";
 
@@ -69,6 +65,7 @@ public class Game1 : Game
 
         LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog);
         _log.AddToLog("You awaken in the void.");
+        _log.AddToLog("Focus to begin manifesting reality.");
 
         if (_aiMode) new AiModeSystem(_engine).Process("ai_commands.txt");
     }
@@ -94,7 +91,14 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        try { _font = Content.Load<SpriteFont>("main_font"); } catch { }
+        try 
+        { 
+            _font = Content.Load<SpriteFont>("main_font"); 
+        } 
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[CRITICAL] Failed to load font: {ex.Message}");
+        }
     }
 
     protected override void Update(GameTime gameTime)
@@ -113,8 +117,11 @@ public class Game1 : Game
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
 
-        foreach (var message in _engine.State.History)
-            _log.AddToLog(message);
+        while (_lastProcessedHistoryCount < _engine.State.History.Count)
+        {
+            _log.AddToLog(_engine.State.History[_lastProcessedHistoryCount]);
+            _lastProcessedHistoryCount++;
+        }
 
         if (_input.IsLeftClick())
         {
@@ -177,7 +184,7 @@ public class Game1 : Game
     {
         var resX = 800;
         if (_font == null) return;
-        
+
         float y = 20;
         _spriteBatch.DrawString(_font, "ESSENCE", new Vector2(resX, y), Color.Gray);
         y += 30;

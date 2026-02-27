@@ -1,7 +1,1 @@
-focus:30
-manifest:rune_of_attraction
-manifest:speck
-manifest:altar
-focus:100
-manifest:spark
-update:600
+focus:10

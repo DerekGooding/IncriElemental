@@ -22,7 +22,7 @@ public class WorldMap
 {
     public int Width { get; set; } = 10;
     public int Height { get; set; } = 10;
-    public Dictionary<string, WorldCell> Cells { get; set; } = new();
+    public Dictionary<string, WorldCell> Cells { get; set; } = [];
 
     public string GetKey(int x, int y) => $"{x},{y}";
 

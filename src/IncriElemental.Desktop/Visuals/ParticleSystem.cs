@@ -1,7 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
 
 namespace IncriElemental.Desktop.Visuals;
 
@@ -25,7 +23,7 @@ public class Particle
 
 public class ParticleSystem
 {
-    private readonly List<Particle> _particles = new();
+    private readonly List<Particle> _particles = [];
     private readonly Texture2D _pixel;
     private readonly Random _random = new();
 
