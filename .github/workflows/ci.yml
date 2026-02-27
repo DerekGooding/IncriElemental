@@ -105,21 +105,21 @@ jobs:
         git config --global user.name "Agent Gemini"
         git config --global user.email "agent-gemini@example.com"
         
-        # Create a temporary directory for the health data
-        mkdir temp_shields
-        cp health_data.json temp_shields/index.json
+        # Save the data outside the git workspace context temporarily
+        mv health_data.json ../index.json
         
         # Fetch and switch to shields branch, or create it
         git fetch origin shields || true
         if git show-ref --verify --quiet refs/remotes/origin/shields; then
-          git checkout shields
+          git checkout -f shields
         else
           git checkout --orphan shields
         fi
         
-        # Clean the branch and add the new data
+        # Clean everything and restore the single file
         git rm -rf . --ignore-unmatch
-        cp temp_shields/index.json .
+        mv ../index.json ./index.json
+        
         git add index.json
         git commit -m "Update health shields data"
         git push origin shields --force
