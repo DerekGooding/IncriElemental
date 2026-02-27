@@ -103,12 +103,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: health-data
-        path: health_data.json
+        path: shields_data/
 
   shields:
     name: Deploy Shields Data
     needs: health
-    if: always() && github.ref == 'refs/heads/main' # Run even if Health fails (e.g. coverage too low)
+    if: always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -116,14 +116,11 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: health-data
-        path: .
+        path: shields_deploy/
     - name: Deploy to Shields Branch
       run: |
         git config --global user.name "Agent Gemini"
         git config --global user.email "agent-gemini@example.com"
-        
-        # Save the data outside the git workspace context temporarily
-        mv health_data.json ../index.json
         
         # Fetch and switch to shields branch, or create it
         git fetch origin shields || true
@@ -133,11 +130,11 @@ jobs:
           git checkout --orphan shields
         fi
         
-        # Clean everything and restore the single file
+        # Clean everything and restore the new files
         git rm -rf . --ignore-unmatch
-        mv ../index.json ./index.json
+        cp -r shields_deploy/* .
         
-        git add index.json
+        git add .
         if ! git diff --staged --quiet; then
           git commit -m "Update health shields data"
           git push origin shields --force

@@ -155,22 +155,56 @@ def parse_coverage():
     return overall_line_rate, pass_requirements
 
 def export_shields_data(monolith_count, coverage, docs_pass, tests_pass):
-    data = {
+    # Overall summary
+    summary = {
         "schemaVersion": 1,
         "label": "health",
         "message": "Project Healthy" if (monolith_count == 0 and docs_pass and tests_pass) else "Project Unhealthy",
-        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass) else "red",
-        "monoliths": "None" if monolith_count == 0 else f"{monolith_count} Found",
-        "monoliths_color": "brightgreen" if monolith_count == 0 else "red",
-        "coverage": f"{coverage:.0f}%",
-        "coverage_color": "brightgreen" if coverage >= 70 else "yellow",
-        "docs": "Up to Date" if docs_pass else "Stale",
-        "docs_color": "brightgreen" if docs_pass else "red",
-        "tests": "Passing" if tests_pass else "Failing",
-        "tests_color": "brightgreen" if tests_pass else "red"
+        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass) else "red"
     }
-    with open("health_data.json", "w") as f:
-        json.dump(data, f, indent=4)
+    
+    # Tests badge
+    tests = {
+        "schemaVersion": 1,
+        "label": "Tests",
+        "message": "Passing" if tests_pass else "Failing",
+        "color": "brightgreen" if tests_pass else "red"
+    }
+    
+    # Coverage badge
+    coverage_data = {
+        "schemaVersion": 1,
+        "label": "Coverage",
+        "message": f"{coverage:.0f}%",
+        "color": "brightgreen" if coverage >= 70 else ("yellow" if coverage >= 50 else "red")
+    }
+    
+    # Monoliths badge
+    monoliths = {
+        "schemaVersion": 1,
+        "label": "Monoliths",
+        "message": "None" if monolith_count == 0 else f"{monolith_count} Found",
+        "color": "brightgreen" if monolith_count == 0 else "red"
+    }
+    
+    # Docs badge
+    docs = {
+        "schemaVersion": 1,
+        "label": "Docs",
+        "message": "Up to Date" if docs_pass else "Stale",
+        "color": "brightgreen" if docs_pass else "red"
+    }
+
+    # Save individual files for Shields.io Endpoints
+    os.makedirs("shields_data", exist_ok=True)
+    with open("shields_data/index.json", "w") as f: json.dump(summary, f, indent=4)
+    with open("shields_data/tests.json", "w") as f: json.dump(tests, f, indent=4)
+    with open("shields_data/project_coverage.json", "w") as f: json.dump(coverage_data, f, indent=4)
+    with open("shields_data/monoliths.json", "w") as f: json.dump(monoliths, f, indent=4)
+    with open("shields_data/docs.json", "w") as f: json.dump(docs, f, indent=4)
+    
+    # Keep the legacy health_data.json just in case, but point it to summary
+    with open("health_data.json", "w") as f: json.dump(summary, f, indent=4)
 
 if __name__ == "__main__":
     skip_tests = "--skip-tests" in sys.argv

@@ -1,10 +1,10 @@
 # IncriElemental - An Unfolding Incremental Game
 
 ![.NET CI](https://github.com/DerekGooding/IncriElemental/actions/workflows/ci.yml/badge.svg)
-![Tests](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/index.json&query=$.tests&label=Tests&color=brightgreen)
-![Coverage](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/index.json&query=$.coverage&label=Coverage&color=brightgreen)
-![Monoliths](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/index.json&query=$.monoliths&label=Monoliths&color=brightgreen)
-![Docs](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/index.json&query=$.docs&label=Docs&color=brightgreen)
+![Tests](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/tests.json)
+![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/project_coverage.json)
+![Monoliths](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/monoliths.json)
+![Docs](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/docs.json)
 
 > **Note:** This project is developed with **heavy agentic support**. All code, documentation, and design decisions are a collaborative effort between the user and an AI agent (Gemini CLI), following the mandates defined in `GEMINI.md`.
 
