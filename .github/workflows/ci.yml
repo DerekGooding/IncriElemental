@@ -25,16 +25,21 @@ jobs:
     - name: Install Build Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0
-    - name: Download Font
+        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig
+    - name: Download and Install Font
       run: |
-        # Download Arimo and save it as Arimo.ttf
-        curl -L -o src/IncriElemental.Desktop/Content/Arimo.ttf "https://github.com/google/fonts/raw/main/ofl/arimo/Arimo-Regular.ttf"
-        ls -l src/IncriElemental.Desktop/Content/Arimo.ttf
-        if [ $(stat -c%s src/IncriElemental.Desktop/Content/Arimo.ttf) -lt 10000 ]; then
-          echo "Font download failed or file too small"
-          exit 1
-        fi
+        # Download Arimo
+        curl -L -o Arimo-Regular.ttf "https://github.com/google/fonts/raw/main/ofl/arimo/Arimo-Regular.ttf"
+        
+        # Install to local fonts directory
+        mkdir -p ~/.local/share/fonts
+        cp Arimo-Regular.ttf ~/.local/share/fonts/
+        
+        # Update font cache
+        fc-cache -f -v
+        
+        # Also keep a copy in the Content folder for MGCB local reference
+        cp Arimo-Regular.ttf src/IncriElemental.Desktop/Content/Arimo.ttf
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
