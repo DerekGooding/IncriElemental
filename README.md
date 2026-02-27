@@ -1,6 +1,7 @@
 # IncriElemental - An Unfolding Incremental Game
 
 ![.NET CI](https://github.com/DerekGooding/IncriElemental/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/Coverage-71%25-brightgreen)
 ![Monoliths](https://img.shields.io/badge/Monoliths-None-brightgreen)
 
