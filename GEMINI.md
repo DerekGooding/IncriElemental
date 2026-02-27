@@ -31,5 +31,10 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines** of code. If a file grows beyond this, it must be refactored into smaller, focused components.
 - **Automated Checks:** I must run `scripts/check_health.py` before completing any significant feature to ensure no regressions in code health.
 
+## 6. Playability Goal (Current)
+- **Target:** A complete, polished 20-minute gameplay loop ending with "Ascension."
+- **Focus:** Ensure the mid-game (5-15 mins) remains engaging with new unlocks every 2-3 minutes.
+- **Verification:** Use `tests/IncriElemental.Tests/BalanceSimulator.cs` to confirm the timing of the loop.
+
 ---
 *Follow these mandates strictly. If a request conflicts with these mandates, clarify with the user.*
