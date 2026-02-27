@@ -96,6 +96,13 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **CI Reliability:** Ensure the shields deployment handles empty diffs gracefully.
 - [x] **Asset Portability:** Ensure data files are correctly copied to the output directory.
 
+## 20. Goal: Technical Perfection & Immersion (Next)
+- [ ] **UI Pagination:** Implement a tab system (Void / Spire / World) to manage UI density.
+- [ ] **Procedural Atmosphere:** Implement a minimalist background "void hum" using dynamic sound generation.
+- [ ] **Balance Optimizer:** Update `BalanceSimulator` to suggest cost/gain adjustments for the target loop.
+- [ ] **CI Font Portability:** Replace the system-font hack in `ci.yml` with the portable download script.
+- [ ] **Auto-Healing CI:** (Research) Explore automated agent triggers for health regressions.
+
 
 
 ---
