@@ -25,6 +25,14 @@ public class GameEngine
                 resource.Add(resource.PerSecond * deltaTime);
             }
         }
+
+        // --- Mana Flow (Water Automation) ---
+        var water = State.GetResource(ResourceType.Water);
+        if (State.Discoveries.GetValueOrDefault("water_unlocked") && water.Amount > 0)
+        {
+            // Water facilitates flow: a small percentage of water amount helps gather Aether
+            State.GetResource(ResourceType.Aether).Add(water.Amount * 0.05 * deltaTime);
+        }
     }
 
     // --- Actions ---
@@ -93,6 +101,30 @@ public class GameEngine
             State.Manifestations["rune_of_attraction"] = State.Manifestations.GetValueOrDefault("rune_of_attraction") + 1;
             State.Discoveries["automation_unlocked"] = true;
             State.GetResource(ResourceType.Aether).PerSecond += 0.5;
+            return true;
+        }
+
+        if (thing == "altar" && aether.Amount >= 100 && earth.Amount >= 20)
+        {
+            aether.Add(-100);
+            earth.Add(-20);
+            State.Manifestations["altar"] = State.Manifestations.GetValueOrDefault("altar") + 1;
+            State.Discoveries["altar_constructed"] = true;
+            
+            // Expand storage for all resources
+            foreach (var resource in State.Resources.Values)
+            {
+                resource.MaxAmount += 500;
+            }
+            return true;
+        }
+
+        if (thing == "forge" && fire.Amount >= 50 && earth.Amount >= 100)
+        {
+            fire.Add(-50);
+            earth.Add(-100);
+            State.Manifestations["forge"] = State.Manifestations.GetValueOrDefault("forge") + 1;
+            State.Discoveries["forge_constructed"] = true;
             return true;
         }
 
