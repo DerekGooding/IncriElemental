@@ -7,8 +7,8 @@
     "monoliths_color": "brightgreen",
     "coverage": "58%",
     "coverage_color": "yellow",
-    "docs": "Stale",
-    "docs_color": "red",
+    "docs": "Up to Date",
+    "docs_color": "brightgreen",
     "tests": "Failing",
     "tests_color": "red"
 }
