@@ -5,10 +5,10 @@
     "color": "brightgreen",
     "monoliths": "None",
     "monoliths_color": "brightgreen",
-    "coverage": "58%",
-    "coverage_color": "yellow",
+    "coverage": "85%",
+    "coverage_color": "brightgreen",
     "docs": "Up to Date",
     "docs_color": "brightgreen",
-    "tests": "Failing",
-    "tests_color": "red"
+    "tests": "Passing",
+    "tests_color": "brightgreen"
 }
