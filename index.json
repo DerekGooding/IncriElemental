@@ -3,12 +3,12 @@
     "label": "health",
     "message": "Project Healthy",
     "color": "brightgreen",
-    "monoliths": "None",
-    "monoliths_color": "brightgreen",
-    "coverage": "86%",
-    "coverage_color": "brightgreen",
-    "docs": "Up to Date",
-    "docs_color": "brightgreen",
-    "tests": "Passing",
-    "tests_color": "brightgreen"
+    "monoliths": "1 Found",
+    "monoliths_color": "red",
+    "coverage": "0%",
+    "coverage_color": "yellow",
+    "docs": "Stale",
+    "docs_color": "red",
+    "tests": "Failing",
+    "tests_color": "red"
 }
