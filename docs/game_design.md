@@ -31,6 +31,7 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 - **Outcome:** Exploration unlocks Lore fragments and rare discoveries.
 
 ### Phase 4: The Spire & Ascension
+- **Inventory:** A dedicated UI area on the right side tracks all manifested items and structures beyond simple essences.
 - **Goal:** Manifest the Great Spire in the center of the void.
 - **Stages:** Foundation (Earth/Life), Shaft (Fire/Air), Core (Aether/Water).
 - **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence.

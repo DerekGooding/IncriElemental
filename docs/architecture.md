@@ -25,6 +25,7 @@ The `GameState` class in `IncriElemental.Core` is the single source of truth.
 - **Specialized Systems:** 
     - `LogSystem`: Manages the narrative log, prevents message duplication, and handles fading text rendering.
     - `WorldMapSystem`: Handles grid-based exploration logic, coordinate translation, and map rendering.
+    - `InventorySystem`: Displays current manifestations and their counts in the UI.
     - `InputManager`: Abstracts MonoGame mouse and keyboard state for cleaner interaction logic.
 - **Binding:** The Desktop layer reads the `GameState` and employs these specialized systems to render UI elements and process input.
 

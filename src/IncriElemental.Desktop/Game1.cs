@@ -21,6 +21,7 @@ public class Game1 : Game
     private Texture2D _pixel = null!;
     private LogSystem _log = new();
     private WorldMapSystem _map = new();
+    private InventorySystem _inventory = new();
     private int _lastProcessedHistoryCount = 0;
     private bool _aiMode = false;
     private string _screenshotPath = "screenshot.png";
@@ -215,5 +216,8 @@ public class Game1 : Game
             _spriteBatch.DrawString(_font, $"{buff.Id}: {buff.RemainingTime:F0}s", new Vector2(resX, y), Color.Gold * 0.8f);
             y += 25;
         }
+
+        y += 30;
+        _inventory.Draw(_spriteBatch, _engine, _font, _pixel, resX, (int)y);
     }
 }

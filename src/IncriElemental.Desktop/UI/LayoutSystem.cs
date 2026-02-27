@@ -70,7 +70,8 @@ public class LayoutSystem
                 var req = string.IsNullOrEmpty(def.RequiredDiscovery) || engine.State.Discoveries.GetValueOrDefault(def.RequiredDiscovery);
                 var cost = def.Costs.All(c => engine.State.GetResource(c.Type).Amount >= c.Amount);
                 var discovery = !string.IsNullOrEmpty(def.DiscoveryKey) && engine.State.Discoveries.GetValueOrDefault(def.DiscoveryKey);
-                return req && (cost || discovery);
+                var count = engine.State.Manifestations.GetValueOrDefault(def.Id);
+                return req && (cost || discovery) && count < def.MaxCount;
             }, def.Subtitle));
         }
 
