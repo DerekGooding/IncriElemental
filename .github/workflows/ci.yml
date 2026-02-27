@@ -22,6 +22,9 @@ jobs:
     - name: Restore tools
       run: dotnet tool restore
       working-directory: src/IncriElemental.Desktop
+    - name: Download Font
+      run: |
+        curl -L -o src/IncriElemental.Desktop/Content/Arial.ttf https://github.com/google/fonts/raw/main/ofl/arimo/Arimo-Regular.ttf
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

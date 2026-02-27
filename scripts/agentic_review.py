@@ -7,7 +7,7 @@ import sys
 DESKTOP_PROJECT_PATH = "src/IncriElemental.Desktop"
 EXE_PATH = "src/IncriElemental.Desktop/bin/Debug/net10.0/IncriElemental.Desktop.exe"
 COMMANDS_FILE = "src/IncriElemental.Desktop/bin/Debug/net10.0/ai_commands.txt"
-SCREENSHOT_FILE = "src/IncriElemental.Desktop/bin/Debug/net10.0/review/screenshot.png"
+SCREENSHOT_FILE = "review/screenshot.png"
 
 def build_project():
     print("Building project...")

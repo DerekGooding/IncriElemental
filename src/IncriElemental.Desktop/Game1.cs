@@ -26,7 +26,7 @@ public class Game1 : Game
     private List<string> _log = new();
     private const int MaxLogLines = 10;
     private bool _aiMode = false;
-    private string _screenshotPath = "review/screenshot.png";
+    private string _screenshotPath = "../../review/screenshot.png"; // Moves it out of bin/Debug/net10.0/ to root/review/
 
     public Game1()
     {
