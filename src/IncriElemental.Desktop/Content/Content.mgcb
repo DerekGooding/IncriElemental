@@ -13,5 +13,5 @@
 #------------------------- Content --------------------------------------------#
 
 #begin main_font.spritefont
-/copy:main_font.spritefont
+/build:main_font.spritefont
 #end main_font.spritefont

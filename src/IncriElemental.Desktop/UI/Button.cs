@@ -24,13 +24,17 @@ public class Button
         IsVisible = isVisible ?? (() => true);
     }
 
-    public void Draw(SpriteBatch spriteBatch, SpriteFont font, Texture2D pixel)
+    public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel)
     {
         if (!IsVisible()) return;
         spriteBatch.Draw(pixel, Bounds, Color);
-        Vector2 textSize = font.MeasureString(Text);
-        Vector2 textPos = new Vector2(Bounds.Center.X - textSize.X / 2, Bounds.Center.Y - textSize.Y / 2);
-        spriteBatch.DrawString(font, Text, textPos, TextColor);
+        
+        if (font != null)
+        {
+            Vector2 textSize = font.MeasureString(Text);
+            Vector2 textPos = new Vector2(Bounds.Center.X - textSize.X / 2, Bounds.Center.Y - textSize.Y / 2);
+            spriteBatch.DrawString(font, Text, textPos, TextColor);
+        }
     }
 
     public bool CheckClick(Point mousePos)

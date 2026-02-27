@@ -167,10 +167,11 @@ public class Game1 : Game
         _spriteBatch.Begin();
         _particles.Draw(_spriteBatch);
 
+        // Draw buttons (will show backgrounds if font is missing)
+        foreach (var btn in _buttons) btn.Draw(_spriteBatch, _font, _pixel);
+
         if (_font != null)
         {
-            foreach (var btn in _buttons) btn.Draw(_spriteBatch, _font, _pixel);
-
             // Resources
             float y = 310;
             foreach (var res in _engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount > 1000))
