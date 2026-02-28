@@ -23,9 +23,11 @@ public class Game1 : Game
     private WorldMapSystem _map = new();
     private StatusSystem _status = new();
     private DebugSystem _debug = new();
+    private AiModeSystem _ai;
     private GameTab _currentTab = GameTab.Void;
     private int _lastProcessedHistoryCount = 0;
     private bool _aiMode = false;
+    private bool _needsButtonLayoutUpdate = false;
     private string _screenshotPath = "screenshot.png";
 
     public Game1()
@@ -34,6 +36,7 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         _engine = new GameEngine();
+        _ai = new AiModeSystem(_engine);
 
         // Load Data-Driven Manifestations
         var jsonPath = "manifestations.json";
@@ -71,7 +74,7 @@ public class Game1 : Game
         
         UiLayout.Width = GraphicsDevice.Viewport.Width;
         UiLayout.Height = GraphicsDevice.Viewport.Height;
-        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
+        _needsButtonLayoutUpdate = true;
     }
 
     protected override void Initialize()
@@ -94,25 +97,7 @@ public class Game1 : Game
         _log.AddToLog("You awaken in the void.");
         _log.AddToLog("Focus to begin manifesting reality.");
 
-        if (_aiMode) new AiModeSystem(_engine).Process("ai_commands.txt");
-    }
-
-    private void TakeScreenshot(string path)
-    {
-        var dir = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-        var w = GraphicsDevice.PresentationParameters.BackBufferWidth;
-        var h = GraphicsDevice.PresentationParameters.BackBufferHeight;
-        using var target = new RenderTarget2D(GraphicsDevice, w, h);
-
-        GraphicsDevice.SetRenderTarget(target);
-        Draw(new GameTime());
-        GraphicsDevice.SetRenderTarget(null);
-
-        using var stream = File.Open(path, FileMode.Create);
-        target.SaveAsPng(stream, w, h);
-        Console.WriteLine($"[AI MODE] Screenshot saved to: {Path.GetFullPath(path)}");
+        if (_aiMode) _ai.Process("ai_commands.txt");
     }
 
     protected override void LoadContent()
@@ -132,11 +117,13 @@ public class Game1 : Game
     {
         _input.Update();
 
-        if (_aiMode && gameTime.TotalGameTime.TotalSeconds > 1.0)
+        if (_needsButtonLayoutUpdate)
         {
-            TakeScreenshot(_screenshotPath);
-            Exit();
+            LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
+            _needsButtonLayoutUpdate = false;
         }
+
+        if (_aiMode) _ai.HandleAiUpdate(gameTime, GraphicsDevice, _screenshotPath, Draw, Exit);
 
         var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         if (_input.IsKeyPressed(Keys.Escape)) Exit();

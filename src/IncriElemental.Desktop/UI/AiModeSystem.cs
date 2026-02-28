@@ -1,3 +1,5 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Engine;
 
 namespace IncriElemental.Desktop.UI;
@@ -21,5 +23,32 @@ public class AiModeSystem(GameEngine engine)
                 }
             }
         }
+    }
+
+    public void HandleAiUpdate(GameTime gameTime, GraphicsDevice graphicsDevice, string screenshotPath, Action<GameTime> drawAction, Action exitAction)
+    {
+        if (gameTime.TotalGameTime.TotalSeconds > 1.0)
+        {
+            TakeScreenshot(graphicsDevice, screenshotPath, drawAction);
+            exitAction();
+        }
+    }
+
+    private void TakeScreenshot(GraphicsDevice graphicsDevice, string path, Action<GameTime> drawAction)
+    {
+        var dir = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+        var w = graphicsDevice.PresentationParameters.BackBufferWidth;
+        var h = graphicsDevice.PresentationParameters.BackBufferHeight;
+        using var target = new RenderTarget2D(graphicsDevice, w, h);
+
+        graphicsDevice.SetRenderTarget(target);
+        drawAction(new GameTime());
+        graphicsDevice.SetRenderTarget(null);
+
+        using var stream = File.Open(path, FileMode.Create);
+        target.SaveAsPng(stream, w, h);
+        Console.WriteLine($"[AI MODE] Screenshot saved to: {Path.GetFullPath(path)}");
     }
 }
