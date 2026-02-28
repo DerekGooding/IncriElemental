@@ -18,8 +18,8 @@ public class LayoutSystem
         var startX = aiMode ? centerX - 250 : centerX - 170;
         
         buttons.Add(new Button(new Rectangle(startX, 10, tabW, tabH), "VOID", Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 85, 10, tabW, tabH), "SPIRE", Color.Gray, () => setTab(GameTab.Spire), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 170, 10, tabW, tabH), "WORLD", Color.LimeGreen, () => setTab(GameTab.World), tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX + 85, 10, tabW, tabH), "SPIRE", Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX + 170, 10, tabW, tabH), "WORLD", Color.LimeGreen, () => setTab(GameTab.World), () => engine.State.Discoveries.ContainsKey("garden_manifested"), tab: GameTab.None));
         buttons.Add(new Button(new Rectangle(startX + 255, 10, 120, tabH), "CONSTELLATION", Color.Gold, () => setTab(GameTab.Constellation), () => engine.State.CosmicInsight > 1.0, tab: GameTab.None));
         
         if (aiMode)
