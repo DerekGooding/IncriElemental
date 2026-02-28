@@ -54,6 +54,16 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
         }
     }
 
+    public bool CheckClick(Point mousePos)
+    {
+        if (IsVisible() && Bounds.Contains(mousePos))
+        {
+            OnClick();
+            return true;
+        }
+        return false;
+    }
+
     public void DrawTooltip(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel)
     {
         if (font == null || !IsHovered || TooltipFunc == null) return;
