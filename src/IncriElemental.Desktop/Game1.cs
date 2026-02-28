@@ -224,7 +224,7 @@ public class Game1 : Game
             _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
         }
 
-        _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f));
+        _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
 
         _spriteBatch.End();
         base.Draw(gameTime);

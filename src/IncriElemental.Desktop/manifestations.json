@@ -2,6 +2,7 @@
   {
     "Id": "rune_of_attraction",
     "Name": "RUNE OF ATTRACTION",
+    "OutcomeName": "RUNE OF ATTRACTION",
     "Subtitle": "30 Aether",
     "DiscoveryKey": "automation_unlocked",
     "MaxCount": 1,
@@ -11,6 +12,7 @@
   {
     "Id": "speck",
     "Name": "MANIFEST SPECK",
+    "OutcomeName": "SPECK",
     "Subtitle": "10 Aether",
     "DiscoveryKey": "first_manifestation",
     "MaxCount": 20,
@@ -20,6 +22,7 @@
   {
     "Id": "spark",
     "Name": "MANIFEST SPARK",
+    "OutcomeName": "SPARK",
     "Subtitle": "50A / 50E",
     "DiscoveryKey": "fire_unlocked",
     "MaxCount": 10,
@@ -32,6 +35,7 @@
   {
     "Id": "droplet",
     "Name": "MANIFEST DROPLET",
+    "OutcomeName": "DROPLET",
     "Subtitle": "100A / 50F",
     "DiscoveryKey": "water_unlocked",
     "MaxCount": 10,
@@ -44,6 +48,7 @@
   {
     "Id": "breeze",
     "Name": "MANIFEST BREEZE",
+    "OutcomeName": "BREEZE",
     "Subtitle": "200A / 50W",
     "DiscoveryKey": "air_unlocked",
     "MaxCount": 10,
@@ -56,6 +61,7 @@
   {
     "Id": "altar",
     "Name": "MANIFEST ALTAR",
+    "OutcomeName": "ALTAR",
     "Subtitle": "100A / 20E",
     "DiscoveryKey": "altar_constructed",
     "MaxCount": 1,
@@ -75,6 +81,7 @@
   {
     "Id": "forge",
     "Name": "MANIFEST FORGE",
+    "OutcomeName": "FORGE",
     "Subtitle": "50F / 100E",
     "DiscoveryKey": "forge_constructed",
     "RequiredDiscovery": "altar_constructed",
@@ -88,6 +95,7 @@
   {
     "Id": "pickaxe",
     "Name": "MANIFEST PICKAXE",
+    "OutcomeName": "PICKAXE",
     "Subtitle": "200 Earth",
     "DiscoveryKey": "pickaxe_manifested",
     "RequiredDiscovery": "forge_constructed",
@@ -98,6 +106,7 @@
   {
     "Id": "focus_crystal",
     "Name": "FOCUS CRYSTAL",
+    "OutcomeName": "FOCUS CRYSTAL",
     "Subtitle": "100F / 200A",
     "DiscoveryKey": "crystal_manifested",
     "RequiredDiscovery": "forge_constructed",
@@ -111,6 +120,7 @@
   {
     "Id": "well",
     "Name": "WELL",
+    "OutcomeName": "WELL",
     "Subtitle": "300E / 100W",
     "DiscoveryKey": "well_manifested",
     "RequiredDiscovery": "forge_constructed",
@@ -124,6 +134,7 @@
   {
     "Id": "brazier",
     "Name": "BRAZIER",
+    "OutcomeName": "BRAZIER",
     "Subtitle": "300E / 100F",
     "DiscoveryKey": "brazier_manifested",
     "RequiredDiscovery": "forge_constructed",
@@ -137,6 +148,7 @@
   {
     "Id": "garden",
     "Name": "GARDEN",
+    "OutcomeName": "GARDEN",
     "Subtitle": "500E / 500W",
     "DiscoveryKey": "garden_manifested",
     "RequiredDiscovery": "forge_constructed",
@@ -150,6 +162,7 @@
   {
     "Id": "familiar",
     "Name": "FAMILIAR",
+    "OutcomeName": "FAMILIAR",
     "Subtitle": "1K A / 100L",
     "DiscoveryKey": "familiar_manifested",
     "RequiredDiscovery": "garden_manifested",
@@ -164,47 +177,9 @@
     ]
   },
   {
-    "Id": "spire_foundation",
-    "Name": "FOUNDATION",
-    "Subtitle": "1K E / 200L",
-    "DiscoveryKey": "spire_foundation_ready",
-    "RequiredDiscovery": "familiar_manifested",
-    "MaxCount": 1,
-    "Costs": [
-      { "Type": "Earth", "Amount": 1000 },
-      { "Type": "Life", "Amount": 200 }
-    ],
-    "Effects": []
-  },
-  {
-    "Id": "spire_shaft",
-    "Name": "SHAFT",
-    "Subtitle": "2K F / 1K Air",
-    "DiscoveryKey": "spire_shaft_ready",
-    "RequiredDiscovery": "spire_foundation_ready",
-    "MaxCount": 1,
-    "Costs": [
-      { "Type": "Fire", "Amount": 2000 },
-      { "Type": "Air", "Amount": 1000 }
-    ],
-    "Effects": []
-  },
-  {
-    "Id": "spire_core",
-    "Name": "CORE",
-    "Subtitle": "5K A / 3K W",
-    "DiscoveryKey": "spire_complete",
-    "RequiredDiscovery": "spire_shaft_ready",
-    "MaxCount": 1,
-    "Costs": [
-      { "Type": "Aether", "Amount": 5000 },
-      { "Type": "Water", "Amount": 3000 }
-    ],
-    "Effects": []
-  },
-  {
     "Id": "magma_forge",
     "Name": "MAGMA FORGE",
+    "OutcomeName": "MAGMA FORGE",
     "Subtitle": "1K F / 1K E",
     "DiscoveryKey": "magma_forge_active",
     "RequiredDiscovery": "forge_constructed",
@@ -221,6 +196,7 @@
   {
     "Id": "clouds",
     "Name": "CLOUDS",
+    "OutcomeName": "CLOUDS",
     "Subtitle": "1K W / 1K Air",
     "DiscoveryKey": "clouds_formed",
     "RequiredDiscovery": "air_unlocked",
@@ -235,8 +211,51 @@
     ]
   },
   {
+    "Id": "spire_foundation",
+    "Name": "FOUNDATION",
+    "OutcomeName": "SPIRE FOUNDATION",
+    "Subtitle": "1K E / 200L",
+    "DiscoveryKey": "spire_foundation_ready",
+    "RequiredDiscovery": "familiar_manifested",
+    "MaxCount": 1,
+    "Costs": [
+      { "Type": "Earth", "Amount": 1000 },
+      { "Type": "Life", "Amount": 200 }
+    ],
+    "Effects": []
+  },
+  {
+    "Id": "spire_shaft",
+    "Name": "SHAFT",
+    "OutcomeName": "SPIRE SHAFT",
+    "Subtitle": "2K F / 1K Air",
+    "DiscoveryKey": "spire_shaft_ready",
+    "RequiredDiscovery": "spire_foundation_ready",
+    "MaxCount": 1,
+    "Costs": [
+      { "Type": "Fire", "Amount": 2000 },
+      { "Type": "Air", "Amount": 1000 }
+    ],
+    "Effects": []
+  },
+  {
+    "Id": "spire_core",
+    "Name": "CORE",
+    "OutcomeName": "SPIRE CORE",
+    "Subtitle": "5K A / 3K W",
+    "DiscoveryKey": "spire_complete",
+    "RequiredDiscovery": "spire_shaft_ready",
+    "MaxCount": 1,
+    "Costs": [
+      { "Type": "Aether", "Amount": 5000 },
+      { "Type": "Water", "Amount": 3000 }
+    ],
+    "Effects": []
+  },
+  {
     "Id": "constellation_focus",
     "Name": "ETERNAL FOCUS",
+    "OutcomeName": "ETERNAL FOCUS",
     "Subtitle": "5 Void Embers",
     "DiscoveryKey": "constellation_focus_unlocked",
     "MaxCount": 5,
@@ -246,6 +265,7 @@
   {
     "Id": "constellation_matter",
     "Name": "DENSE MATTER",
+    "OutcomeName": "DENSE MATTER",
     "Subtitle": "10 Void Embers",
     "DiscoveryKey": "constellation_matter_unlocked",
     "MaxCount": 5,
@@ -255,6 +275,7 @@
   {
     "Id": "ascend",
     "Name": "ASCEND",
+    "OutcomeName": "ASCENSION",
     "Subtitle": "Complete the Spire",
     "DiscoveryKey": "ascended",
     "RequiredDiscovery": "spire_complete",
@@ -265,6 +286,7 @@
   {
     "Id": "void_infusion",
     "Name": "VOID INFUSION",
+    "OutcomeName": "VOID INFUSION",
     "Subtitle": "5K Aether",
     "DiscoveryKey": "void_infused",
     "MaxCount": 10,

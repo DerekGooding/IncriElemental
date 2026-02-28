@@ -129,6 +129,7 @@ public class LayoutSystem
     {
         var lines = new List<string>();
         var count = engine.State.Manifestations.GetValueOrDefault(def.Id);
+        var name = string.IsNullOrEmpty(def.OutcomeName) ? def.Name : def.OutcomeName;
         
         if (def.Effects.Any())
         {

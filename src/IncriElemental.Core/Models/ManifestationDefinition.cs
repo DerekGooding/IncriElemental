@@ -18,6 +18,7 @@ public class ManifestationDefinition
 {
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+    public string OutcomeName { get; set; } = string.Empty;
     public string Subtitle { get; set; } = string.Empty;
     public string DiscoveryKey { get; set; } = string.Empty;
     public string RequiredDiscovery { get; set; } = string.Empty;
