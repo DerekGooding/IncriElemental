@@ -54,6 +54,15 @@ public class Game1 : Game
         }
     }
 
+    public void ToggleFullscreen()
+    {
+        _graphics.IsFullScreen = !_graphics.IsFullScreen;
+        _graphics.ApplyChanges();
+        UiLayout.Width = GraphicsDevice.Viewport.Width;
+        UiLayout.Height = GraphicsDevice.Viewport.Height;
+        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
+    }
+
     protected override void Initialize()
     {
         _graphics.PreferredBackBufferWidth = 1024;
@@ -69,7 +78,7 @@ public class Game1 : Game
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData([Color.White]);
 
-        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode);
+        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
         _audio.StartHum();
         _log.AddToLog("You awaken in the void.");
         _log.AddToLog("Focus to begin manifesting reality.");
@@ -130,6 +139,11 @@ public class Game1 : Game
             _lastProcessedHistoryCount++;
         }
 
+        foreach (var btn in _buttons)
+        {
+            if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.Update(_input.MousePosition);
+        }
+
         if (_input.IsLeftClick())
         {
             foreach (var btn in _buttons)
@@ -186,6 +200,14 @@ public class Game1 : Game
             if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
             {
                 btn.Draw(_spriteBatch, _font, _pixel);
+            }
+        }
+
+        foreach (var btn in _buttons)
+        {
+            if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
+            {
+                btn.DrawTooltip(_spriteBatch, _font, _pixel);
             }
         }
 

@@ -13,6 +13,8 @@
 ## 🌌 The Experience
 - **Unfolding Gameplay:** Start with a single "Focus" action and gradually manifest a complex elemental engine.
 - **20-Minute Loop:** A complete experience from awakening to "Ascension," with a balanced progression path.
+- **Interactive Feedback:** New dynamic tooltips explain the ongoing effects of manifestations and their total scaling.
+- **Full Immersion:** Support for **fullscreen mode** and a procedurally generated "void hum" background atmosphere.
 - **New Game+:** Reach Ascension to earn "Cosmic Insight," providing permanent multipliers for future incarnations.
 - **Atmospheric Visuals:** Minimalist UI with glowing particles and thematic narrative milestones.
 

@@ -12,6 +12,13 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
     public Action OnClick = onClick;
     public Func<bool> IsVisible = isVisible ?? (() => true);
     public GameTab Tab = tab;
+    public Func<string>? TooltipFunc = null;
+    public bool IsHovered { get; private set; }
+
+    public void Update(Point mousePos)
+    {
+        IsHovered = IsVisible() && Bounds.Contains(mousePos);
+    }
 
     public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel)
     {
@@ -47,13 +54,24 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
         }
     }
 
-    public bool CheckClick(Point mousePos)
+    public void DrawTooltip(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel)
     {
-        if (IsVisible() && Bounds.Contains(mousePos))
-        {
-            OnClick();
-            return true;
-        }
-        return false;
+        if (font == null || !IsHovered || TooltipFunc == null) return;
+        var tooltip = TooltipFunc();
+        if (string.IsNullOrEmpty(tooltip)) return;
+
+        var tooltipSize = font.MeasureString(tooltip) * 0.8f;
+        var tooltipPos = new Vector2(Bounds.Center.X - tooltipSize.X / 2, Bounds.Top - tooltipSize.Y - 10);
+        var tooltipRect = new Rectangle((int)tooltipPos.X - 5, (int)tooltipPos.Y - 5, (int)tooltipSize.X + 10, (int)tooltipSize.Y + 10);
+
+        // Background
+        spriteBatch.Draw(pixel, tooltipRect, Color.Black * 0.9f);
+        // Border
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, tooltipRect.Width, 1), Color.Gray * 0.5f);
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Bottom, tooltipRect.Width, 1), Color.Gray * 0.5f);
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Right, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
+
+        spriteBatch.DrawString(font, tooltip, tooltipPos, Color.LightGoldenrodYellow, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
     }
 }
