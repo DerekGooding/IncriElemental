@@ -57,7 +57,18 @@ public class Game1 : Game
     public void ToggleFullscreen()
     {
         _graphics.IsFullScreen = !_graphics.IsFullScreen;
+        if (_graphics.IsFullScreen)
+        {
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        }
+        else
+        {
+            _graphics.PreferredBackBufferWidth = 1024;
+            _graphics.PreferredBackBufferHeight = 768;
+        }
         _graphics.ApplyChanges();
+        
         UiLayout.Width = GraphicsDevice.Viewport.Width;
         UiLayout.Height = GraphicsDevice.Viewport.Height;
         LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);

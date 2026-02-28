@@ -39,16 +39,21 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
         {
             // Main Text
             var textSize = font.MeasureString(Text);
+            var scale = 1.0f;
+            if (textSize.X > Bounds.Width - 10) scale = (Bounds.Width - 10) / textSize.X;
+            
             float yOffset = string.IsNullOrEmpty(Subtitle) ? 0 : -8;
-            var textPos = new Vector2(Bounds.Center.X - textSize.X / 2, Bounds.Center.Y - textSize.Y / 2 + yOffset);
-            spriteBatch.DrawString(font, Text, textPos, Color);
+            var textPos = new Vector2(Bounds.Center.X - (textSize.X * scale) / 2, Bounds.Center.Y - (textSize.Y * scale) / 2 + yOffset);
+            spriteBatch.DrawString(font, Text, textPos, Color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
             // Subtitle (Cost)
             if (!string.IsNullOrEmpty(Subtitle))
             {
                 var subScale = 0.8f;
                 var subSize = font.MeasureString(Subtitle) * subScale;
-                var subPos = new Vector2(Bounds.Center.X - subSize.X / 2, textPos.Y + textSize.Y - 2);
+                if (subSize.X > Bounds.Width - 10) subScale *= (Bounds.Width - 10) / subSize.X;
+                
+                var subPos = new Vector2(Bounds.Center.X - (font.MeasureString(Subtitle).X * subScale) / 2, textPos.Y + (textSize.Y * scale) - 2);
                 spriteBatch.DrawString(font, Subtitle, subPos, Color * 0.5f, 0f, Vector2.Zero, subScale, SpriteEffects.None, 0f);
             }
         }

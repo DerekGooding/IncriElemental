@@ -29,7 +29,7 @@ public class LayoutSystem
 
         if (toggleFullscreen != null)
         {
-            buttons.Add(new Button(new Rectangle(UiLayout.Width - 110, 10, 100, 30), "FULLSCREEN", Color.Gray, toggleFullscreen, tab: GameTab.None));
+            buttons.Add(new Button(new Rectangle(100, 10, 80, 25), "FULLSCREEN", Color.Gray * 0.8f, toggleFullscreen, tab: GameTab.None));
         }
 
         // --- VOID TAB ---

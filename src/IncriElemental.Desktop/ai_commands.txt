@@ -1,1 +1,5 @@
-focus:10
+focus
+focus
+focus
+focus
+focus
