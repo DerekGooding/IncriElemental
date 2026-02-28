@@ -4,6 +4,7 @@ This document contains foundational mandates that I (Gemini) must follow through
 
 ## 1. System-Wide Directives
 - **Architecture First:** Always prioritize a clean separation between game logic (`Core`) and rendering (`Desktop`).
+- **Decoupled Events:** Utilize the `EventBus` for publishing and subscribing to significant game events (e.g., resource gains, discoveries) to minimize direct dependencies between systems.
 - **Math Integrity:** Incremental games are built on math. Every formula must be documented in `docs/mechanics.md`.
 - **Validation:** No logic changes are complete without a corresponding unit test in `tests/`.
 - **Memory Consistency:** Update `PLAN.md` and `docs/roadmap.md` at the end of every significant task to maintain project context.
@@ -14,11 +15,13 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Framework:** .NET 10.0 (MonoGame DesktopGL).
 - **Style:** Use file-scoped namespaces.
 - **State:** The game state must be serializable to JSON (for save games).
+- **UI Responsiveness:** All UI elements must use the `UiLayout` system for relative positioning (anchors/margins) to ensure a consistent experience across all window sizes and resolutions.
 - **Dependencies:** Avoid adding external NuGet packages unless explicitly requested or for essential functionality (like JSON serialization).
 - **Git Workflow:** Follow a clean git workflow. Group related changes into logical commits. Always push verified changes to the remote repository as part of the task completion.
 
 ## 3. Unfolding Mechanic Rules
 - **Discovery:** Features should be "locked" by default. The game state must track discovered elements and available actions.
+- **Interactive Feedback:** New manifestations and mechanics must include interactive feedback, such as dynamic tooltips explaining their effects and total scaling, to assist player understanding as the game unfolds.
 - **Narrative:** All text and narrative strings should be managed in a data-driven way (e.g., `Strings.json` or similar) to allow for easy editing.
 
 ## 4. Agentic Piloting & Validation
@@ -29,6 +32,7 @@ This document contains foundational mandates that I (Gemini) must follow through
 ## 5. Project Health & Quality
 - **Test Coverage:** Overall test coverage must remain above **70%**. No individual file should fall below **50%** coverage.
 - **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines** of code. If a file grows beyond this, it must be refactored into smaller, focused components.
+- **Save Integrity:** `GameState` must include a version number. `SaveManager` must handle migrations for older save versions to ensure long-term player persistence.
 - **Documentation Staleness:** Documentation must be updated frequently. If more than **8 source files** have been changed since a documentation file was last updated, it is considered "stale" and must be reviewed.
 - **Health Integrity:** I must never "touch" files (e.g., appending whitespace) solely to satisfy staleness requirements. When a file is stale, I must actually review and update its content to reflect the current state of the codebase. Staleness is resolved by committing actual content improvements.
 - **Automated Checks:** I must run `scripts/check_health.py` before completing any significant feature to ensure no regressions in code health.
@@ -41,8 +45,8 @@ This document contains foundational mandates that I (Gemini) must follow through
 
 
 ## 6. Playability Goal (Current)
-- **Target:** A complete, polished 20-minute gameplay loop ending with "Ascension."
-- **Focus:** Ensure the mid-game (5-15 mins) remains engaging with new unlocks every 2-3 minutes.
+- **Target:** A complete, polished 20-minute gameplay loop ending with "Ascension," followed by a meaningful **New Game+** experience via the "Constellation" prestige tree.
+- **Focus:** Ensure the early-game is tactile (Focus), mid-game is automated (Spire), and late-game is strategic (Constellation).
 - **Verification:** Use `tests/IncriElemental.Tests/BalanceSimulator.cs` to confirm the timing of the loop.
 
 ---
