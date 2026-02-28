@@ -67,6 +67,7 @@ public class GameEngine
         {
             var cell = State.Map.GetCell(x, y);
             CheckLoreUnlocks(cell.Type.ToString());
+            EventBus.PublishDiscoveryUnlocked($"explored_{x}_{y}");
             return true;
         }
         return false;
@@ -78,11 +79,13 @@ public class GameEngine
         if (State.Discoveries.GetValueOrDefault("pickaxe_manifested")) aetherGain += 2.0 * State.CosmicInsight;
 
         State.GetResource(ResourceType.Aether).Add(aetherGain);
+        EventBus.PublishResourceGained("Aether", aetherGain);
 
         if (State.GetResource(ResourceType.Aether).Amount >= 10 && !State.Discoveries.GetValueOrDefault("void_observed"))
         {
             State.Discoveries["void_observed"] = true;
             State.History.Add("The void feels thick with potential.");
+            EventBus.PublishDiscoveryUnlocked("void_observed");
         }
     }
 

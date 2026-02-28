@@ -22,9 +22,9 @@ public class LogSystem
 
     public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel)
     {
-        var logWidth = 300;
-        spriteBatch.Draw(pixel, new Rectangle(0, 0, logWidth, 768), Color.Black * 0.3f);
-        spriteBatch.Draw(pixel, new Rectangle(logWidth, 0, 1, 768), Color.Gray * 0.2f); // Border
+        var logWidth = (int)(UiLayout.Width * 0.25f);
+        spriteBatch.Draw(pixel, new Rectangle(0, 0, logWidth, UiLayout.Height), Color.Black * 0.3f);
+        spriteBatch.Draw(pixel, new Rectangle(logWidth, 0, 1, UiLayout.Height), Color.Gray * 0.2f); // Border
 
         if (font != null)
         {

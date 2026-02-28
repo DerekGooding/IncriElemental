@@ -96,25 +96,30 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **CI Reliability:** Ensure the shields deployment handles empty diffs gracefully.
 - [x] **Asset Portability:** Ensure data files are correctly copied to the output directory.
 
-## 20. Goal: Technical Perfection & Immersion (Next)
-- [ ] **UI Pagination:** Implement a tab system (Void / Spire / World) to manage UI density.
-- [ ] **Dynamic Layout:** Implement relative positioning (anchors/margins) to support various resolutions.
-- [ ] **Procedural Atmosphere:** Implement a minimalist background "void hum" using dynamic sound generation.
-- [ ] **CI Font Portability:** Replace the system-font hack in `ci.yml` with the portable download script.
+## 20. Goal: Technical Perfection & Immersion (Completed)
+- [x] **UI Pagination:** Implement a tab system (Void / Spire / World / Constellation / Debug) to manage UI density.
+- [x] **Dynamic Layout:** Implement relative positioning (anchors/margins) via `UiLayout` to support various resolutions.
+- [x] **Procedural Atmosphere:** Implement a minimalist background "void hum" using dynamic sound generation.
+- [x] **CI Font Portability:** Replace the system-font hack in `ci.yml` with the portable download script.
 
-## 21. Goal: Architectural Decoupling & Stability
-- [ ] **EventBus:** Implement a lightweight event system for `ResourceGained`, `ThingManifested`, etc.
-- [ ] **Save Migration:** Add versioning to `GameState` and a migration layer to `SaveManager`.
+## 21. Goal: Architectural Decoupling & Stability (Completed)
+- [x] **EventBus:** Implement a lightweight event system for `ResourceGained`, `ThingManifested`, etc.
+- [x] **Save Migration:** Add versioning to `GameState` and a migration layer to `SaveManager`.
 - [ ] **Auto-Healing CI:** (Research) Explore automated agent triggers for health regressions.
 
-## 22. Goal: Deep Unfolding & Synergies
-- [ ] **The Constellation:** Implement a prestige tree using "Void Embers" earned upon Ascension.
-- [ ] **Landmark Exploration:** Add fixed coordinates on the map with unique narrative and manifestations.
-- [ ] **Elemental Synergies:** Expand `AlchemySystem` with long-term structures like "Magma Forge" and "Clouds."
+## 22. Goal: Deep Unfolding & Synergies (Completed)
+- [x] **The Constellation:** Implement a prestige tree using "Void Embers" earned upon Ascension.
+- [x] **Landmark Exploration:** Add fixed coordinates on the map with unique narrative and manifestations.
+- [x] **Elemental Synergies:** Expand `AlchemySystem` with long-term structures like "Magma Forge" and "Clouds."
 
-## 23. Goal: Advanced Agentic Tooling
-- [ ] **Efficiency Observer:** A debug UI for the agent to visualize resource bottlenecks.
-- [ ] **Auto-Balancer V2:** Update the simulator to automatically tune costs in `manifestations.json`.
+## 23. Goal: Advanced Agentic Tooling (Completed)
+- [x] **Efficiency Observer:** A debug UI for the agent to visualize resource bottlenecks.
+- [ ] **Auto-Balancer V2:** (Deferred) Update the simulator to automatically tune costs in `manifestations.json`.
+
+## 24. Goal: The Final Polish (Next)
+- [ ] **Tutorialization:** Add a guided first-time experience for new players.
+- [ ] **Performance:** Optimize particle system for high-density endgames.
+- [ ] **Localization:** Externalize all strings for multi-language support.
 
 
 

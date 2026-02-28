@@ -6,7 +6,7 @@ ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
 url = "https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxK.ttf"
-output = "src/IncriElemental.Desktop/Content/font.ttf"
+output = "src/IncriElemental.Desktop/Content/Arial.ttf"
 
 try:
     with urllib.request.urlopen(url, context=ctx) as response, open(output, 'wb') as out_file:

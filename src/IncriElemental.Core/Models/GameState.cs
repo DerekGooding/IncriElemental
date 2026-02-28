@@ -2,6 +2,7 @@ namespace IncriElemental.Core.Models;
 
 public class GameState
 {
+    public int Version { get; set; } = 1;
     public Dictionary<ResourceType, Resource> Resources { get; set; } = [];
     public Dictionary<string, bool> Discoveries { get; set; } = [];
     public Dictionary<string, int> Manifestations { get; set; } = [];

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace IncriElemental.Desktop.UI;
 
-public class Button(Rectangle bounds, string text, Color color, Action onClick, Func<bool>? isVisible = null, string? subtitle = null)
+public class Button(Rectangle bounds, string text, Color color, Action onClick, Func<bool>? isVisible = null, string? subtitle = null, GameTab tab = GameTab.Void)
 {
     public Rectangle Bounds = bounds;
     public string Text = text;
@@ -11,6 +11,7 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
     public Color Color = color;
     public Action OnClick = onClick;
     public Func<bool> IsVisible = isVisible ?? (() => true);
+    public GameTab Tab = tab;
 
     public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel)
     {

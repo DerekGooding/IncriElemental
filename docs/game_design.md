@@ -26,17 +26,25 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 
 ### Phase 3: The World Map (Exploration)
 - **Requirement:** Manifestation of a "Familiar".
-- **Interaction:** A grid-based map appears in the lower center of the screen.
+- **Interaction:** A grid-based map appears in the `World` tab.
 - **Exploration:** Click on grid cells to send Familiars to explore.
+- **Landmarks:** Fixed coordinates (e.g., Ancient Archive, Eternal Spring) provide unique narrative descriptions and significant resource rewards.
 - **Outcome:** Exploration unlocks Lore fragments and rare discoveries.
 
 ### Phase 4: The Spire & Ascension
-- **Inventory:** A dedicated UI area on the right side tracks all manifested items and structures beyond simple essences.
+- **Inventory:** A dedicated UI area in the `StatusSystem` tracks all manifested items and structures beyond simple essences.
 - **Goal:** Manifest the Great Spire in the center of the void.
 - **Stages:** Foundation (Earth/Life), Shaft (Fire/Air), Core (Aether/Water).
 - **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence.
-- **New Game Plus:** "A New Awakening" allows the wizard to restart with increased "Cosmic Insight," multipling all manual and passive resource gains.
+- **New Game Plus:** "A New Awakening" grants **Void Embers** and "Cosmic Insight," multiplying all manual and passive resource gains.
+- **The Constellation:** A prestige tree (available in the `Constellation` tab) where Void Embers are spent on permanent, high-scaling upgrades like "Eternal Focus" and "Dense Matter."
 - **Void Infusion:** A Post-Ascension mechanic allowing the direct infusion of elemental storage using raw Aether.
+
+## 4. Elemental Synergies
+Beyond simple manifestations, combining elements in advanced structures creates synergies:
+- **Magma Forge (Fire + Earth):** Significantly boosts production of both elements.
+- **Clouds (Water + Air):** Enhances the flow of atmospheric essences.
+- **Alchemy Mixes:** Temporary but powerful generation multipliers triggered by combining opposing elements (e.g., Combustion from Fire/Air).
 
 ---
 *Last Updated: Friday, February 27, 2026 (Updated by Agent Gemini)*

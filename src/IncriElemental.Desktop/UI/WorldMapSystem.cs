@@ -9,8 +9,8 @@ public class WorldMapSystem
 {
     private const int CellSize = 20;
     private const int CellPadding = 2;
-    private const int StartX = 350;
-    private const int StartY = 400;
+    private const int StartX = 20;
+    private const int StartY = 100;
 
     public void Update(GameEngine engine, Point mousePos, bool isLeftClick, AudioManager audio)
     {
@@ -36,9 +36,9 @@ public class WorldMapSystem
 
         if (font != null)
         {
-            spriteBatch.DrawString(font, "WORLD EXPLORATION (Click cells to send Familiars)", new Vector2(350, 370), Color.Gray * 0.5f);
+            spriteBatch.DrawString(font, "WORLD EXPLORATION (Click cells to send Familiars)", new Vector2(StartX, StartY - 30), Color.Gray * 0.5f);
         }
-        visuals.DrawMap(spriteBatch, engine.State.Map, mousePos, pixel);
+        visuals.DrawMap(spriteBatch, engine.State.Map, mousePos, pixel, StartX, StartY);
     }
 
     private Rectangle GetCellBounds(int x, int y) => new Rectangle(StartX + x * (CellSize + CellPadding), StartY + y * (CellSize + CellPadding), CellSize, CellSize);

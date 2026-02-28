@@ -21,7 +21,9 @@ public class Game1 : Game
     private Texture2D _pixel = null!;
     private LogSystem _log = new();
     private WorldMapSystem _map = new();
-    private InventorySystem _inventory = new();
+    private StatusSystem _status = new();
+    private DebugSystem _debug = new();
+    private GameTab _currentTab = GameTab.Void;
     private int _lastProcessedHistoryCount = 0;
     private bool _aiMode = false;
     private string _screenshotPath = "screenshot.png";
@@ -58,13 +60,17 @@ public class Game1 : Game
         _graphics.PreferredBackBufferHeight = 768;
         _graphics.ApplyChanges();
 
+        UiLayout.Width = GraphicsDevice.Viewport.Width;
+        UiLayout.Height = GraphicsDevice.Viewport.Height;
+
         base.Initialize();
         _particles = new ParticleSystem(GraphicsDevice);
         _visuals = new VisualManager(GraphicsDevice);
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData([Color.White]);
 
-        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog);
+        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode);
+        _audio.StartHum();
         _log.AddToLog("You awaken in the void.");
         _log.AddToLog("Focus to begin manifesting reality.");
 
@@ -126,10 +132,13 @@ public class Game1 : Game
 
         if (_input.IsLeftClick())
         {
-            foreach (var btn in _buttons) btn.CheckClick(_input.MousePosition);
+            foreach (var btn in _buttons)
+            {
+                if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.CheckClick(_input.MousePosition);
+            }
         }
 
-        _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
+        if (_currentTab == GameTab.World) _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
 
         base.Update(gameTime);
     }
@@ -142,18 +151,19 @@ public class Game1 : Game
             _spriteBatch.Begin();
             if (_font != null)
             {
+                var centerX = UiLayout.Width / 2;
                 var msg = "ASCENSION COMPLETE";
-                _spriteBatch.DrawString(_font, msg, new Vector2(512 - _font.MeasureString(msg).X/2, 200), Color.Gold);
+                _spriteBatch.DrawString(_font, msg, new Vector2(centerX - _font.MeasureString(msg).X/2, 200), Color.Gold);
 
                 string[] credits = ["Created by: Derek Gooding", "Developed by: Gemini CLI", "Made with MonoGame", "Thank you for playing!"];
                 for(var i=0; i<credits.Length; i++)
-                    _spriteBatch.DrawString(_font, credits[i], new Vector2(512 - _font.MeasureString(credits[i]).X/2, 400 + i*40 - (float)gameTime.TotalGameTime.TotalSeconds * 30), Color.DarkGray);
+                    _spriteBatch.DrawString(_font, credits[i], new Vector2(centerX - _font.MeasureString(credits[i]).X/2, 400 + i*40 - (float)gameTime.TotalGameTime.TotalSeconds * 30), Color.DarkGray);
 
                 // Add Reset/New Game+ Button
-                var resetRect = new Rectangle(412, 600, 200, 50);
+                var resetRect = new Rectangle(centerX - 100, 600, 200, 50);
                 _spriteBatch.Draw(_pixel, resetRect, Color.Gold * 0.4f);
                 var resetText = "A NEW AWAKENING";
-                _spriteBatch.DrawString(_font, resetText, new Vector2(512 - _font.MeasureString(resetText).X/2, 625 - _font.MeasureString(resetText).Y/2), Color.DarkGoldenrod);
+                _spriteBatch.DrawString(_font, resetText, new Vector2(centerX - _font.MeasureString(resetText).X/2, 625 - _font.MeasureString(resetText).Y/2), Color.DarkGoldenrod);
 
                 if (_input.IsLeftClick() && resetRect.Contains(_input.MousePosition))
                 {
@@ -170,54 +180,33 @@ public class Game1 : Game
 
         _log.Draw(_spriteBatch, _font, _pixel);
         _particles.Draw(_spriteBatch);
-        foreach (var btn in _buttons) btn.Draw(_spriteBatch, _font, _pixel);
 
-        _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
-        _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals);
+        foreach (var btn in _buttons)
+        {
+            if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
+            {
+                btn.Draw(_spriteBatch, _font, _pixel);
+            }
+        }
 
-        DrawResources();
+        if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire)
+        {
+            _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
+        }
+
+        if (_currentTab == GameTab.World)
+        {
+            _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals);
+        }
+
+        if (_currentTab == GameTab.Debug)
+        {
+            _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
+        }
+
+        _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f));
 
         _spriteBatch.End();
         base.Draw(gameTime);
-    }
-
-    private void DrawResources()
-    {
-        var resX = 800;
-        if (_font == null) return;
-
-        float y = 20;
-        _spriteBatch.DrawString(_font, "ESSENCE", new Vector2(resX, y), Color.Gray);
-        y += 30;
-
-        foreach (var res in _engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000))
-        {
-            var amountStr = _visuals.FormatValue(res.Amount);
-            var maxStr = res.MaxAmount > 1_000_000_000_000 ? "INF" : _visuals.FormatValue(res.MaxAmount);
-            var label = $"{res.Type}: {amountStr}";
-
-            _visuals.DrawElement(_spriteBatch, res.Type, new Vector2(resX - 15, y + 8), 6f);
-            _spriteBatch.DrawString(_font, label, new Vector2(resX, y), _visuals.GetColor(res.Type));
-
-            if (res.MaxAmount < 1_000_000_000_000)
-            {
-                var percent = (float)(res.Amount / res.MaxAmount);
-                _spriteBatch.Draw(_pixel, new Rectangle(resX, (int)y + 22, 150, 2), Color.Gray * 0.2f);
-                _spriteBatch.Draw(_pixel, new Rectangle(resX, (int)y + 22, (int)(150 * percent), 2), _visuals.GetColor(res.Type) * 0.5f);
-            }
-            y += 40;
-        }
-
-        y += 20;
-        _spriteBatch.DrawString(_font, "ACTIVE REACTION", new Vector2(resX, y), Color.Gray * 0.5f);
-        y += 30;
-        foreach (var buff in _engine.State.ActiveBuffs)
-        {
-            _spriteBatch.DrawString(_font, $"{buff.Id}: {buff.RemainingTime:F0}s", new Vector2(resX, y), Color.Gold * 0.8f);
-            y += 25;
-        }
-
-        y += 30;
-        _inventory.Draw(_spriteBatch, _engine, _font, _pixel, resX, (int)y);
     }
 }

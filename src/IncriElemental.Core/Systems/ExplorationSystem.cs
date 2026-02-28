@@ -21,14 +21,44 @@ public class ExplorationSystem(GameState state)
 
         aether.Add(-500);
         cell.IsExplored = true;
-        cell.Type = (CellType)_random.Next(1, 5); // Discover a type other than Void
 
-        _state.History.Add($"Exploration: Found {cell.Type} at ({x}, {y}).");
-
-        // Grant a random reward
-        GrantReward(cell.Type);
+        if (!string.IsNullOrEmpty(cell.LandmarkName))
+        {
+            _state.History.Add($"Exploration: Discovered {cell.LandmarkName} at ({x}, {y})!");
+            _state.History.Add(cell.LandmarkDescription);
+            GrantLandmarkReward(cell.LandmarkName);
+        }
+        else
+        {
+            cell.Type = (CellType)_random.Next(1, 5); // Discover a type other than Void
+            _state.History.Add($"Exploration: Found {cell.Type} at ({x}, {y}).");
+            GrantReward(cell.Type);
+        }
 
         return true;
+    }
+
+    private void GrantLandmarkReward(string name)
+    {
+        switch (name)
+        {
+            case "Ancient Archive":
+                _state.GetResource(ResourceType.Aether).Add(5000);
+                _state.Discoveries["archive_unlocked"] = true;
+                break;
+            case "Peak of Origins":
+                _state.GetResource(ResourceType.Fire).Add(2000);
+                break;
+            case "Eternal Spring":
+                _state.GetResource(ResourceType.Water).Add(2000);
+                break;
+            case "Deepest Trench":
+                _state.GetResource(ResourceType.Water).Add(5000);
+                break;
+            case "Whispering Plain":
+                _state.GetResource(ResourceType.Air).Add(2000);
+                break;
+        }
     }
 
     private void GrantReward(CellType type)

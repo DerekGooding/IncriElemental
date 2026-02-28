@@ -203,6 +203,56 @@
     "Effects": []
   },
   {
+    "Id": "magma_forge",
+    "Name": "MAGMA FORGE",
+    "Subtitle": "1K F / 1K E",
+    "DiscoveryKey": "magma_forge_active",
+    "RequiredDiscovery": "forge_constructed",
+    "MaxCount": 5,
+    "Costs": [
+      { "Type": "Fire", "Amount": 1000 },
+      { "Type": "Earth", "Amount": 1000 }
+    ],
+    "Effects": [
+      { "Type": "Fire", "PerSecondBonus": 10.0 },
+      { "Type": "Earth", "PerSecondBonus": 5.0 }
+    ]
+  },
+  {
+    "Id": "clouds",
+    "Name": "CLOUDS",
+    "Subtitle": "1K W / 1K Air",
+    "DiscoveryKey": "clouds_formed",
+    "RequiredDiscovery": "air_unlocked",
+    "MaxCount": 5,
+    "Costs": [
+      { "Type": "Water", "Amount": 1000 },
+      { "Type": "Air", "Amount": 1000 }
+    ],
+    "Effects": [
+      { "Type": "Water", "PerSecondBonus": 5.0 },
+      { "Type": "Air", "PerSecondBonus": 10.0 }
+    ]
+  },
+  {
+    "Id": "constellation_focus",
+    "Name": "ETERNAL FOCUS",
+    "Subtitle": "5 Void Embers",
+    "DiscoveryKey": "constellation_focus_unlocked",
+    "MaxCount": 5,
+    "Costs": [{ "Type": "VoidEmbers", "Amount": 5 }],
+    "Effects": [{ "Type": "Aether", "PerSecondBonus": 50.0 }]
+  },
+  {
+    "Id": "constellation_matter",
+    "Name": "DENSE MATTER",
+    "Subtitle": "10 Void Embers",
+    "DiscoveryKey": "constellation_matter_unlocked",
+    "MaxCount": 5,
+    "Costs": [{ "Type": "VoidEmbers", "Amount": 10 }],
+    "Effects": [{ "Type": "Earth", "PerSecondBonus": 100.0 }]
+  },
+  {
     "Id": "ascend",
     "Name": "ASCEND",
     "Subtitle": "Complete the Spire",

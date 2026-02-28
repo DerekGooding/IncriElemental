@@ -7,7 +7,8 @@ public enum ResourceType
     Fire,
     Water,
     Air,
-    Life
+    Life,
+    VoidEmbers
 }
 
 public class Resource

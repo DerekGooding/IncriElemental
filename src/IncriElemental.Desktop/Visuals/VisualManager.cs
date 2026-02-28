@@ -35,12 +35,10 @@ public class VisualManager
     public Color GetColor(ResourceType type) => _elementColors.GetValueOrDefault(type, Color.White);
     public Color GetCellColor(CellType type) => _cellColors.GetValueOrDefault(type, Color.Black);
 
-    public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel)
+    public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel, int startX, int startY)
     {
         var size = 20;
         var padding = 2;
-        var startX = 350;
-        var startY = 400;
 
         for (var x = 0; x < map.Width; x++)
         {

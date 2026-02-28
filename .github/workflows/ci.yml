@@ -28,8 +28,7 @@ jobs:
         sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core
     - name: Setup Font for MGCB
       run: |
-        # Use the local system's DejaVuSans as our 'Arial' replacement
-        cp /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf src/IncriElemental.Desktop/Content/Arial.ttf
+        python scripts/download_font.py
         ls -l src/IncriElemental.Desktop/Content/Arial.ttf
     - name: Restore dependencies
       run: dotnet restore

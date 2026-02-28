@@ -1,4 +1,5 @@
 using IncriElemental.Core.Models;
+using IncriElemental.Core.Engine;
 
 namespace IncriElemental.Core.Systems;
 
@@ -49,7 +50,13 @@ public class ManifestationManager
         }
 
         _state.Manifestations[def.Id] = _state.Manifestations.GetValueOrDefault(def.Id) + 1;
-        if (!string.IsNullOrEmpty(def.DiscoveryKey)) _state.Discoveries[def.DiscoveryKey] = true;
+        EventBus.PublishThingManifested(def.Id);
+
+        if (!string.IsNullOrEmpty(def.DiscoveryKey))
+        {
+            _state.Discoveries[def.DiscoveryKey] = true;
+            EventBus.PublishDiscoveryUnlocked(def.DiscoveryKey);
+        }
 
         foreach (var effect in def.Effects)
         {
@@ -68,6 +75,7 @@ public class ManifestationManager
     private void ResetForNewGamePlus()
     {
         var multiplier = _state.CosmicInsight + 0.5;
+        var embers = _state.GetResource(ResourceType.VoidEmbers).Amount + 10;
         _state.Resources.Clear();
         _state.Discoveries.Clear();
         _state.Manifestations.Clear();
@@ -82,6 +90,8 @@ public class ManifestationManager
         {
             _state.Resources[type] = new Resource(type);
         }
+
+        _state.GetResource(ResourceType.VoidEmbers).Add(embers);
 
         _state.History.Add($"You awaken with Cosmic Insight x{multiplier:F1}.");
         _state.History.Add("The void feels thinner. Void Infusion is now possible.");

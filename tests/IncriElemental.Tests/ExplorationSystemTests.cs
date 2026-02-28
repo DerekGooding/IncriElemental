@@ -65,7 +65,7 @@ public class ExplorationSystemTests
         if (rx != -1)
         {
             engine.Explore(rx, ry);
-            Assert.Contains("We are not the first to manifest here.", state.History);
+            Assert.Contains("We are not the first to manifest here. The void remembers.", state.History);
         }
     }
 }
