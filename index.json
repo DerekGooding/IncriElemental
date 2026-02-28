@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
     "label": "health",
-    "message": "Project Unhealthy",
-    "color": "red"
+    "message": "Project Healthy",
+    "color": "brightgreen"
 }
