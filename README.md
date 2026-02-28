@@ -13,13 +13,13 @@
 ## 🌌 The Experience
 - **Unfolding Gameplay:** Start with a single "Focus" action and gradually manifest a complex elemental engine.
 - **20-Minute Loop:** A complete experience from awakening to "Ascension," with a balanced progression path.
-- **Interactive Feedback:** New dynamic tooltips explain the ongoing effects of manifestations and their total scaling.
+- **Interactive Feedback:** Dynamic tooltips explain the ongoing effects of manifestations and their total scaling.
+- **Scrollable UI:** A robust scrolling system with vertical button stacking ensures all manifestations are accessible regardless of resolution.
 - **Full Immersion:** Support for **fullscreen mode** and a procedurally generated "void hum" background atmosphere.
 - **New Game+:** Reach Ascension to earn "Cosmic Insight," providing permanent multipliers for future incarnations.
-- **Atmospheric Visuals:** Minimalist UI with glowing particles and thematic narrative milestones.
 
 ## 🛠️ Technical Highlights
-- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. Logic is split into specialized systems (`ManifestationManager`, `AutomationSystem`, `LogSystem`, `WorldMapSystem`).
+- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. Logic is split into specialized systems (`ManifestationManager`, `AutomationSystem`, `LogSystem`, `WorldMapSystem`, `StatusSystem`, `EndingSystem`).
 - **Health Suite:** Strict enforcement of 70% test coverage and 250-line monolith prevention via `scripts/check_health.py`.
 - **Agentic DevOps:** Automated CI/CD pipeline that manages build, test, health scans, and dynamic documentation shields.
 - **AI Review Mode:** Headless execution and automated screenshotting tools for agent-driven UI verification.

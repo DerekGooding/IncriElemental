@@ -15,6 +15,7 @@ The project is split into three main layers:
 The `GameState` class in `IncriElemental.Core` is the single source of truth.
 - **Serialization:** System.Text.Json is used for save games.
 - **State Updates:** All mutations must go through a dedicated `GameLogic` or `Update` method in the `Core` project.
+- **Save Integrity:** `GameState` includes versioning, and `SaveManager` handles migrations to ensure older save files remain compatible with new updates.
 
 ## 3. Unfolding Engine
 - **Discovery State:** A `Dictionary<string, bool>` or similar structure to track which features are "unlocked."
@@ -22,19 +23,20 @@ The `GameState` class in `IncriElemental.Core` is the single source of truth.
 
 ## 4. UI Abstraction
 - **Layout:** A modular UI system managed by `LayoutSystem` and `UiLayout` which calculates relative positions based on screen resolution (anchors/margins).
-- **Pagination:** A `GameTab` system (Void / Spire / World / Constellation / Debug) manages UI density by filtering visible elements.
+- **Pagination & Scrolling:** A `GameTab` system manages UI density. Each tab supports a scrollable viewport using `ScissorRectangle` clipping and mouse wheel interaction to handle large numbers of manifestations.
 - **Specialized Systems:** 
     - `LogSystem`: Manages the narrative log, prevents message duplication, and handles fading text rendering.
     - `WorldMapSystem`: Handles grid-based exploration logic, coordinate translation, and map rendering.
-    - `StatusSystem`: Displays current resources, active buffs, and manifestations.
-    - `InputManager`: Abstracts MonoGame mouse and keyboard state for cleaner interaction logic.
+    - `StatusSystem`: Displays current resources, active buffs, and manifestations with hover tooltips.
+    - `EndingSystem`: Manages the Ascension completion screen and New Game+ reset logic.
+    - `InputManager`: Abstracts MonoGame mouse, keyboard, and scroll wheel state for cleaner interaction logic.
 - **Binding:** The Desktop layer reads the `GameState` and employs these specialized systems to render UI elements and process input.
 
 ## 5. Agentic Piloting & Headless Mode
 To support heavy agentic development, the architecture allows for automated execution and UI verification:
 - **GameEngine Driver:** The `GameEngine` in `Core` is the primary interface.
 - **HeadlessDriver:** A text-based interface for `GameEngine` used in tests and balance simulations.
-- **AiModeSystem:** A Desktop-layer system that reads `ai_commands.txt` and drives the engine during agentic review.
+- **AiModeSystem:** A Desktop-layer system that handles command processing and automated screenshotting during agentic review.
 - **Efficiency Observer:** A debug UI (available in the `Debug` tab in AI mode) that visualizes resource generation rates and identifies bottlenecks for automated balancing.
 - **Validation:** Automated scripts in `scripts/` and unit tests in `tests/` use these drivers to verify game balance and UI layout via screenshots.
 

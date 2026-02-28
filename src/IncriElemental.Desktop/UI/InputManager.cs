@@ -11,6 +11,7 @@ public class InputManager
     private KeyboardState _lastKey;
 
     public Point MousePosition => _currentMouse.Position;
+    public int ScrollDelta => _currentMouse.ScrollWheelValue - _lastMouse.ScrollWheelValue;
 
     public void Update()
     {

@@ -4,7 +4,7 @@ This document defines the DevOps and CI/CD strategy for **IncriElemental**, emph
 
 ## 1. Source Control
 - **Repository:** Public GitHub Repository (Managed by the Agent).
-- **Branching:** Main branch for stable releases. Feature branches can be used for significant, independent work.
+- **Branching:** Main branch for stable releases.
 - **Commits:** Every agentic task completion must be followed by a commit that clearly describes the change and its impact.
 
 ## 2. CI/CD Pipeline
@@ -17,7 +17,6 @@ The agent maintains a GitHub Actions pipeline (`.github/workflows/ci.yml`) that:
 - **Shields:** Automatically updates health data on the `shields` branch for dynamic status badges.
 
 ## 3. Deployment
-- **Releases:** (Future) Automated generation of GitHub Releases with platform-specific binaries (Windows, Linux, macOS).
 - **Manifests:** Updating the `docs/roadmap.md`, `GEMINI.md`, and other documentation is considered part of the "deployment" of project context and is required when files become "stale."
 
 ## 4. Agentic Responsibility
@@ -26,10 +25,9 @@ The agent maintains a GitHub Actions pipeline (`.github/workflows/ci.yml`) that:
 
 ## 5. Health Enforcement
 The project maintains strict quality and coverage standards enforced via `scripts/check_health.py`:
-- **Coverage:** Overall >= 70% (via `dotnet test --collect:"XPlat Code Coverage"`).
-- **Monoliths:** No source file > 250 lines. (Refactored `Game1.cs` to use specialized systems).
-- **Documentation Staleness:** Documentation files (README.md, docs/*.md, etc.) are monitored for staleness. A doc is considered "stale" if more than **8 source files** have been changed since its last update. Staleness requires a manual review and update of the document's content.
-- **Shields:** The current health status is reflected in the `README.md` shields using data deployed by the CI pipeline.
+- **Coverage:** Overall >= 70%.
+- **Monoliths:** No source file > 250 lines. The `Game1.cs` entry point is decoupled into specialized systems (`LogSystem`, `WorldMapSystem`, `StatusSystem`, `EndingSystem`, `AiModeSystem`).
+- **Documentation Staleness:** Documentation files are monitored for staleness. A doc is considered "stale" if more than **8 source files** have been changed since its last update. Staleness requires a manual review and update of the document's content.
 
 ---
 *Follow these patterns for all repository management.*

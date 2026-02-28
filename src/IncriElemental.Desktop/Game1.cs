@@ -23,12 +23,17 @@ public class Game1 : Game
     private WorldMapSystem _map = new();
     private StatusSystem _status = new();
     private DebugSystem _debug = new();
+    private EndingSystem _ending = new();
     private AiModeSystem _ai;
     private GameTab _currentTab = GameTab.Void;
     private int _lastProcessedHistoryCount = 0;
     private bool _aiMode = false;
+    private Dictionary<GameTab, float> _tabScrollOffsets = new() {
+        { GameTab.Void, 0 }, { GameTab.Spire, 0 }, { GameTab.World, 0 }, { GameTab.Constellation, 0 }
+    };
     private bool _needsButtonLayoutUpdate = false;
     private string _screenshotPath = "screenshot.png";
+    private RasterizerState _scissorState = new() { ScissorTestEnable = true };
 
     public Game1()
     {
@@ -137,16 +142,23 @@ public class Game1 : Game
             _lastProcessedHistoryCount++;
         }
 
+        if (_tabScrollOffsets.ContainsKey(_currentTab))
+        {
+            _tabScrollOffsets[_currentTab] = Math.Min(0, _tabScrollOffsets[_currentTab] + _input.ScrollDelta * 0.5f);
+        }
+
         foreach (var btn in _buttons)
         {
-            if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.Update(_input.MousePosition);
+            var offset = btn.Tab == GameTab.None ? 0 : (int)_tabScrollOffsets.GetValueOrDefault(btn.Tab, 0);
+            if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.Update(_input.MousePosition, offset);
         }
 
         if (_input.IsLeftClick())
         {
             foreach (var btn in _buttons)
             {
-                if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.CheckClick(_input.MousePosition);
+                var offset = btn.Tab == GameTab.None ? 0 : (int)_tabScrollOffsets.GetValueOrDefault(btn.Tab, 0);
+                if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.CheckClick(_input.MousePosition, offset);
             }
         }
 
@@ -161,28 +173,10 @@ public class Game1 : Game
         {
             GraphicsDevice.Clear(Color.White);
             _spriteBatch.Begin();
-            if (_font != null)
-            {
-                var centerX = UiLayout.Width / 2;
-                var msg = "ASCENSION COMPLETE";
-                _spriteBatch.DrawString(_font, msg, new Vector2(centerX - _font.MeasureString(msg).X/2, 200), Color.Gold);
-
-                string[] credits = ["Created by: Derek Gooding", "Developed by: Gemini CLI", "Made with MonoGame", "Thank you for playing!"];
-                for(var i=0; i<credits.Length; i++)
-                    _spriteBatch.DrawString(_font, credits[i], new Vector2(centerX - _font.MeasureString(credits[i]).X/2, 400 + i*40 - (float)gameTime.TotalGameTime.TotalSeconds * 30), Color.DarkGray);
-
-                // Add Reset/New Game+ Button
-                var resetRect = new Rectangle(centerX - 100, 600, 200, 50);
-                _spriteBatch.Draw(_pixel, resetRect, Color.Gold * 0.4f);
-                var resetText = "A NEW AWAKENING";
-                _spriteBatch.DrawString(_font, resetText, new Vector2(centerX - _font.MeasureString(resetText).X/2, 625 - _font.MeasureString(resetText).Y/2), Color.DarkGoldenrod);
-
-                if (_input.IsLeftClick() && resetRect.Contains(_input.MousePosition))
-                {
-                    _engine.Manifest("reset");
-                    _log.Clear();
-                }
-            }
+            _ending.Draw(_spriteBatch, _engine, _font, _pixel, gameTime, _input.MousePosition, _input.IsLeftClick(), () => {
+                _engine.Manifest("reset");
+                _log.Clear();
+            });
             _spriteBatch.End();
             return;
         }
@@ -193,20 +187,23 @@ public class Game1 : Game
         _log.Draw(_spriteBatch, _font, _pixel);
         _particles.Draw(_spriteBatch);
 
-        foreach (var btn in _buttons)
+        // Draw Fixed UI (None Tab)
+        foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None))
         {
-            if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
-            {
-                btn.Draw(_spriteBatch, _font, _pixel);
-            }
+            btn.Draw(_spriteBatch, _font, _pixel, 0);
         }
 
-        foreach (var btn in _buttons)
+        _spriteBatch.End();
+
+        // Draw Scrollable UI
+        var scrollRect = new Rectangle((int)(UiLayout.Width * 0.25f), 50, (int)(UiLayout.Width * 0.55f), UiLayout.Height - 60);
+        GraphicsDevice.ScissorRectangle = scrollRect;
+        _spriteBatch.Begin(rasterizerState: _scissorState);
+
+        var curOffset = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
+        foreach (var btn in _buttons.Where(b => b.Tab == _currentTab))
         {
-            if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
-            {
-                btn.DrawTooltip(_spriteBatch, _font, _pixel);
-            }
+            btn.Draw(_spriteBatch, _font, _pixel, curOffset);
         }
 
         if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire)
@@ -222,6 +219,19 @@ public class Game1 : Game
         if (_currentTab == GameTab.Debug)
         {
             _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
+        }
+
+        _spriteBatch.End();
+
+        // Draw Tooltips and Status (Always on top, not clipped)
+        _spriteBatch.Begin();
+        foreach (var btn in _buttons)
+        {
+            var offset = btn.Tab == GameTab.None ? 0 : curOffset;
+            if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
+            {
+                btn.DrawTooltip(_spriteBatch, _font, _pixel, offset);
+            }
         }
 
         _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);

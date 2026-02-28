@@ -21,8 +21,15 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 | **Water** | Flow, Connection. | Manifested Condensation | Automates transfer of resources. |
 | **Air** | Space, Expansion. | Manifested Gusts | Unlocks new UI areas/tabs (expanding perception). |
 | **Life** | Consciousness, Growth. | Manifested Gardens | Fuels Familiars and the Spire Foundation. |
+| **Void Embers** | Residue of a collapsed reality. | Ascension | Currency for permanent upgrades in the Constellation. |
 
-## 3. Unfolding Progression
+## 3. UI & Experience
+- **Minimalist Magical:** Dark background with glowing/spectral text and particle effects.
+- **Responsive Stacking:** All buttons are dynamically stacked in the center column. If they exceed the window height, the tab becomes scrollable via the mouse wheel.
+- **Interactive Feedback:** Hovering over any manifestation (button or inventory item) reveals a tooltip detailing its production rates and total scaling bonuses.
+- **The Map:** A minimalist 10x10 grid visualizing the manifested reality. Explorations are marked by changing colors of the cells.
+
+## 4. Unfolding Progression
 
 ### Phase 3: The World Map (Exploration)
 - **Requirement:** Manifestation of a "Familiar".
@@ -32,15 +39,12 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 - **Outcome:** Exploration unlocks Lore fragments and rare discoveries.
 
 ### Phase 4: The Spire & Ascension
-- **Inventory:** A dedicated UI area in the `StatusSystem` tracks all manifested items and structures beyond simple essences.
-- **Goal:** Manifest the Great Spire in the center of the void.
 - **Stages:** Foundation (Earth/Life), Shaft (Fire/Air), Core (Aether/Water).
 - **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence.
 - **New Game Plus:** "A New Awakening" grants **Void Embers** and "Cosmic Insight," multiplying all manual and passive resource gains.
 - **The Constellation:** A prestige tree (available in the `Constellation` tab) where Void Embers are spent on permanent, high-scaling upgrades like "Eternal Focus" and "Dense Matter."
-- **Void Infusion:** A Post-Ascension mechanic allowing the direct infusion of elemental storage using raw Aether.
 
-## 4. Elemental Synergies
+## 5. Elemental Synergies
 Beyond simple manifestations, combining elements in advanced structures creates synergies:
 - **Magma Forge (Fire + Earth):** Significantly boosts production of both elements.
 - **Clouds (Water + Air):** Enhances the flow of atmospheric essences.
@@ -48,9 +52,3 @@ Beyond simple manifestations, combining elements in advanced structures creates 
 
 ---
 *Last Updated: Friday, February 27, 2026 (Updated by Agent Gemini)*
-- **Minimalist Magical:** Dark background. Text is glowing/spectral.
-- **Particles:** When manifesting, use particle effects (MonoGame) to show the magic condensing.
-- **The Map:** A minimalist 10x10 grid visualizing the manifested reality. Explorations are marked by changing colors of the cells.
-
----
-*Keep this document updated with every mechanic change.*
