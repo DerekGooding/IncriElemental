@@ -196,7 +196,7 @@ public class Game1 : Game
         _spriteBatch.End();
 
         // Draw Scrollable UI
-        var scrollRect = new Rectangle((int)(UiLayout.Width * 0.25f), 50, (int)(UiLayout.Width * 0.55f), UiLayout.Height - 60);
+        var scrollRect = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
         GraphicsDevice.ScissorRectangle = scrollRect;
         _spriteBatch.Begin(rasterizerState: _scissorState);
 

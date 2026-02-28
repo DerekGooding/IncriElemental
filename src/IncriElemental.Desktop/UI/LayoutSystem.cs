@@ -15,7 +15,7 @@ public class LayoutSystem
         var tabW = 80;
         var tabH = 30;
         var centerX = UiLayout.Width / 2;
-        var startX = aiMode ? centerX - 250 : centerX - 170;
+        var startX = 200;
         
         buttons.Add(new Button(new Rectangle(startX, 10, tabW, tabH), "VOID", Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None));
         buttons.Add(new Button(new Rectangle(startX + 85, 10, tabW, tabH), "SPIRE", Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
@@ -37,15 +37,15 @@ public class LayoutSystem
         // But for easier scrolling logic, we'll store them starting from 0 and offset in Draw
         
         // --- VOID TAB ---
-        var focusBtn = new Button(new Rectangle(centerX - 100, 0, 200, 80), "FOCUS", Color.MediumPurple, () => {
+        var focusBtn = new Button(new Rectangle(centerX - 100, 60, 200, 80), "FOCUS", Color.MediumPurple, () => {
             engine.Focus();
-            particles.EmitFocus(new Vector2(centerX, 140)); // Fixed particle origin for now
+            particles.EmitFocus(new Vector2(centerX, 100));
             audio.PlayFocus();
         }, tab: GameTab.Void);
         focusBtn.TooltipFunc = () => $"Gather raw magical potential.\nGain {1.0 * engine.State.CosmicInsight:F1} Aether per click.";
         buttons.Add(focusBtn);
 
-        var curY = 100; // Offset from top of tab
+        var curY = 160; // Offset from top of tab
         var defs = engine.GetDefinitions();
 
         // ASCEND Button
@@ -64,27 +64,11 @@ public class LayoutSystem
             curY += 60;
         }
 
-        // Other Manifestations
-        foreach (var def in defs.Where(d => d.Id != "ascend"))
-        {
-            GameTab tab = GameTab.Void;
-            if (def.Id.Contains("spire") || def.Id.Contains("well") || def.Id.Contains("brazier") || def.Id.Contains("forge") || def.Id.Contains("clouds"))
-                tab = GameTab.Spire;
-            else if (def.Id.Contains("garden") || def.Id.Contains("familiar"))
-                tab = GameTab.World;
-            else if (def.Id.Contains("constellation"))
-                tab = GameTab.Constellation;
-
-            // Reset curY if tab changed? No, we need to track curY per tab.
-            // Simplified: Just use a single curY and reset per tab loop if needed.
-            // Better: Filter defs by tab and loop.
-        }
-
         // Refactored loop per tab to handle dynamic stacking
-        SetupTabButtons(buttons, engine, defs, GameTab.Void, centerX, 100, particles, audio, logCallback);
-        SetupTabButtons(buttons, engine, defs, GameTab.Spire, centerX, 0, particles, audio, logCallback);
-        SetupTabButtons(buttons, engine, defs, GameTab.World, centerX, 0, particles, audio, logCallback);
-        SetupTabButtons(buttons, engine, defs, GameTab.Constellation, centerX, 0, particles, audio, logCallback);
+        SetupTabButtons(buttons, engine, defs, GameTab.Void, centerX, curY, particles, audio, logCallback);
+        SetupTabButtons(buttons, engine, defs, GameTab.Spire, centerX, 60, particles, audio, logCallback);
+        SetupTabButtons(buttons, engine, defs, GameTab.World, centerX, 60, particles, audio, logCallback);
+        SetupTabButtons(buttons, engine, defs, GameTab.Constellation, centerX, 60, particles, audio, logCallback);
 
         // --- Alchemy (Void bottom) ---
         // Find existing curY for Void
