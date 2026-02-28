@@ -142,6 +142,8 @@ public class Game1 : Game
             _lastProcessedHistoryCount++;
         }
 
+        LayoutSystem.ApplyLayout(_buttons, _currentTab);
+
         if (_tabScrollOffsets.ContainsKey(_currentTab))
         {
             _tabScrollOffsets[_currentTab] = Math.Min(0, _tabScrollOffsets[_currentTab] + _input.ScrollDelta * 0.5f);
@@ -149,6 +151,7 @@ public class Game1 : Game
 
         foreach (var btn in _buttons)
         {
+            if (!btn.IsVisible()) continue;
             var offset = btn.Tab == GameTab.None ? 0 : (int)_tabScrollOffsets.GetValueOrDefault(btn.Tab, 0);
             if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.Update(_input.MousePosition, offset);
         }
@@ -157,6 +160,7 @@ public class Game1 : Game
         {
             foreach (var btn in _buttons)
             {
+                if (!btn.IsVisible()) continue;
                 var offset = btn.Tab == GameTab.None ? 0 : (int)_tabScrollOffsets.GetValueOrDefault(btn.Tab, 0);
                 if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.CheckClick(_input.MousePosition, offset);
             }
@@ -190,7 +194,7 @@ public class Game1 : Game
         // Draw Fixed UI (None Tab)
         foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None))
         {
-            btn.Draw(_spriteBatch, _font, _pixel, 0);
+            if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, 0);
         }
 
         _spriteBatch.End();
@@ -203,7 +207,7 @@ public class Game1 : Game
         var curOffset = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
         foreach (var btn in _buttons.Where(b => b.Tab == _currentTab))
         {
-            btn.Draw(_spriteBatch, _font, _pixel, curOffset);
+            if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, curOffset);
         }
 
         if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire)
@@ -227,6 +231,7 @@ public class Game1 : Game
         _spriteBatch.Begin();
         foreach (var btn in _buttons)
         {
+            if (!btn.IsVisible()) continue;
             var offset = btn.Tab == GameTab.None ? 0 : curOffset;
             if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
             {

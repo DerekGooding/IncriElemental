@@ -14,8 +14,8 @@ public class LayoutSystem
         // --- FIXED UI (Always visible, no scroll) ---
         var tabW = 80;
         var tabH = 30;
-        var centerX = UiLayout.Width / 2;
         var startX = 200;
+        var centerX = UiLayout.Width / 2;
         
         buttons.Add(new Button(new Rectangle(startX, 10, tabW, tabH), "VOID", Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None));
         buttons.Add(new Button(new Rectangle(startX + 85, 10, tabW, tabH), "SPIRE", Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
@@ -32,12 +32,9 @@ public class LayoutSystem
             buttons.Add(new Button(new Rectangle(100, 10, 80, 25), "FULLSCREEN", Color.Gray * 0.8f, toggleFullscreen, tab: GameTab.None));
         }
 
-        // --- TAB CONTENT (Scrollable area) ---
-        // We use Y coordinates relative to the start of the scrollable area (e.g. 100)
-        // But for easier scrolling logic, we'll store them starting from 0 and offset in Draw
-        
-        // --- VOID TAB ---
-        var focusBtn = new Button(new Rectangle(centerX - 100, 60, 200, 80), "FOCUS", Color.MediumPurple, () => {
+        // --- TAB CONTENT ---
+        // Void Tab specific (Focus/Ascend)
+        var focusBtn = new Button(new Rectangle(centerX - 100, 0, 200, 80), "FOCUS", Color.MediumPurple, () => {
             engine.Focus();
             particles.EmitFocus(new Vector2(centerX, 100));
             audio.PlayFocus();
@@ -45,14 +42,11 @@ public class LayoutSystem
         focusBtn.TooltipFunc = () => $"Gather raw magical potential.\nGain {1.0 * engine.State.CosmicInsight:F1} Aether per click.";
         buttons.Add(focusBtn);
 
-        var curY = 160; // Offset from top of tab
         var defs = engine.GetDefinitions();
-
-        // ASCEND Button
         var ascendDef = defs.FirstOrDefault(d => d.Id == "ascend");
         if (ascendDef != null)
         {
-            var b = new Button(new Rectangle(centerX - 100, curY, 200, 40), ascendDef.Name, Color.Gold, () => {
+            var b = new Button(new Rectangle(centerX - 100, 0, 200, 40), ascendDef.Name, Color.Gold, () => {
                 if (engine.Manifest(ascendDef.Id))
                 {
                     logCallback("Ascension begins...");
@@ -61,39 +55,13 @@ public class LayoutSystem
             }, () => engine.State.Discoveries.GetValueOrDefault(ascendDef.RequiredDiscovery), tab: GameTab.Void);
             b.TooltipFunc = () => "Complete the Spire and transcend this reality.";
             buttons.Add(b);
-            curY += 60;
         }
 
-        // Refactored loop per tab to handle dynamic stacking
-        SetupTabButtons(buttons, engine, defs, GameTab.Void, centerX, curY, particles, audio, logCallback);
-        SetupTabButtons(buttons, engine, defs, GameTab.Spire, centerX, 60, particles, audio, logCallback);
-        SetupTabButtons(buttons, engine, defs, GameTab.World, centerX, 60, particles, audio, logCallback);
-        SetupTabButtons(buttons, engine, defs, GameTab.Constellation, centerX, 60, particles, audio, logCallback);
-
-        // --- Alchemy (Void bottom) ---
-        // Find existing curY for Void
-        var voidY = buttons.Where(b => b.Tab == GameTab.Void).Max(b => b.Bounds.Bottom) + 20;
-        var combBtn = new Button(new Rectangle(centerX - 100, voidY, 200, 45), "COMBUSTION", Color.OrangeRed, () => {
-            engine.Mix(ResourceType.Fire, ResourceType.Air);
-            audio.PlayManifest();
-        }, () => engine.State.Discoveries.ContainsKey("fire_unlocked") && engine.State.Discoveries.ContainsKey("air_unlocked"), "100F / 100Air", GameTab.Void);
-        combBtn.TooltipFunc = () => "Combine Fire and Air for a temporary Aether boost.";
-        buttons.Add(combBtn);
-
-        var fertBtn = new Button(new Rectangle(centerX - 100, voidY + 55, 200, 45), "FERTILITY", Color.LimeGreen, () => {
-            engine.Mix(ResourceType.Water, ResourceType.Earth);
-            audio.PlayManifest();
-        }, () => engine.State.Discoveries.ContainsKey("water_unlocked") && engine.State.Discoveries.ContainsKey("garden_manifested"), "100W / 100E", GameTab.Void);
-        fertBtn.TooltipFunc = () => "Combine Water and Earth for a temporary Life boost.";
-        buttons.Add(fertBtn);
-    }
-
-    private static void SetupTabButtons(List<Button> buttons, GameEngine engine, IEnumerable<ManifestationDefinition> defs, GameTab targetTab, int centerX, int startY, ParticleSystem particles, AudioManager audio, Action<string> logCallback)
-    {
-        var curY = startY;
-        foreach (var def in defs.Where(d => d.Id != "ascend" && GetTabForDef(d) == targetTab))
+        // Manifestations
+        foreach (var def in defs.Where(d => d.Id != "ascend"))
         {
-            var btn = new Button(new Rectangle(centerX - 100, curY, 200, 50), def.Name, GetColorForId(def.Id), () => {
+            var targetTab = GetTabForDef(def);
+            var btn = new Button(new Rectangle(centerX - 100, 0, 200, 50), def.Name, GetColorForId(def.Id), () => {
                 if (engine.Manifest(def.Id))
                 {
                     audio.PlayManifest();
@@ -110,7 +78,37 @@ public class LayoutSystem
             
             btn.TooltipFunc = () => GetManifestationTooltip(def, engine);
             buttons.Add(btn);
-            curY += 65;
+        }
+
+        // Alchemy (Void Tab)
+        var combBtn = new Button(new Rectangle(centerX - 100, 0, 200, 45), "COMBUSTION", Color.OrangeRed, () => {
+            engine.Mix(ResourceType.Fire, ResourceType.Air);
+            audio.PlayManifest();
+        }, () => engine.State.Discoveries.ContainsKey("fire_unlocked") && engine.State.Discoveries.ContainsKey("air_unlocked"), "100F / 100Air", GameTab.Void);
+        combBtn.TooltipFunc = () => "Combine Fire and Air for a temporary Aether boost.";
+        buttons.Add(combBtn);
+
+        var fertBtn = new Button(new Rectangle(centerX - 100, 0, 200, 45), "FERTILITY", Color.LimeGreen, () => {
+            engine.Mix(ResourceType.Water, ResourceType.Earth);
+            audio.PlayManifest();
+        }, () => engine.State.Discoveries.ContainsKey("water_unlocked") && engine.State.Discoveries.ContainsKey("garden_manifested"), "100W / 100E", GameTab.Void);
+        fertBtn.TooltipFunc = () => "Combine Water and Earth for a temporary Life boost.";
+        buttons.Add(fertBtn);
+    }
+
+    public static void ApplyLayout(List<Button> buttons, GameTab currentTab)
+    {
+        var curY = 60;
+        var centerX = UiLayout.Width / 2;
+
+        foreach (var btn in buttons.Where(b => b.Tab == currentTab))
+        {
+            if (btn.IsVisible())
+            {
+                btn.Bounds.Y = curY;
+                btn.Bounds.X = centerX - btn.Bounds.Width / 2;
+                curY += btn.Bounds.Height + 15;
+            }
         }
     }
 
@@ -129,7 +127,6 @@ public class LayoutSystem
     {
         var lines = new List<string>();
         var count = engine.State.Manifestations.GetValueOrDefault(def.Id);
-        var name = string.IsNullOrEmpty(def.OutcomeName) ? def.Name : def.OutcomeName;
         
         if (def.Effects.Any())
         {
