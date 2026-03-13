@@ -77,4 +77,10 @@ public class ParticleSystem
             AddParticle(startPos, velocity, Color.MediumPurple, 0.5f, 2f);
         }
     }
+
+    public void EmitTrail(Vector2 pos, Color color)
+    {
+        var velocity = new Vector2((float)(_random.NextDouble() * 20 - 10), (float)(_random.NextDouble() * 20 - 10));
+        AddParticle(pos, velocity, color * 0.5f, 0.5f, (float)(_random.NextDouble() * 2 + 1));
+    }
 }

@@ -31,9 +31,11 @@ public class Game1 : Game
     private BackgroundManager _bg = null!;
     private AiModeSystem _ai;
     private GameTab _currentTab = GameTab.Void;
+    private void SetTab(GameTab tab) { if (_currentTab != tab) { _currentTab = tab; _visuals.StartTabTransition(); } }
     private int _lastProcessedHistoryCount = 0;
     private bool _aiMode = false;
-    private Dictionary<GameTab, float> _tabScrollOffsets = new() {
+    private Dictionary<GameTab, float> _tabScrollOffsets = InitScrollOffsets();
+    private static Dictionary<GameTab, float> InitScrollOffsets() => new() {
         { GameTab.Void, 0 }, { GameTab.Spire, 0 }, { GameTab.World, 0 }, { GameTab.Constellation, 0 }, { GameTab.Flow, 0 }
     };
     private bool _needsButtonLayoutUpdate = false;
@@ -64,17 +66,9 @@ public class Game1 : Game
     public void ToggleFullscreen()
     {
         _graphics.IsFullScreen = !_graphics.IsFullScreen;
-        if (_graphics.IsFullScreen) {
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        } else {
-            _graphics.PreferredBackBufferWidth = 1024;
-            _graphics.PreferredBackBufferHeight = 768;
-        }
-        _graphics.ApplyChanges();
-        UiLayout.Width = GraphicsDevice.Viewport.Width;
-        UiLayout.Height = GraphicsDevice.Viewport.Height;
-        _needsButtonLayoutUpdate = true;
+        if (_graphics.IsFullScreen) { _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width; _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height; }
+        else { _graphics.PreferredBackBufferWidth = 1024; _graphics.PreferredBackBufferHeight = 768; }
+        _graphics.ApplyChanges(); UiLayout.Width = GraphicsDevice.Viewport.Width; UiLayout.Height = GraphicsDevice.Viewport.Height; _needsButtonLayoutUpdate = true;
     }
 
     protected override void Initialize()
@@ -85,7 +79,7 @@ public class Game1 : Game
         _bg = new BackgroundManager(GraphicsDevice); _particles = new ParticleSystem(GraphicsDevice);
         _visuals = new VisualManager(GraphicsDevice); _pixel = new Texture2D(GraphicsDevice, 1, 1); _pixel.SetData([Color.White]);
 
-        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _visuals, _aiMode, ToggleFullscreen);
+        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, SetTab, _visuals, _aiMode, ToggleFullscreen);
         _audio.StartHum();
         _log.AddToLog(TextService.Instance.Get("HIST_AWAKEN")); _log.AddToLog(TextService.Instance.Get("HIST_FOCUS_PROMPT"));
         _tutorial.Start(_engine.State);
@@ -124,7 +118,7 @@ public class Game1 : Game
 
         if (_needsButtonLayoutUpdate)
         {
-            LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _visuals, _aiMode, ToggleFullscreen);
+            LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, SetTab, _visuals, _aiMode, ToggleFullscreen);
             _needsButtonLayoutUpdate = false;
         }
 
@@ -151,6 +145,7 @@ public class Game1 : Game
     {
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
+        _particles.EmitTrail(new Vector2(_input.MousePosition.X, _input.MousePosition.Y), _visuals.GetColor(ResourceType.Aether));
         _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount);
         _tutorial.Update(_engine.State);
         _visuals.Update(deltaTime, _engine.State.Discoveries.ContainsKey("ascended"), _engine.TotalProduction);
@@ -236,6 +231,10 @@ public class Game1 : Game
 
             _spriteBatch.Begin();
             _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons);
+            _spriteBatch.End();
+
+            _spriteBatch.Begin();
+            _visuals.DrawTabTransition(_spriteBatch);
             _spriteBatch.End();
         }
 

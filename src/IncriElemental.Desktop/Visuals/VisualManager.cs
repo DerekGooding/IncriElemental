@@ -12,8 +12,10 @@ public class VisualManager
     private RenderTarget2D? _renderTarget;
     public float ScreenShakeIntensity { get; private set; } = 0f;
     public float AscensionTransitionAlpha { get; private set; } = 0f;
+    public float TabTransitionAlpha { get; private set; } = 0f;
     private bool _isAscending = false;
     private Color _globalTint = Color.White;
+    private double _totalTime = 0;
 
     public VisualManager(GraphicsDevice graphicsDevice)
     {
@@ -28,14 +30,18 @@ public class VisualManager
         _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
     }
 
+    public void AddShake(float intensity) => ScreenShakeIntensity = Math.Max(ScreenShakeIntensity, intensity);
+    public void StartTabTransition() => TabTransitionAlpha = 1.0f;
+
     public void Update(float deltaTime, bool engineHasAscended, double totalProduction, ResourceType dominantResource = ResourceType.Aether)
     {
+        _totalTime += deltaTime;
         if (ScreenShakeIntensity > 0) ScreenShakeIntensity = Math.Max(0, ScreenShakeIntensity - deltaTime * 5f);
+        if (TabTransitionAlpha > 0) TabTransitionAlpha = Math.Max(0, TabTransitionAlpha - deltaTime * 2f);
         if (engineHasAscended && !_isAscending) { _isAscending = true; ScreenShakeIntensity = 10f; }
         if (_isAscending && AscensionTransitionAlpha < 1.0f) AscensionTransitionAlpha += deltaTime * 0.5f;
         if (!engineHasAscended && _isAscending) { _isAscending = false; AscensionTransitionAlpha = 0f; }
 
-        // Color Grading: Interpolate tint towards dominant resource color
         var targetColor = GetColor(dominantResource);
         var targetTint = Color.Lerp(Color.White, targetColor, 0.15f);
         _globalTint = Color.Lerp(_globalTint, targetTint, deltaTime * 0.5f);
@@ -74,6 +80,7 @@ public class VisualManager
     public void Clear(GraphicsDevice gd, Color color) => gd.Clear(color);
 
     public void DrawOverlay(SpriteBatch sb, float alpha) { if (alpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * alpha); }
+    public void DrawTabTransition(SpriteBatch sb) { if (TabTransitionAlpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.Black * TabTransitionAlpha); }
 
     public Color GetColor(ResourceType type) => ColorPalette.ElementColors.GetValueOrDefault(type, Color.White);
     public Color GetCellColor(CellType type) => ColorPalette.CellColors.GetValueOrDefault(type, Color.Black);
@@ -130,6 +137,13 @@ public class VisualManager
         if (disc.ContainsKey("spire_foundation_ready")) sb.Draw(_pixel, new Rectangle(502, 600, 20, 100), Color.Gray * 0.5f);
         if (disc.ContainsKey("spire_shaft_ready")) sb.Draw(_pixel, new Rectangle(505, 500, 14, 100), Color.LightGray * 0.5f);
         if (disc.ContainsKey("spire_complete")) { var p = (float)Math.Sin(time * 2) * 0.2f + 0.8f; sb.Draw(_pixel, new Rectangle(502, 480, 20, 20), Color.Gold * p); }
+    }
+
+    public string FormatValue(double v)
+    {
+        if (v >= 1_000_000_000) return $"{v / 1_000_000_000:F2}G";
+        if (v >= 1_000_000) return $"{v / 1_000_000:F2}M";
+        return v >= 1_000 ? $"{v / 1_000:F2}K" : v.ToString("F1");
     }
 
     public string GetManifestationTooltip(ManifestationDefinition d, IncriElemental.Core.Engine.GameEngine e)
@@ -191,15 +205,27 @@ public class VisualManager
     {
         sb.Draw(px, r, Color.Black * opacity);
         sb.Draw(px, r, color * (opacity * 0.5f));
+        
+        var pulse = (float)Math.Sin(_totalTime * 3.0) * 0.2f + 0.8f;
         int t = 1;
-        sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, t), color * 0.5f);
-        sb.Draw(px, new Rectangle(r.X, r.Bottom - t, r.Width, t), color * 0.5f);
-        sb.Draw(px, new Rectangle(r.X, r.Y, t, r.Height), color * 0.5f);
-        sb.Draw(px, new Rectangle(r.Right - t, r.Y, t, r.Height), color * 0.5f);
-        sb.Draw(px, new Rectangle(r.X, r.Y, 10, 1), color);
-        sb.Draw(px, new Rectangle(r.X, r.Y, 1, 10), color);
-        sb.Draw(px, new Rectangle(r.Right - 10, r.Y, 10, 1), color);
-        sb.Draw(px, new Rectangle(r.Right - 1, r.Y, 1, 10), color);
+        sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, t), color * (0.5f * pulse));
+        sb.Draw(px, new Rectangle(r.X, r.Bottom - t, r.Width, t), color * (0.5f * pulse));
+        sb.Draw(px, new Rectangle(r.X, r.Y, t, r.Height), color * (0.5f * pulse));
+        sb.Draw(px, new Rectangle(r.Right - t, r.Y, t, r.Height), color * (0.5f * pulse));
+        
+        // Corner highlights (Runic style)
+        sb.Draw(px, new Rectangle(r.X, r.Y, 15, 2), color * pulse);
+        sb.Draw(px, new Rectangle(r.X, r.Y, 2, 15), color * pulse);
+        sb.Draw(px, new Rectangle(r.Right - 15, r.Y, 15, 2), color * pulse);
+        sb.Draw(px, new Rectangle(r.Right - 2, r.Y, 2, 15), color * pulse);
+        sb.Draw(px, new Rectangle(r.X, r.Bottom - 2, 15, 2), color * pulse);
+        sb.Draw(px, new Rectangle(r.X, r.Bottom - 15, 2, 15), color * pulse);
+        sb.Draw(px, new Rectangle(r.Right - 15, r.Bottom - 2, 15, 2), color * pulse);
+        sb.Draw(px, new Rectangle(r.Right - 2, r.Bottom - 15, 2, 15), color * pulse);
+
+        // Middle "Nodes"
+        sb.Draw(px, new Rectangle(r.Center.X - 5, r.Y - 2, 10, 4), color * pulse);
+        sb.Draw(px, new Rectangle(r.Center.X - 5, r.Bottom - 2, 10, 4), color * pulse);
     }
 
     public void SaveScreenshot(string path)

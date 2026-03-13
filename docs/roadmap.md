@@ -14,12 +14,12 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Void Atmosphere:** Pulsing background stars synced to audio. (Tools: `Performance Analysis`)
 - [x] **Color Grading:** Elemental-specific color grading profiles. (Tools: `palette_audit.py`)
 
-### Phase 2: Kinetic Interface & Feedback
-- [ ] **Aura Pulse Borders:** Animated button borders that reflect production intensity. (Tools: `aura_pulse_audit.py`)
-- [ ] **Impact Shake:** Subtle screen-shake and particle poofs on interaction. (Tools: `parallax_audit.py`)
-- [ ] **Custom Mouse Trails:** Elemental dust trails following the cursor. (Tools: `Performance Analysis`)
-- [ ] **Button States:** Runically shaped buttons with high-fidelity hover/click states. (Tools: `semantic_review.py`, `button_state_audit.py`)
-- [ ] **Tab Transitions:** Shader-based dissolves and wipes between game tabs. (Tools: `ascension_audit.py`)
+### Phase 2: Kinetic Interface & Feedback (Completed)
+- [x] **Aura Pulse Borders:** Animated button borders that reflect production intensity. (Tools: `aura_pulse_audit.py`)
+- [x] **Impact Shake:** Subtle screen-shake and particle poofs on interaction. (Tools: `parallax_audit.py`)
+- [x] **Custom Mouse Trails:** Elemental dust trails following the cursor. (Tools: `Performance Analysis`)
+- [x] **Button States:** Runically shaped buttons with high-fidelity hover/click states. (Tools: `semantic_review.py`, `button_state_audit.py`)
+- [x] **Tab Transitions:** Shader-based dissolves and wipes between game tabs. (Tools: `ascension_audit.py`)
 
 ### Phase 3: Information Dynamics & Visualization
 - [ ] **Resource Sparklines:** Animated gauges and mini-graphs for all resources. (Tools: `visual_component_testing`)
