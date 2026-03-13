@@ -25,22 +25,25 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 
 ## 3. UI & Experience
 - **Minimalist Magical:** Dark background with glowing/spectral text and particle effects enhanced by **HLSL Bloom** for a high-fidelity magical aura.
+- **Rich Text & Icons:** Tooltips and narrative logs utilize a custom engine for color-coded text and inline resource icons, enhancing readability and flavor.
 - **Onboarding:** A multi-stage **Tutorial System** guides players through their initial awakening, highlighting key interactions while dimming unrelated UI elements.
 - **Reactive Backdrop:** A procedural **Background Manager** generates a dynamic starfield that accelerates as the player's Aether production increases, visualizing the acceleration of reality.
 - **Responsive Stacking:** All buttons are dynamically stacked in the center column. If they exceed the window height, the tab becomes scrollable via the mouse wheel.
-- **Interactive Feedback:** Hovering over any manifestation (button or inventory item) reveals a tooltip detailing its production rates and total scaling bonuses.
+- **Interactive Feedback:** Hovering over any manifestation (button or inventory item) reveals a detailed rich-text tooltip detailing its production rates and total scaling bonuses.
 - **The Map:** A minimalist 10x10 grid visualizing the manifested reality. Explorations are marked by changing colors of the cells.
 
 ## 4. Unfolding Progression
 
-### Phase 3: The World Map (Exploration)
+### Phase 3: The World Map (Exploration & Synergies)
 - **Requirement:** Manifestation of a "Familiar".
 - **Interaction:** A grid-based map appears in the `World` tab.
 - **Exploration:** Click on grid cells to send Familiars to explore.
-- **Landmarks:** Fixed coordinates (e.g., Ancient Archive, Eternal Spring) provide unique narrative descriptions and significant resource rewards.
+- **Spatial Synergies (Auras):** Manifestations and landmarks project "Auras" to neighboring cells. These auras provide production multipliers and unique elemental effects to any manifestations placed within their influence.
+- **Landmarks:** Fixed coordinates (e.g., Ancient Archive, Eternal Spring) provide unique narrative descriptions, significant resource rewards, and powerful static auras.
 - **Outcome:** Exploration unlocks Lore fragments and rare discoveries.
 
-### Phase 4: The Spire & Ascension
+### Phase 4: Alchemy & The Spire
+- **Alchemical Mixing Table:** A specialized sub-tab where players can drag-and-drop captured elemental essences to perform high-level reactions. Successful mixes grant temporary but massive buffs (e.g., "Aetheric Surge" x5 production).
 - **Stages:** Foundation (Earth/Life), Shaft (Fire/Air), Core (Aether/Water).
 - **Outcome:** Constructing the Core unlocks the **ASCEND** button, leading to the victory sequence.
 - **New Game Plus:** "A New Awakening" grants **Void Embers** and "Cosmic Insight," multiplying all manual and passive resource gains.

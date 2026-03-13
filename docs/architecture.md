@@ -22,19 +22,21 @@ The `GameState` class in `IncriElemental.Core` is the single source of truth.
 - **Event Bus:** (Implemented) A lightweight static event system in `IncriElemental.Core.Engine.EventBus` for notifying subscribers when a resource is gained, a discovery is unlocked, or a thing is manifested.
 
 ## 4. UI Abstraction
-- **Layout:** A modular UI system managed by `LayoutSystem` and `UiLayout` which calculates relative positions based on screen resolution (anchors/margins).
+- **Layout:** A modular UI system managed by a refactored `LayoutSystem` and `UiLayout` which calculates relative positions based on screen resolution (anchors/margins). The refactor improved handling of dynamic element resizing and alignment.
+- **Rich Text Engine:** `RichTextSystem` provides tag-based formatting (`[color:...]`, `[i:...]` for icons) and layout for tooltips and logs, allowing for high-signal visual feedback.
 - **Pagination & Scrolling:** A `GameTab` system manages UI density. Each tab supports a scrollable viewport using `ScissorRectangle` clipping and mouse wheel interaction to handle large numbers of manifestations.
 - **Specialized Systems:** 
-    - `LogSystem`: Manages the narrative log, prevents message duplication, and handles fading text rendering.
-    - `WorldMapSystem`: Handles grid-based exploration logic, coordinate translation, and map rendering.
-    - `StatusSystem`: Displays current resources, active buffs, and manifestations with hover tooltips.
+    - `LogSystem`: Manages the narrative log, prevents message duplication, and employs `RichTextSystem` for fading text rendering.
+    - `WorldMapSystem`: Handles grid-based exploration logic, coordinate translation, and map rendering, including visual representation of Auras.
+    - `StatusSystem`: Displays current resources, active buffs, and manifestations with hover tooltips powered by Rich Text.
+    - `MixingTableSystem`: Manages the Alchemical Mixing Table UI and drag-and-drop interaction logic.
     - `TutorialSystem`: A state-driven onboarding guide that manages UI dimming and button highlighting.
     - `EndingSystem`: Manages the Ascension completion screen and New Game+ reset logic.
     - `InputManager`: Abstracts MonoGame mouse, keyboard, and scroll wheel state for cleaner interaction logic.
 - **Binding:** The Desktop layer reads the `GameState` and employs these specialized systems to render UI elements and process input.
 
 ## 5. Visuals and Post-Processing
-- **VisualManager:** A high-level coordinator in the `Desktop` layer that manages render targets and effects.
+- **VisualManager:** A refactored high-level coordinator in the `Desktop` layer that manages render targets, effects, and Rich Text rendering.
 - **HLSL Bloom:** A custom shader (`Bloom.fx`) that extracts bright pixels and blends them back into the main scene for a spectral glow.
 - **BackgroundManager:** Handles a procedurally generated starfield backdrop where movement speeds are reactive to the player's Aether generation rate.
 - **ParticleSystem:** Manages short-lived visual feedback for manifesting actions.
@@ -48,10 +50,10 @@ To support heavy agentic development, the architecture allows for automated exec
 - **Validation:** Automated scripts in `scripts/` and unit tests in `tests/` use these drivers to verify game balance and UI layout via screenshots.
 
 ## 7. Data-Driven Logic & Localization
-- **Manifestations:** Defined in `manifestations.json`. Loaded at runtime by `GameEngine` via `ManifestationManager`.
+- **Manifestations:** Defined in `manifestations.json` using a **Component-Driven** architecture (`IManifestationComponent`). Specialized components include `ProducerComponent` (generation), `StorageComponent` (caps), `AuraComponent` (spatial effects), and `UnlockComponent` (discovery).
 - **Lore:** Narrative fragments defined in `lore.json`, triggered by `GameEngine` based on discoveries or map exploration.
 - **Localization:** Managed by `TextService` in the `Core` project. All UI strings are loaded from `Content/strings.json` and support dynamic argument injection.
 - **Assets:** Fonts and textures are managed through the MonoGame Content Pipeline, with fallback logic for missing assets.
 
 ---
-*Follow these patterns for all new features.*
+*Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*

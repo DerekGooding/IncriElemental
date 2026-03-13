@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Systems;
+using IncriElemental.Desktop.Visuals;
 
 namespace IncriElemental.Desktop.UI;
 

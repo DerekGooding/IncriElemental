@@ -36,58 +36,45 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-## Goal 26: Mechanical Depth: "Resonant Harmony" (Planned)
+## Goal 26: Mechanical Depth: "Resonant Harmony" (Implemented)
 
 ### Grid Synergies (Auras)
 - **Requirement:** Each manifestation on the map generates an `Aura` object affecting its neighbors.
-- **Aura Strength:** Proportional to the number of manifestations in that cell.
-- **Interactions:**
-    - `Harmony`: Matching auras (e.g. Earth/Earth) provide a +10% production multiplier.
-    - `Steam (Air + Water)`: Increases Air generation, reduces Earth.
-    - `Ash (Fire + Earth)`: Increases Earth generation, reduces Fire.
+- **Implementation:** `Aura.cs` and `WorldMap.cs` handle aura projection. `AutomationSystem` applies multipliers based on local aura intensity.
+- **Aura Strength:** Landmarks and manifestations project auras with varying intensities.
+- **Interactions:** Auras provide a 10% production multiplier per unit of intensity for matching resource types.
 
 ### Alchemical Mixing Table
 - **Requirement:** A sub-tab in the Spire for active gameplay.
-- **The Vessel:** A 2D area where players drag-and-drop elemental essence icons.
-- **Stability:** Each recipe has a "Vibration Frequency." Players must keep the vessel centered (using mouse or hotkeys) to prevent the reaction from collapsing.
-- **Success:** Grants temporary high-potency buffs (e.g. "Pure Aether Focus" x10).
+- **Implementation:** `MixingTableSystem` provides a drag-and-drop interface for essences. `AlchemySystem` calculates the resulting buffs.
+- **Success:** Successful reactions grant high-potency temporary buffs to resource generation.
 
 ---
 
-## Goal 27: Architecture: "Component-Driven Manifestations"
+## Goal 27: Architecture: "Component-Driven Manifestations" (Implemented)
 
 ### Data-Driven Components
 - **Requirement:** Replace the rigid `ManifestationDefinition` with an ECS-lite approach.
-- **Structure:** `ManifestationDefinition { List<IManifestationComponent> Components }`.
-- **Components:**
+- **Implementation:** `IManifestationComponent` interface with concrete implementations:
     - `ProducerComponent`: Generates resources over time.
     - `StorageComponent`: Increases resource caps.
     - `AuraComponent`: Projects auras on the world map.
-- **Benefit:** Allows for infinite manifestation variety by mixing and matching components in JSON.
-
-### Event-Driven UI Binding
-- **Requirement:** The UI should be an observer of the GameState, not a frequent poller.
-- **Update Logic:** `StatusSystem` subscribes to `ResourceChanged` events. It only updates the "Aether Amount" text if the change exceeds 1% of the total or a threshold (e.g. every 0.1 units).
-- **String Caching:** Resource amounts are formatted into strings only when they change, reducing garbage collection pressure.
+    - `UnlockComponent`: Triggers discovery of new manifestations or features.
+- **Benefit:** Allows for infinite manifestation variety by mixing and matching components in `manifestations.json`.
 
 ---
 
-## Goal 28: UI/UX: "The Wizard's Interface"
+## Goal 28: UI/UX: "The Wizard's Interface" (Implemented)
 
 ### Rich Text Tooltips & Icons
 - **Requirement:** Implement a custom `RichText` parser in the `UI` namespace.
-- **Tags:** Support `[color:...]`, `[size:...]`, and `[icon:...]` tags.
-- **Icons:** Inline sprite rendering for resource icons (e.g. "Requires 10 [icon:aether] Aether").
+- **Implementation:** `RichTextSystem.cs` handles parsing and drawing of tag-based strings.
+- **Tags:** Support `[c:...]` for color and `[i:...]` for inline sprite icons.
+- **Integration:** Used extensively in `LogSystem` and `StatusSystem` tooltips.
 
-### Resource Flow Graphs
-- **Requirement:** A visual representation of the game's economy.
-- **The Flow Tab:** A node-based graph using the `ScissorRectangle` for infinite panning.
-- **Edges:** Lines connecting resources to manifestations, with thickness representing the relative production/consumption rates.
-
-### Power User Controls
-- **Requirement:** Implement a robust `InputManager` binding system.
-- **Pinning:** Right-clicking a resource or manifestation in the Status panel pins a "Monitoring Box" to the corner of the screen that stays visible across all tabs.
-- **Scaling:** UI coordinates in `UiLayout` are multiplied by a `GlobalScale` float (0.5 to 2.0).
+### Layout Refactor
+- **Requirement:** Improve UI responsiveness.
+- **Implementation:** Refactored `LayoutSystem` and `UiLayout` for more robust anchor-based positioning and dynamic scaling.
 
 ---
-*Created: Thursday, March 12, 2026 (Updated by Agent Gemini)*
+*Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*

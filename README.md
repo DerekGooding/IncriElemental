@@ -16,13 +16,17 @@
 - **Visual Depth:** Experience the void through a **dynamic starfield background** and high-fidelity **HLSL Bloom post-processing**.
 - **Localized Interface:** Full support for externalized strings via a data-driven **Localization System**.
 - **20-Minute Loop:** A complete experience from awakening to "Ascension," with a balanced progression path.
-- **Interactive Feedback:** Dynamic tooltips explain the ongoing effects of manifestations and their total scaling.
+- **Interactive Feedback:** Dynamic tooltips with **Rich Text and Inline Icons** explain the ongoing effects of manifestations and their total scaling.
+- **Spatial Synergies:** The World Map now features **Auras**, where manifestations project power to neighboring cells, creating complex production harmonies.
+- **Alchemical Mixing:** A dedicated **Mixing Table** allows players to combine elemental essences for temporary high-potency buffs.
 - **Scrollable UI:** A robust scrolling system with vertical button stacking ensures all manifestations are accessible regardless of resolution.
 - **Full Immersion:** Support for **fullscreen mode** and a procedurally generated "void hum" background atmosphere.
 - **New Game+:** Reach Ascension to earn "Cosmic Insight," providing permanent multipliers for future incarnations.
 
 ## 🛠️ Technical Highlights
-- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. `Game1.cs` is a thin coordinator delegating to specialized systems (`ManifestationManager`, `AutomationSystem`, `LogSystem`, `WorldMapSystem`, `StatusSystem`, `EndingSystem`, `TutorialSystem`, `BackgroundManager`).
+- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. `Game1.cs` is a thin coordinator delegating to specialized systems (`ManifestationManager`, `AlchemySystem`, `LogSystem`, `WorldMapSystem`, `StatusSystem`, `EndingSystem`, `TutorialSystem`, `BackgroundManager`).
+- **Component-Driven Manifestations:** A flexible, ECS-lite architecture for manifestations using specialized components (`Producer`, `Storage`, `Aura`, `Unlock`) defined in JSON.
+- **Rich Text Engine:** Custom `RichTextSystem` in the Desktop layer supports tag-based formatting (`[color]`, `[i:icon]`) for tooltips and logs.
 - **Graphics Pipeline:** Custom HLSL shaders for bloom effects and a reactive background system tied to resource generation rates.
 - **Localization:** Centralized `TextService` in `Core` manages dynamic string injection from `strings.json`.
 - **Health Suite:** Strict enforcement of 70% test coverage and 250-line monolith prevention via `scripts/check_health.py`.
@@ -46,4 +50,4 @@ The resulting snapshot will be saved to `review/screenshot.png`.
 This project is licensed under the **MIT License**.
 
 ---
-*Last Updated: Thursday, March 12, 2026 (Updated by Agent Gemini)*
+*Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*

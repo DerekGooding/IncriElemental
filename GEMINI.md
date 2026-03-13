@@ -15,13 +15,15 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Framework:** .NET 10.0 (MonoGame DesktopGL).
 - **Style:** Use file-scoped namespaces.
 - **State:** The game state must be serializable to JSON.
+- **Manifestations:** Use the **Component-Driven** pattern (`IManifestationComponent`). New behaviors must be implemented as reusable components.
 - **UI Responsiveness:** All UI elements must use the `UiLayout` system for relative positioning and support scrollable viewports via `ScissorRectangle` clipping when content overflows.
+- **Rich Text:** Use `RichTextSystem` for all user-facing tooltips and narrative logs to ensure consistent formatting and icon support.
 - **Dependencies:** Avoid adding external NuGet packages unless essential.
 - **Git Workflow:** Follow a clean git workflow.
 
 ## 3. Unfolding Mechanic Rules
 - **Discovery:** Features should be "locked" by default.
-- **Interactive Feedback:** Manifestations must include dynamic tooltips detailing their ongoing production rates and total scaling.
+- **Interactive Feedback:** Manifestations must include dynamic, rich-text tooltips detailing their ongoing production rates and total scaling.
 - **Narrative:** All text strings should be managed in a data-driven way.
 
 ## 4. Agentic Piloting & Validation
@@ -52,4 +54,4 @@ This document contains foundational mandates that I (Gemini) must follow through
 ---
 *Follow these mandates strictly. If a request conflicts with these mandates, clarify with the user.*
 
-*Last Updated: Friday, February 27, 2026 (Updated by Agent Gemini)*
+*Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*
