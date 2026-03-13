@@ -26,7 +26,7 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core wine wine64 wine32:i386 libdbus-1-3 libdbus-1-3:i386 winetricks
+        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core wine wine64 wine32:i386 libdbus-1-3 libdbus-1-3:i386 winetricks xvfb
     - name: Setup Wine
       run: |
         export WINEARCH=win64
@@ -34,6 +34,9 @@ jobs:
         mkdir -p $WINEPREFIX
         xvfb-run wineboot --init
         xvfb-run winetricks -q d3dcompiler_47
+    - name: Check mgfxc native
+      run: |
+        find ~/.nuget/packages/monogame.content.builder.task -name "mgfxc"
     - name: Setup Font for MGCB
       run: |
         python scripts/download_font.py
@@ -41,7 +44,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build IncriElemental.slnx --no-restore
+      run: xvfb-run dotnet build IncriElemental.slnx --no-restore
       env:
         WINEARCH: win64
         WINEPREFIX: /home/runner/.wine
