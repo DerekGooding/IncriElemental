@@ -13,124 +13,73 @@ public static class FlowSystem
 
     private static void InitializeLayout()
     {
-        var centerX = UiLayout.Width / 2;
-        var centerY = UiLayout.Height / 2;
-        var layerWidth = 200;
-        
-        // Manual layout for clarity
+        var centerX = UiLayout.Width / 2; var centerY = UiLayout.Height / 2; var layerWidth = 200;
         _nodePositions[ResourceType.Aether] = new Vector2(centerX - layerWidth * 1.5f, centerY);
-        
-        // Elements in a column
-        var elementX = centerX;
-        var elementGap = 80;
+        var elementX = centerX; var elementGap = 80;
         _nodePositions[ResourceType.Earth] = new Vector2(elementX, centerY - elementGap * 1.5f);
         _nodePositions[ResourceType.Water] = new Vector2(elementX, centerY - elementGap * 0.5f);
         _nodePositions[ResourceType.Air] = new Vector2(elementX, centerY + elementGap * 0.5f);
         _nodePositions[ResourceType.Fire] = new Vector2(elementX, centerY + elementGap * 1.5f);
-        
-        // Advanced
         _nodePositions[ResourceType.Life] = new Vector2(centerX + layerWidth * 1.5f, centerY);
-        _nodePositions[ResourceType.VoidEmbers] = new Vector2(centerX, centerY - 250); // Top center?
-
+        _nodePositions[ResourceType.VoidEmbers] = new Vector2(centerX, centerY - 250);
         _initialized = true;
     }
 
-    public static void Draw(SpriteBatch spriteBatch, GameEngine engine, SpriteFont font, Texture2D pixel)
+    public static void Draw(SpriteBatch sb, GameEngine engine, SpriteFont font, Texture2D pixel, VisualManager visuals)
     {
         if (!_initialized) InitializeLayout();
-
-        var definitions = engine.GetDefinitions();
+        double time = visuals.GetTotalTime();
         
-        // Draw Edges (Production Flows)
-        // Focus -> Aether
-        DrawFlow(spriteBatch, pixel, new Vector2(UiLayout.Width / 2 - 400, UiLayout.Height / 2), _nodePositions[ResourceType.Aether], Color.MediumPurple * 0.5f, 2);
+        DrawFlow(sb, pixel, new Vector2(UiLayout.Width / 2 - 400, UiLayout.Height / 2), _nodePositions[ResourceType.Aether], Color.MediumPurple * 0.5f, 2, time);
 
-        foreach (var def in definitions)
+        foreach (var def in engine.GetDefinitions())
         {
-            // Find inputs (Costs)
             var inputs = def.Costs.Select(c => c.Type).ToList();
-            if (inputs.Count == 0 && def.Id != "focus") continue; // Skip focus/free
-
-            // Find outputs (Producers)
-            var producers = def.Components.OfType<ProducerComponent>();
-            foreach (var prod in producers)
+            if (inputs.Count == 0 && def.Id != "focus") continue;
+            foreach (var prod in def.Components.OfType<ProducerComponent>())
             {
                 if (!_nodePositions.ContainsKey(prod.Type)) continue;
-
                 var endPos = _nodePositions[prod.Type];
                 var color = VisualManager.GetColorForId(def.Id) * 0.5f;
-
-                if (inputs.Count > 0)
+                foreach (var inputType in inputs)
                 {
-                    foreach (var inputType in inputs)
-                    {
-                        if (_nodePositions.TryGetValue(inputType, out var startPos))
-                        {
-                            DrawFlow(spriteBatch, pixel, startPos, endPos, color, 1);
-                        }
-                    }
-                }
-                else
-                {
-                    // Produced from nothing (or hidden cost like Focus)?
-                    // Focus produces Aether, but "Focus" isn't a manifestation with cost.
+                    if (_nodePositions.TryGetValue(inputType, out var startPos)) DrawFlow(sb, pixel, startPos, endPos, color, 1, time);
                 }
             }
         }
 
-        // Draw Nodes
         foreach (var kvp in _nodePositions)
         {
-            var type = kvp.Key;
-            var pos = kvp.Value;
-            var color = GetColor(type);
-            var rect = new Rectangle((int)pos.X - 20, (int)pos.Y - 20, 40, 40);
-
-            // Node Circle/Box
-            spriteBatch.Draw(pixel, rect, color);
-            
-            // Label
-            var text = type.ToString();
-            var textSize = font.MeasureString(text);
-            spriteBatch.DrawString(font, text, new Vector2(pos.X - textSize.X / 2, pos.Y + 25), Color.White);
-
-            // Amount
-            var res = engine.State.GetResource(type);
-            var amountText = $"{res.Amount:F0}";
-            if (res.PerSecond > 0) amountText += $" (+{res.PerSecond:F1}/s)";
+            var pos = kvp.Value; var color = GetColor(kvp.Key);
+            sb.Draw(pixel, new Rectangle((int)pos.X - 20, (int)pos.Y - 20, 40, 40), color);
+            var text = kvp.Key.ToString(); var textSize = font.MeasureString(text);
+            sb.DrawString(font, text, new Vector2(pos.X - textSize.X / 2, pos.Y + 25), Color.White);
+            var res = engine.State.GetResource(kvp.Key);
+            var amountText = $"{res.Amount:F0}" + (res.PerSecond > 0 ? $" (+{res.PerSecond:F1}/s)" : "");
             var amountSize = font.MeasureString(amountText);
-            spriteBatch.DrawString(font, amountText, new Vector2(pos.X - amountSize.X / 2, pos.Y + 45), Color.Gray);
+            sb.DrawString(font, amountText, new Vector2(pos.X - amountSize.X / 2, pos.Y + 45), Color.Gray);
         }
 
-        // Draw "Focus" Node specially
         var focusPos = new Vector2(UiLayout.Width / 2 - 400, UiLayout.Height / 2);
-        spriteBatch.Draw(pixel, new Rectangle((int)focusPos.X - 20, (int)focusPos.Y - 20, 40, 40), Color.MediumPurple);
-        spriteBatch.DrawString(font, "Focus", new Vector2(focusPos.X - font.MeasureString("Focus").X / 2, focusPos.Y + 25), Color.White);
+        sb.Draw(pixel, new Rectangle((int)focusPos.X - 20, (int)focusPos.Y - 20, 40, 40), Color.MediumPurple);
+        sb.DrawString(font, "Focus", new Vector2(focusPos.X - font.MeasureString("Focus").X / 2, focusPos.Y + 25), Color.White);
     }
 
-    private static void DrawFlow(SpriteBatch sb, Texture2D pixel, Vector2 start, Vector2 end, Color color, int thickness)
+    private static void DrawFlow(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, Color color, int thickness, double time)
     {
-        var edge = end - start;
-        var angle = (float)Math.Atan2(edge.Y, edge.X);
-        var length = edge.Length();
-
-        sb.Draw(pixel, new Rectangle((int)start.X, (int)start.Y, (int)length, thickness), null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
-
-        // Arrowhead? Keep it simple for now.
-    }
-
-    private static Color GetColor(ResourceType type)
-    {
-        return type switch
+        var edge = end - start; var angle = (float)Math.Atan2(edge.Y, edge.X); var length = edge.Length();
+        sb.Draw(px, new Rectangle((int)start.X, (int)start.Y, (int)length, thickness), null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
+        float speed = 100f; float spacing = 50f; float offset = (float)(time * speed) % spacing;
+        for (float d = offset; d < length; d += spacing)
         {
-            ResourceType.Aether => Color.MediumPurple,
-            ResourceType.Earth => Color.SaddleBrown,
-            ResourceType.Air => Color.LightSkyBlue,
-            ResourceType.Water => Color.DeepSkyBlue,
-            ResourceType.Fire => Color.OrangeRed,
-            ResourceType.Life => Color.LimeGreen,
-            ResourceType.VoidEmbers => Color.Gold,
-            _ => Color.White
-        };
+            var p = start + Vector2.Normalize(edge) * d;
+            sb.Draw(px, new Rectangle((int)p.X - 1, (int)p.Y - 1, 3, 3), Color.White * 0.8f);
+        }
     }
+
+    private static Color GetColor(ResourceType type) => type switch {
+        ResourceType.Aether => Color.MediumPurple, ResourceType.Earth => Color.SaddleBrown, ResourceType.Air => Color.LightSkyBlue,
+        ResourceType.Water => Color.DeepSkyBlue, ResourceType.Fire => Color.OrangeRed, ResourceType.Life => Color.LimeGreen,
+        ResourceType.VoidEmbers => Color.Gold, _ => Color.White
+    };
 }

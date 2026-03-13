@@ -21,12 +21,12 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Button States:** Runically shaped buttons with high-fidelity hover/click states. (Tools: `semantic_review.py`, `button_state_audit.py`)
 - [x] **Tab Transitions:** Shader-based dissolves and wipes between game tabs. (Tools: `ascension_audit.py`)
 
-### Phase 3: Information Dynamics & Visualization
-- [ ] **Resource Sparklines:** Animated gauges and mini-graphs for all resources. (Tools: `visual_component_testing`)
-- [ ] **Flowing Resource Lines:** Animated energy movement in the Flow Tab. (Tools: `graph_audit.py`)
-- [ ] **Status Medals:** High-quality status icon redesign with border-glow. (Tools: `icon_alignment.py`)
-- [ ] **Contextual Dimming:** Auto-dimming UI when complex tables are open. (Tools: `tutorial_audit.py`)
-- [ ] **RPG Narrative Log:** Enhanced dialogue box with scroll-fading and premium type. (Tools: `log_scroll_audit.py`, `font_scaling`)
+### Phase 3: Information Dynamics & Visualization (Completed)
+- [x] **Resource Sparklines:** Animated gauges and mini-graphs for all resources. (Tools: `visual_component_testing`)
+- [x] **Flowing Resource Lines:** Animated energy movement in the Flow Tab. (Tools: `graph_audit.py`)
+- [x] **Status Medals:** High-quality status icon redesign with border-glow. (Tools: `icon_alignment.py`)
+- [x] **Contextual Dimming:** Auto-dimming UI when complex tables are open. (Tools: `tutorial_audit.py`)
+- [x] **RPG Narrative Log:** Enhanced dialogue box with scroll-fading and premium type. (Tools: `log_scroll_audit.py`, `font_scaling`)
 
 ### Phase 4: Mastery & High-Fidelity Events
 - [ ] **Alchemical Events:** Full-screen visual sequences for successful mixes. (Tools: `reaction_audit.py`)

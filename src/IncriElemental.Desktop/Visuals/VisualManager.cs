@@ -32,6 +32,7 @@ public class VisualManager
 
     public void AddShake(float intensity) => ScreenShakeIntensity = Math.Max(ScreenShakeIntensity, intensity);
     public void StartTabTransition() => TabTransitionAlpha = 1.0f;
+    public double GetTotalTime() => _totalTime;
 
     public void Update(float deltaTime, bool engineHasAscended, double totalProduction, ResourceType dominantResource = ResourceType.Aether)
     {
@@ -80,6 +81,7 @@ public class VisualManager
     public void Clear(GraphicsDevice gd, Color color) => gd.Clear(color);
 
     public void DrawOverlay(SpriteBatch sb, float alpha) { if (alpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * alpha); }
+    public void DrawDimmer(SpriteBatch sb, float alpha) { if (alpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.Black * alpha); }
     public void DrawTabTransition(SpriteBatch sb) { if (TabTransitionAlpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.Black * TabTransitionAlpha); }
 
     public Color GetColor(ResourceType type) => ColorPalette.ElementColors.GetValueOrDefault(type, Color.White);
@@ -192,7 +194,7 @@ public class VisualManager
         if (tab == GameTab.Void || tab == GameTab.Spire) DrawSpire(sb, engine.State.Discoveries, gt.TotalGameTime.TotalSeconds);
         if (tab == GameTab.Spire) mixing.Draw(sb, engine, font, pixel, this, mouse, gt);
         if (tab == GameTab.World) map.Draw(sb, engine, mouse, font, pixel, this, gt);
-        if (tab == GameTab.Flow) FlowSystem.Draw(sb, engine, font, pixel);
+        if (tab == GameTab.Flow) FlowSystem.Draw(sb, engine, font, pixel, this);
         if (tab == GameTab.Debug) debug.Draw(sb, engine, font, pixel, this);
     }
 

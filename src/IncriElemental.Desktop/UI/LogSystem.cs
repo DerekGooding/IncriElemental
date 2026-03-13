@@ -24,16 +24,12 @@ public class LogSystem
 
     public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel, VisualManager visuals)
     {
-        var logWidth = (int)(UiLayout.Width * 0.25f);
-        spriteBatch.Draw(pixel, new Rectangle(0, 0, logWidth, UiLayout.Height), Color.Black * 0.3f);
-        spriteBatch.Draw(pixel, new Rectangle(logWidth, 0, 1, UiLayout.Height), Color.Gray * 0.2f); // Border
-
         if (font != null)
         {
             spriteBatch.DrawString(font, "LOG", new Vector2(20, 20), Color.Gray * 0.5f);
             for (var i = 0; i < _log.Count; i++)
             {
-                var alpha = 1.0f - (i * 0.1f);
+                var alpha = MathHelper.SmoothStep(1.0f, 0.0f, (float)i / MaxLogLines);
                 var tokens = RichTextSystem.Parse(_log[i]);
                 RichTextSystem.Draw(spriteBatch, font, tokens, new Vector2(20, 60 + (i * 25)), Color.LightGray * alpha, 0.9f, visuals);
             }

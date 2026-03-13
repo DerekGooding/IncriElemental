@@ -147,6 +147,7 @@ public class Game1 : Game
         _particles.Update(deltaTime);
         _particles.EmitTrail(new Vector2(_input.MousePosition.X, _input.MousePosition.Y), _visuals.GetColor(ResourceType.Aether));
         _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount);
+        _status.Update((float)deltaTime, _engine);
         _tutorial.Update(_engine.State);
         _visuals.Update(deltaTime, _engine.State.Discoveries.ContainsKey("ascended"), _engine.TotalProduction);
 
@@ -204,6 +205,7 @@ public class Game1 : Game
             _visuals.Clear(GraphicsDevice, new Color(5, 5, 10));
             _spriteBatch.Begin();
             _bg.Draw(_spriteBatch);
+            if (_currentTab == GameTab.Flow || _currentTab == GameTab.Spire) _visuals.DrawDimmer(_spriteBatch, 0.3f);
             _spriteBatch.End();
 
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
