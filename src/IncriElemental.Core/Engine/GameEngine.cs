@@ -84,7 +84,7 @@ public class GameEngine
         if (State.GetResource(ResourceType.Aether).Amount >= 10 && !State.Discoveries.GetValueOrDefault("void_observed"))
         {
             State.Discoveries["void_observed"] = true;
-            State.History.Add("The void feels thick with potential.");
+            State.History.Add(TextService.Instance.Get("HIST_VOID_POTENTIAL"));
             EventBus.PublishDiscoveryUnlocked("void_observed");
         }
     }

@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using IncriElemental.Core.Engine;
+using IncriElemental.Core.Systems;
 using IncriElemental.Desktop.Visuals;
 using IncriElemental.Desktop.UI;
 
@@ -24,6 +25,7 @@ public class Game1 : Game
     private StatusSystem _status = new();
     private DebugSystem _debug = new();
     private EndingSystem _ending = new();
+    private TutorialSystem _tutorial = new();
     private AiModeSystem _ai;
     private GameTab _currentTab = GameTab.Void;
     private int _lastProcessedHistoryCount = 0;
@@ -34,6 +36,9 @@ public class Game1 : Game
     private bool _needsButtonLayoutUpdate = false;
     private string _screenshotPath = "screenshot.png";
     private RasterizerState _scissorState = new() { ScissorTestEnable = true };
+    private float _screenShakeIntensity = 0f;
+    private float _ascensionTransitionAlpha = 0f;
+    private bool _isAscending = false;
 
     public Game1()
     {
@@ -56,6 +61,12 @@ public class Game1 : Game
             _engine.LoadLore(File.ReadAllText(lorePath));
         }
 
+        var stringsPath = "Content/strings.json";
+        if (File.Exists(stringsPath))
+        {
+            TextService.Instance.LoadStrings(File.ReadAllText(stringsPath));
+        }
+
         if (Environment.GetCommandLineArgs().Contains("--ai-mode"))
         {
             _aiMode = true;
@@ -65,18 +76,14 @@ public class Game1 : Game
     public void ToggleFullscreen()
     {
         _graphics.IsFullScreen = !_graphics.IsFullScreen;
-        if (_graphics.IsFullScreen)
-        {
+        if (_graphics.IsFullScreen) {
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-        }
-        else
-        {
+        } else {
             _graphics.PreferredBackBufferWidth = 1024;
             _graphics.PreferredBackBufferHeight = 768;
         }
         _graphics.ApplyChanges();
-        
         UiLayout.Width = GraphicsDevice.Viewport.Width;
         UiLayout.Height = GraphicsDevice.Viewport.Height;
         _needsButtonLayoutUpdate = true;
@@ -99,8 +106,10 @@ public class Game1 : Game
 
         LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
         _audio.StartHum();
-        _log.AddToLog("You awaken in the void.");
-        _log.AddToLog("Focus to begin manifesting reality.");
+        _log.AddToLog(TextService.Instance.Get("HIST_AWAKEN"));
+        _log.AddToLog(TextService.Instance.Get("HIST_FOCUS_PROMPT"));
+
+        _tutorial.Start(_engine.State);
 
         if (_aiMode) _ai.Process("ai_commands.txt");
     }
@@ -121,7 +130,6 @@ public class Game1 : Game
     protected override void Update(GameTime gameTime)
     {
         _input.Update();
-
         if (_needsButtonLayoutUpdate)
         {
             LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
@@ -135,6 +143,9 @@ public class Game1 : Game
 
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
+        _tutorial.Update(_engine.State);
+
+        UpdateVisualState(deltaTime);
 
         while (_lastProcessedHistoryCount < _engine.State.History.Count)
         {
@@ -143,40 +154,53 @@ public class Game1 : Game
         }
 
         LayoutSystem.ApplyLayout(_buttons, _currentTab);
+        UpdateScrollOffsets();
+        _input.ProcessButtons(_buttons, _currentTab, _tabScrollOffsets.GetValueOrDefault(_currentTab, 0));
 
+        if (_currentTab == GameTab.World) _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
+        base.Update(gameTime);
+    }
+
+    private void UpdateVisualState(float deltaTime)
+    {
+        if (_screenShakeIntensity > 0)
+        {
+            _screenShakeIntensity -= deltaTime * 5f;
+            if (_screenShakeIntensity < 0) _screenShakeIntensity = 0;
+        }
+
+        if (_engine.State.Discoveries.ContainsKey("ascended") && !_isAscending)
+        {
+            _isAscending = true;
+            _screenShakeIntensity = 10f;
+        }
+
+        if (_isAscending && _ascensionTransitionAlpha < 1.0f) _ascensionTransitionAlpha += deltaTime * 0.5f;
+
+        if (!_engine.State.Discoveries.ContainsKey("ascended") && _isAscending)
+        {
+            _isAscending = false;
+            _ascensionTransitionAlpha = 0f;
+        }
+    }
+
+    private void UpdateScrollOffsets()
+    {
         if (_tabScrollOffsets.ContainsKey(_currentTab))
         {
             _tabScrollOffsets[_currentTab] = Math.Min(0, _tabScrollOffsets[_currentTab] + _input.ScrollDelta * 0.5f);
         }
-
-        foreach (var btn in _buttons)
-        {
-            if (!btn.IsVisible()) continue;
-            var offset = btn.Tab == GameTab.None ? 0 : (int)_tabScrollOffsets.GetValueOrDefault(btn.Tab, 0);
-            if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.Update(_input.MousePosition, offset);
-        }
-
-        if (_input.IsLeftClick())
-        {
-            foreach (var btn in _buttons)
-            {
-                if (!btn.IsVisible()) continue;
-                var offset = btn.Tab == GameTab.None ? 0 : (int)_tabScrollOffsets.GetValueOrDefault(btn.Tab, 0);
-                if (btn.Tab == _currentTab || btn.Tab == GameTab.None) btn.CheckClick(_input.MousePosition, offset);
-            }
-        }
-
-        if (_currentTab == GameTab.World) _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
-
-        base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
+        var shakeOffset = GetShakeOffset();
+        var curOffset = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
+
         if (_engine.State.Discoveries.ContainsKey("ascended"))
         {
-            GraphicsDevice.Clear(Color.White);
-            _spriteBatch.Begin();
+            _visuals.Clear(GraphicsDevice, Color.White);
+            _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
             _ending.Draw(_spriteBatch, _engine, _font, _pixel, gameTime, _input.MousePosition, _input.IsLeftClick(), () => {
                 _engine.Manifest("reset");
                 _log.Clear();
@@ -185,63 +209,42 @@ public class Game1 : Game
             return;
         }
 
-        GraphicsDevice.Clear(new Color(5, 5, 10));
-        _spriteBatch.Begin();
-
+        _visuals.Clear(GraphicsDevice, new Color(5, 5, 10));
+        _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
         _log.Draw(_spriteBatch, _font, _pixel);
         _particles.Draw(_spriteBatch);
-
-        // Draw Fixed UI (None Tab)
-        foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None))
-        {
-            if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, 0);
-        }
-
+        foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, 0);
         _spriteBatch.End();
 
-        // Draw Scrollable UI
-        var scrollRect = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
-        GraphicsDevice.ScissorRectangle = scrollRect;
-        _spriteBatch.Begin(rasterizerState: _scissorState);
+        GraphicsDevice.ScissorRectangle = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
+        _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
+        foreach (var btn in _buttons.Where(b => b.Tab == _currentTab)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, curOffset);
 
-        var curOffset = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
-        foreach (var btn in _buttons.Where(b => b.Tab == _currentTab))
-        {
-            if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, curOffset);
-        }
-
-        if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire)
-        {
-            _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
-        }
-
-        if (_currentTab == GameTab.World)
-        {
-            _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals);
-        }
-
-        if (_currentTab == GameTab.Debug)
-        {
-            _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
-        }
-
+        if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire) _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
+        if (_currentTab == GameTab.World) _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals);
+        if (_currentTab == GameTab.Debug) _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
         _spriteBatch.End();
 
-        // Draw Tooltips and Status (Always on top, not clipped)
-        _spriteBatch.Begin();
-        foreach (var btn in _buttons)
-        {
-            if (!btn.IsVisible()) continue;
-            var offset = btn.Tab == GameTab.None ? 0 : curOffset;
-            if (btn.Tab == _currentTab || btn.Tab == GameTab.None)
-            {
-                btn.DrawTooltip(_spriteBatch, _font, _pixel, offset);
-            }
-        }
-
+        _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
+        foreach (var btn in _buttons.Where(b => b.Tab == _currentTab || b.Tab == GameTab.None)) if (btn.IsVisible()) btn.DrawTooltip(_spriteBatch, _font, _pixel, (btn.Tab == GameTab.None ? 0 : curOffset));
         _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
-
         _spriteBatch.End();
+
+        if (_ascensionTransitionAlpha > 0)
+        {
+            _spriteBatch.Begin();
+            _visuals.DrawOverlay(_spriteBatch, _ascensionTransitionAlpha);
+            _spriteBatch.End();
+        }
+
+        _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons);
         base.Draw(gameTime);
+    }
+
+    private Vector2 GetShakeOffset()
+    {
+        if (_screenShakeIntensity <= 0) return Vector2.Zero;
+        var rnd = new Random();
+        return new Vector2((float)(rnd.NextDouble() * 2 - 1) * _screenShakeIntensity, (float)(rnd.NextDouble() * 2 - 1) * _screenShakeIntensity);
     }
 }

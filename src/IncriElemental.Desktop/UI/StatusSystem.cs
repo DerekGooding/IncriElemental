@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
+using IncriElemental.Core.Systems;
 using IncriElemental.Desktop.Visuals;
 
 namespace IncriElemental.Desktop.UI;
@@ -15,14 +16,15 @@ public class StatusSystem
         if (font == null) return;
 
         float y = 20;
-        spriteBatch.DrawString(font, "ESSENCE", new Vector2(x, y), Color.Gray);
+        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ESSENCE"), new Vector2(x, y), Color.Gray);
         y += 30;
 
         foreach (var res in engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000))
         {
             var amountStr = visuals.FormatValue(res.Amount);
             var maxStr = res.MaxAmount > 1_000_000_000_000 ? "INF" : visuals.FormatValue(res.MaxAmount);
-            var label = $"{res.Type}: {amountStr}";
+            var resName = TextService.Instance.Get($"RES_{res.Type.ToString().ToUpper()}");
+            var label = $"{resName}: {amountStr}";
 
             visuals.DrawElement(spriteBatch, res.Type, new Vector2(x - 15, y + 8), 6f);
             spriteBatch.DrawString(font, label, new Vector2(x, y), visuals.GetColor(res.Type));
@@ -37,7 +39,7 @@ public class StatusSystem
         }
 
         y += 20;
-        spriteBatch.DrawString(font, "ACTIVE REACTION", new Vector2(x, y), Color.Gray * 0.5f);
+        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ACTIVE_REACTION"), new Vector2(x, y), Color.Gray * 0.5f);
         y += 30;
         foreach (var buff in engine.State.ActiveBuffs)
         {
@@ -56,7 +58,7 @@ public class StatusSystem
         if (manifestations.Count == 0) return;
 
         var defs = engine.GetDefinitions().ToDictionary(d => d.Id, d => d);
-        spriteBatch.DrawString(font, "MANIFESTATIONS", new Vector2(x, yOffset), Color.Gray * 0.5f);
+        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_MANIFESTATIONS"), new Vector2(x, yOffset), Color.Gray * 0.5f);
         var curY = yOffset + 30;
 
         foreach (var entry in manifestations.Where(m => m.Value > 0).OrderBy(m => m.Key))

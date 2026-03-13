@@ -67,7 +67,7 @@ public class ManifestationManager
         }
 
         if (def.Id == "speck" && _state.Manifestations["speck"] == 1)
-            _state.History.Add("A speck of matter appears.");
+            _state.History.Add(TextService.Instance.Get("HIST_SPECK_APPEARS"));
 
         return true;
     }
@@ -93,8 +93,8 @@ public class ManifestationManager
 
         _state.GetResource(ResourceType.VoidEmbers).Add(embers);
 
-        _state.History.Add($"You awaken with Cosmic Insight x{multiplier:F1}.");
-        _state.History.Add("The void feels thinner. Void Infusion is now possible.");
+        _state.History.Add(TextService.Instance.Get("HIST_AWAKENING_NGP", multiplier));
+        _state.History.Add(TextService.Instance.Get("HIST_VOID_INFUSION"));
     }
 
     private bool TryManifest(string thing, Resource primary, double cost, Action? onComplete, string discovery)

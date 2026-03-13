@@ -24,4 +24,19 @@ public class InputManager
     public bool IsLeftClick() => _currentMouse.LeftButton == ButtonState.Pressed && _lastMouse.LeftButton == ButtonState.Released;
 
     public bool IsKeyPressed(Keys key) => _currentKey.IsKeyDown(key) && _lastKey.IsKeyUp(key);
+
+    public void ProcessButtons(List<Button> buttons, GameTab currentTab, float scrollOffset)
+    {
+        var isClick = IsLeftClick();
+        foreach (var btn in buttons)
+        {
+            if (!btn.IsVisible()) continue;
+            var offset = btn.Tab == GameTab.None ? 0 : (int)scrollOffset;
+            if (btn.Tab == currentTab || btn.Tab == GameTab.None)
+            {
+                btn.Update(MousePosition, offset);
+                if (isClick) btn.CheckClick(MousePosition, offset);
+            }
+        }
+    }
 }

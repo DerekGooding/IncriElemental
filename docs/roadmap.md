@@ -23,10 +23,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Efficiency Observer:** A debug UI for the agent to visualize resource bottlenecks.
 - [x] **Hover Tooltips:** Dynamic feedback for all manifestations explaining their ongoing effect and total scaling.
 
-## 24. Goal: The Final Polish (Next)
-- [ ] **Tutorialization:** Add a guided first-time experience for new players.
-- [ ] **Visual Polish:** Add screen-shake and transition effects for Ascension.
-- [ ] **Localization:** Externalize all strings for multi-language support.
+## 24. Goal: The Final Polish (Completed)
+- [x] **Tutorialization:** Add a guided first-time experience for new players.
+- [x] **Visual Polish:** Add screen-shake and transition effects for Ascension.
+- [x] **Localization:** Externalize all strings for multi-language support.
 
 ## 25. Goal: Visual Overhaul: "The Aetherial Glow" (Planned)
 - [ ] **HLSL Post-Processing:** Implement Bloom, Chromatic Aberration, and Aether Wave shaders.

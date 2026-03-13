@@ -32,8 +32,52 @@ public class VisualManager
         _pixel.SetData([Color.White]);
     }
 
+    public void Clear(GraphicsDevice graphicsDevice, Color color) => graphicsDevice.Clear(color);
+
+    public void DrawScene(SpriteBatch spriteBatch, LogSystem log, ParticleSystem particles, List<Button> buttons, GameTab currentTab, int curOffset)
+    {
+        log.Draw(spriteBatch, null, _pixel); // We handle font inside LogSystem
+        particles.Draw(spriteBatch);
+
+        foreach (var btn in buttons.Where(b => b.Tab == GameTab.None))
+        {
+            if (btn.IsVisible()) btn.Draw(spriteBatch, null, _pixel, 0);
+        }
+    }
+
+    public void DrawOverlay(SpriteBatch spriteBatch, float alpha)
+    {
+        if (alpha > 0)
+        {
+            spriteBatch.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * alpha);
+        }
+    }
+
     public Color GetColor(ResourceType type) => _elementColors.GetValueOrDefault(type, Color.White);
     public Color GetCellColor(CellType type) => _cellColors.GetValueOrDefault(type, Color.Black);
+
+    public static Color GetColorForId(string id)
+    {
+        if (id.Contains("aether") || id.Contains("attraction")) return Color.MediumPurple;
+        if (id.Contains("speck") || id.Contains("foundation") || id.Contains("pickaxe")) return Color.SaddleBrown;
+        if (id.Contains("spark") || id.Contains("forge") || id.Contains("brazier")) return Color.OrangeRed;
+        if (id.Contains("droplet") || id.Contains("well")) return Color.DodgerBlue;
+        if (id.Contains("breeze") || id.Contains("shaft") || id.Contains("clouds")) return Color.LightCyan;
+        if (id.Contains("garden")) return Color.LimeGreen;
+        if (id.Contains("constellation")) return Color.Gold;
+        return Color.Gray;
+    }
+
+    public static GameTab GetTabForDef(ManifestationDefinition def)
+    {
+        if (def.Id.Contains("spire") || def.Id.Contains("well") || def.Id.Contains("brazier") || def.Id.Contains("forge") || def.Id.Contains("clouds"))
+            return GameTab.Spire;
+        if (def.Id.Contains("garden") || def.Id.Contains("familiar"))
+            return GameTab.World;
+        if (def.Id.Contains("constellation"))
+            return GameTab.Constellation;
+        return GameTab.Void;
+    }
 
     public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel, int startX, int startY)
     {

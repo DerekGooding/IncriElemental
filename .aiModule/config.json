@@ -1,0 +1,12 @@
+{
+    "MAX_LINES_PER_FILE": 250,
+    "MIN_OVERALL_COVERAGE": 70.0,
+    "MIN_FILE_COVERAGE": 50.0,
+    "DOCS_STALENESS_THRESHOLD": 8,
+    "SOURCE_DIR": "src",
+    "RESULTS_DIR": "TestResults",
+    "SOURCE_EXTENSIONS": [".cs", ".py", ".js", ".ts"],
+    "DOC_FILES": ["README.md", "docs/architecture.md", "docs/roadmap.md", "GEMINI.md"],
+    "TEST_COMMAND": ["dotnet", "test", "--collect:XPlat Code Coverage", "--results-directory", "TestResults", "--verbosity", "quiet"],
+    "COVERAGE_REPORT_PATTERN": "coverage\.cobertura\.xml"
+}
