@@ -25,7 +25,7 @@ jobs:
     - name: Install Build Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core
+        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core wine
     - name: Setup Font for MGCB
       run: |
         python scripts/download_font.py
