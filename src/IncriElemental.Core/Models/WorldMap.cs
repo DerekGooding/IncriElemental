@@ -18,6 +18,7 @@ public class WorldCell
     public string RewardId { get; set; } = string.Empty;
     public string LandmarkName { get; set; } = string.Empty;
     public string LandmarkDescription { get; set; } = string.Empty;
+    public List<Aura> Influences { get; set; } = [];
 }
 
 public class WorldMap
@@ -30,6 +31,48 @@ public class WorldMap
     {
         InitializeLandmarks();
     }
+
+    public void RecalculateAuras(Dictionary<string, int> manifestations, List<ManifestationDefinition> defs)
+    {
+        foreach (var cell in Cells.Values) cell.Influences.Clear();
+
+        // For now, each landmark projects an aura if explored
+        foreach (var cell in Cells.Values.Where(c => c.IsExplored && !string.IsNullOrEmpty(c.LandmarkName)))
+        {
+            var auraType = GetAuraForCell(cell.Type);
+            if (auraType != ResourceType.Aether) // Void doesn't project auras yet
+            {
+                ApplyAura(cell.X, cell.Y, auraType, 0.5); // Base cell
+                // Project to neighbors
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    for (int dy = -1; dy <= 1; dy++)
+                    {
+                        if (dx == 0 && dy == 0) continue;
+                        ApplyAura(cell.X + dx, cell.Y + dy, auraType, 0.2);
+                    }
+                }
+            }
+        }
+    }
+
+    private void ApplyAura(int x, int y, ResourceType type, double intensity)
+    {
+        if (x < 0 || x >= Width || y < 0 || y >= Height) return;
+        var cell = GetCell(x, y);
+        var existing = cell.Influences.FirstOrDefault(a => a.Type == type);
+        if (existing != null) existing.Intensity += intensity;
+        else cell.Influences.Add(new Aura(type, intensity));
+    }
+
+    private ResourceType GetAuraForCell(CellType type) => type switch
+    {
+        CellType.Mountain => ResourceType.Earth,
+        CellType.Ocean => ResourceType.Water,
+        CellType.Plain => ResourceType.Air,
+        CellType.Ruins => ResourceType.Fire,
+        _ => ResourceType.Aether
+    };
 
     private void InitializeLandmarks()
     {

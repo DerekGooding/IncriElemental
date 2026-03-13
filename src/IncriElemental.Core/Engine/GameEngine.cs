@@ -54,6 +54,7 @@ public class GameEngine
     public void Update(double deltaTime)
     {
         State.TotalGameTime += deltaTime;
+        State.Map.RecalculateAuras(State.Manifestations, _manifestManager.GetDefinitions().ToList());
         _alchemy.Update(deltaTime);
         _automation.Update(deltaTime, _alchemy);
         CheckLoreUnlocks();

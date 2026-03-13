@@ -33,10 +33,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Procedural Background:** Create a dynamic Aether Nebula background reactive to game state.
 - [x] **Interactive Parallax:** Implement multi-layered background movement tied to mouse/input.
 
-## 26. Goal: Mechanical Depth: "Resonant Harmony" (Planned)
-- [ ] **Grid Synergies:** Implement an "Aura" system where manifestation placement on the map affects production.
-- [ ] **Alchemical Mixing Table:** A dedicated mini-game/UI for active multi-element reactions.
-- [ ] **Reactive Feedback:** Visual indicators for stability and harmony on the map and mixing table.
+## 26. Goal: Mechanical Depth: "Resonant Harmony" (Completed)
+- [x] **Grid Synergies:** Implement an "Aura" system where manifestation placement on the map affects production.
+- [x] **Alchemical Mixing Table:** A dedicated mini-game/UI for active multi-element reactions.
+- [x] **Reactive Feedback:** Visual indicators for stability and harmony on the map and mixing table.
 
 ## 27. Goal: Architecture: "Component-Driven Manifestations" (Planned)
 - [ ] **Data-Driven Components:** Refactor manifestations into a modular component-based system (ECS-lite).

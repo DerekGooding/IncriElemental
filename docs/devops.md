@@ -12,9 +12,9 @@ The agent maintains a GitHub Actions pipeline (`.github/workflows/ci.yml`) that:
 - **Builds:** The entire solution on every push using .NET 10.0.
 - **Tests:** Runs all unit tests and collects code coverage.
 - **Font Portability:** Uses `scripts/download_font.py` to ensure build-time assets are available without system-level hacks.
-- **Visual Review:** Executes `scripts/agentic_review.py` via `xvfb` to catch UI regressions.
-- **Health:** Executes `scripts/check_health.py` to enforce quality mandates.
-- **Shields:** Automatically updates health data on the `shields` branch for dynamic status badges.
+- **Visual Review:** Executes `scripts/agentic_review.py` via `xvfb` (X Virtual Framebuffer) in the CI environment to catch UI regressions in a headless state.
+- **Health:** Executes `scripts/check_health.py` to enforce quality mandates, including test coverage, monolith prevention, and documentation staleness.
+- **Shields Deployment:** Automatically pushes health metrics and coverage data to a dedicated `shields` branch, which serves as the data source for dynamic status badges in the README.
 
 ## 3. Deployment
 - **Manifests:** Updating the `docs/roadmap.md`, `GEMINI.md`, and other documentation is considered part of the "deployment" of project context and is required when files become "stale."

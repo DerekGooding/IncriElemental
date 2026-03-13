@@ -28,12 +28,45 @@ public class VisualManager
 
     private Effect? _bloomEffect;
     private RenderTarget2D? _renderTarget;
+    public float ScreenShakeIntensity { get; private set; } = 0f;
+    public float AscensionTransitionAlpha { get; private set; } = 0f;
+    private bool _isAscending = false;
 
     public VisualManager(GraphicsDevice graphicsDevice)
     {
         _pixel = new Texture2D(graphicsDevice, 1, 1);
         _pixel.SetData([Color.White]);
         _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
+    }
+
+    public void Update(float deltaTime, bool engineHasAscended)
+    {
+        if (ScreenShakeIntensity > 0)
+        {
+            ScreenShakeIntensity -= deltaTime * 5f;
+            if (ScreenShakeIntensity < 0) ScreenShakeIntensity = 0;
+        }
+
+        if (engineHasAscended && !_isAscending)
+        {
+            _isAscending = true;
+            ScreenShakeIntensity = 10f;
+        }
+
+        if (_isAscending && AscensionTransitionAlpha < 1.0f) AscensionTransitionAlpha += deltaTime * 0.5f;
+
+        if (!engineHasAscended && _isAscending)
+        {
+            _isAscending = false;
+            AscensionTransitionAlpha = 0f;
+        }
+    }
+
+    public Vector2 GetShakeOffset()
+    {
+        if (ScreenShakeIntensity <= 0) return Vector2.Zero;
+        var rnd = new Random();
+        return new Vector2((float)(rnd.NextDouble() * 2 - 1) * ScreenShakeIntensity, (float)(rnd.NextDouble() * 2 - 1) * ScreenShakeIntensity);
     }
 
     public void LoadEffects(Microsoft.Xna.Framework.Content.ContentManager content)
@@ -104,10 +137,11 @@ public class VisualManager
         return GameTab.Void;
     }
 
-    public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel, int startX, int startY)
+    public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel, int startX, int startY, GameTime gameTime)
     {
         var size = 20;
         var padding = 2;
+        var pulse = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4) * 0.2f + 0.8f;
 
         for (var x = 0; x < map.Width; x++)
         {
@@ -122,6 +156,17 @@ public class VisualManager
                 if (rect.Contains(mousePos)) color *= 1.5f;
 
                 spriteBatch.Draw(pixel, rect, color);
+
+                // Draw Aura border
+                if (cell.IsExplored && cell.Influences.Any())
+                {
+                    var topAura = cell.Influences.OrderByDescending(a => a.Intensity).First();
+                    var auraColor = GetColor(topAura.Type) * (float)Math.Min(1.0, topAura.Intensity) * pulse;
+                    spriteBatch.Draw(pixel, new Rectangle(rect.X - 1, rect.Y - 1, rect.Width + 2, 1), auraColor);
+                    spriteBatch.Draw(pixel, new Rectangle(rect.X - 1, rect.Bottom, rect.Width + 2, 1), auraColor);
+                    spriteBatch.Draw(pixel, new Rectangle(rect.X - 1, rect.Y - 1, 1, rect.Height + 2), auraColor);
+                    spriteBatch.Draw(pixel, new Rectangle(rect.Right, rect.Y - 1, 1, rect.Height + 2), auraColor);
+                }
 
                 // Border for unexplored but visible
                 if (!cell.IsExplored)

@@ -18,8 +18,11 @@ public class AutomationSystem(GameState state)
         {
             if (resource.PerSecond > 0)
             {
-                var multiplier = alchemy.GetMultiplier(resource.Type);
-                resource.Add(resource.PerSecond * multiplier * deltaTime);
+                var alchemyMult = alchemy.GetMultiplier(resource.Type);
+                var auraIntensity = _state.Map.Cells.Values.Sum(c => c.Influences.Where(a => a.Type == resource.Type).Sum(a => a.Intensity));
+                var auraMult = 1.0 + auraIntensity * 0.1;
+                
+                resource.Add(resource.PerSecond * alchemyMult * auraMult * deltaTime);
             }
         }
     }

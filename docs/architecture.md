@@ -28,11 +28,18 @@ The `GameState` class in `IncriElemental.Core` is the single source of truth.
     - `LogSystem`: Manages the narrative log, prevents message duplication, and handles fading text rendering.
     - `WorldMapSystem`: Handles grid-based exploration logic, coordinate translation, and map rendering.
     - `StatusSystem`: Displays current resources, active buffs, and manifestations with hover tooltips.
+    - `TutorialSystem`: A state-driven onboarding guide that manages UI dimming and button highlighting.
     - `EndingSystem`: Manages the Ascension completion screen and New Game+ reset logic.
     - `InputManager`: Abstracts MonoGame mouse, keyboard, and scroll wheel state for cleaner interaction logic.
 - **Binding:** The Desktop layer reads the `GameState` and employs these specialized systems to render UI elements and process input.
 
-## 5. Agentic Piloting & Headless Mode
+## 5. Visuals and Post-Processing
+- **VisualManager:** A high-level coordinator in the `Desktop` layer that manages render targets and effects.
+- **HLSL Bloom:** A custom shader (`Bloom.fx`) that extracts bright pixels and blends them back into the main scene for a spectral glow.
+- **BackgroundManager:** Handles a procedurally generated starfield backdrop where movement speeds are reactive to the player's Aether generation rate.
+- **ParticleSystem:** Manages short-lived visual feedback for manifesting actions.
+
+## 6. Agentic Piloting & Headless Mode
 To support heavy agentic development, the architecture allows for automated execution and UI verification:
 - **GameEngine Driver:** The `GameEngine` in `Core` is the primary interface.
 - **HeadlessDriver:** A text-based interface for `GameEngine` used in tests and balance simulations.
@@ -40,9 +47,10 @@ To support heavy agentic development, the architecture allows for automated exec
 - **Efficiency Observer:** A debug UI (available in the `Debug` tab in AI mode) that visualizes resource generation rates and identifies bottlenecks for automated balancing.
 - **Validation:** Automated scripts in `scripts/` and unit tests in `tests/` use these drivers to verify game balance and UI layout via screenshots.
 
-## 6. Data-Driven Logic
+## 7. Data-Driven Logic & Localization
 - **Manifestations:** Defined in `manifestations.json`. Loaded at runtime by `GameEngine` via `ManifestationManager`.
 - **Lore:** Narrative fragments defined in `lore.json`, triggered by `GameEngine` based on discoveries or map exploration.
+- **Localization:** Managed by `TextService` in the `Core` project. All UI strings are loaded from `Content/strings.json` and support dynamic argument injection.
 - **Assets:** Fonts and textures are managed through the MonoGame Content Pipeline, with fallback logic for missing assets.
 
 ---

@@ -18,6 +18,8 @@
   "HIST_SPECK_APPEARS": "A speck of matter appears.",
   "HIST_MANIFESTED": "{0} manifested.",
   "HIST_ASCENSION_BEGINS": "Ascension begins...",
+  "HIST_ALCHEMY_COMBUSTION": "Alchemy: Combustion! Aether flows violently.",
+  "HIST_ALCHEMY_FERTILITY": "Alchemy: Fertility! The void is lush.",
   "HIST_AWAKENING_NGP": "You awaken with Cosmic Insight x{0:F1}.",
   "HIST_VOID_INFUSION": "The void feels thinner. Void Infusion is now possible.",
   "TOOLTIP_FOCUS": "Gather raw magical potential.\nGain {0:F1} Aether per click.",

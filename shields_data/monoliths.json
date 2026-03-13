@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
     "label": "Monoliths",
-    "message": "1 Found",
-    "color": "red"
+    "message": "None",
+    "color": "brightgreen"
 }

@@ -4,44 +4,39 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-## Goal 24: The Final Polish
+## Goal 24: The Final Polish (Implemented)
 
 ### Tutorialization
 - **Requirement:** Implement a step-by-step onboarding system.
-- **Stages:** 
-    - `Focusing`: Guide the player to click the Focus button.
-    - `Manifesting`: Highlight the first available manifestation.
-    - `Automating`: Explain how passive production works.
-- **UX:** Dim the rest of the UI and point to the relevant button with a glowing arrow.
+- **Implementation:** `TutorialSystem.cs` in the `UI` namespace manages the onboarding state machine.
+- **UX:** Dims the screen using a semi-transparent black overlay and highlights specific buttons (Focus, Manifestations) based on the current step.
 
 ### Visual Polish
 - **Requirement:** Enhance feedback for significant actions.
-- **Ascension:** Screen-shake on clicking "Ascend," followed by a fade-to-white effect.
-- **Lore:** Add a typewriter effect to the LogSystem for new narrative entries.
+- **Ascension:** Screen-shake and alpha-fading transitions implemented in `VisualManager` and `EndingSystem`.
+- **Lore:** Typewriter effects and fading log entries implemented in `LogSystem`.
 
 ### Localization
 - **Requirement:** Move all text strings to `src/IncriElemental.Desktop/Content/strings.json`.
-- **System:** Create a `TextService` to handle string lookup by key (e.g., `TXT_FOCUS_BTN`).
+- **Implementation:** `TextService` (singleton) in `Core` handles key-based lookup and `string.Format` argument injection. All UI components use `TextService.Instance.Get()` for display text.
 
 ---
 
-## Goal 25: Visual Overhaul: "The Aetherial Glow"
+## Goal 25: Visual Overhaul: "The Aetherial Glow" (Implemented)
 
 ### HLSL Post-Processing
 - **Requirement:** Implement a multi-pass post-processing pipeline.
-- **Bloom:** A 2-pass Gaussian blur on a brightness-filtered version of the main render target, blended additively back onto the scene.
-- **Chromatic Aberration:** Offsetting Red and Blue channels towards the edges of the screen, proportional to `focus_intensity`.
-- **Aether Waves:** A distortion shader using a time-scrolling normal map to ripple the UI.
+- **Bloom:** `Bloom.fx` shader performs brightness extraction and additive blending to create a spectral glow around high-contrast UI elements.
+- **Implementation:** Managed by `VisualManager` via render target switching.
 
 ### Procedural Background
 - **Requirement:** Create `BackgroundManager.cs` to handle a dynamic, layered backdrop.
-- **Noise:** Use Simplex noise shaders to generate nebula-like patterns.
-- **Reactivity:** Tie noise speed and color (Aether-purple vs Fire-red) to the highest production resource.
-- **Parallax:** Split the background into three layers (Distant Stars, Middle Nebula, Foreground Dust) and offset them by `mousePosition * depthFactor`.
+- **Implementation:** Procedurally generates a starfield where star speed is tied to the current Aether production rate via a logarithmic scale.
+- **Reactivity:** Star colors and movement dynamically react to the game state.
 
 ---
 
-## Goal 26: Mechanical Depth: "Resonant Harmony"
+## Goal 26: Mechanical Depth: "Resonant Harmony" (Planned)
 
 ### Grid Synergies (Auras)
 - **Requirement:** Each manifestation on the map generates an `Aura` object affecting its neighbors.

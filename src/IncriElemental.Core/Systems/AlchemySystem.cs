@@ -20,28 +20,30 @@ public class AlchemySystem(GameState state)
 
     public bool Mix(ResourceType elementA, ResourceType elementB)
     {
-        var resA = _state.GetResource(elementA);
-        var resB = _state.GetResource(elementB);
+        return TryMix(new Dictionary<ResourceType, double> { { elementA, 100 }, { elementB, 100 } });
+    }
 
-        // Mix cost: 100 of each
-        if (resA.Amount < 100 || resB.Amount < 100) return false;
+    public bool TryMix(Dictionary<ResourceType, double> ingredients)
+    {
+        foreach (var kvp in ingredients)
+        {
+            if (_state.GetResource(kvp.Key).Amount < kvp.Value) return false;
+        }
 
-        resA.Add(-100);
-        resB.Add(-100);
+        foreach (var kvp in ingredients) _state.GetResource(kvp.Key).Add(-kvp.Value);
 
-        if ((elementA == ResourceType.Fire && elementB == ResourceType.Air) ||
-            (elementA == ResourceType.Air && elementB == ResourceType.Fire))
+        // Check for specific recipes
+        if (ingredients.ContainsKey(ResourceType.Fire) && ingredients.ContainsKey(ResourceType.Air))
         {
             ApplyBuff("Combustion", BuffType.GenerationMultiplier, ResourceType.Aether, 2.0, 60);
-            _state.History.Add("Alchemy: Combustion! Aether flows violently.");
+            _state.History.Add(TextService.Instance.Get("HIST_ALCHEMY_COMBUSTION"));
             return true;
         }
 
-        if ((elementA == ResourceType.Water && elementB == ResourceType.Earth) ||
-            (elementA == ResourceType.Earth && elementB == ResourceType.Water))
+        if (ingredients.ContainsKey(ResourceType.Water) && ingredients.ContainsKey(ResourceType.Earth))
         {
             ApplyBuff("Fertility", BuffType.GenerationMultiplier, ResourceType.Life, 3.0, 60);
-            _state.History.Add("Alchemy: Fertility! The void is lush.");
+            _state.History.Add(TextService.Instance.Get("HIST_ALCHEMY_FERTILITY"));
             return true;
         }
 

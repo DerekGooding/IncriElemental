@@ -34,6 +34,8 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines**.
 - **Documentation Staleness:** Documentation is considered "stale" if more than **8 source files** have changed since its last update.
 - **Health Integrity:** I must resolve staleness by providing actual content improvements, never by "touching" files.
+- **Visual Excellence:** Maintain the "Aetherial Glow" through consistent use of post-processing and reactive backgrounds.
+- **Localization First:** All user-facing strings must be added to `strings.json`.
 - **Automated Checks:** Run `scripts/check_health.py` before completing any significant feature.
 
 ### Resolving Health Failures

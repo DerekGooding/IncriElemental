@@ -26,6 +26,7 @@ public class Game1 : Game
     private DebugSystem _debug = new();
     private EndingSystem _ending = new();
     private TutorialSystem _tutorial = new();
+    private MixingTableSystem _mixing = new();
     private BackgroundManager _bg = null!;
     private AiModeSystem _ai;
     private GameTab _currentTab = GameTab.Void;
@@ -37,9 +38,6 @@ public class Game1 : Game
     private bool _needsButtonLayoutUpdate = false;
     private string _screenshotPath = "screenshot.png";
     private RasterizerState _scissorState = new() { ScissorTestEnable = true };
-    private float _screenShakeIntensity = 0f;
-    private float _ascensionTransitionAlpha = 0f;
-    private bool _isAscending = false;
 
     public Game1()
     {
@@ -148,8 +146,7 @@ public class Game1 : Game
         _particles.Update(deltaTime);
         _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount);
         _tutorial.Update(_engine.State);
-
-        UpdateVisualState(deltaTime);
+        _visuals.Update(deltaTime, _engine.State.Discoveries.ContainsKey("ascended"));
 
         while (_lastProcessedHistoryCount < _engine.State.History.Count)
         {
@@ -162,30 +159,25 @@ public class Game1 : Game
         _input.ProcessButtons(_buttons, _currentTab, _tabScrollOffsets.GetValueOrDefault(_currentTab, 0));
 
         if (_currentTab == GameTab.World) _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
+        if (_currentTab == GameTab.Spire)
+        {
+            _mixing.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _buttons);
+            if (_input.IsLeftClick())
+            {
+                var curX = 350;
+                var btnY = 440;
+                foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
+                {
+                    if (type == ResourceType.Aether || type == ResourceType.VoidEmbers || type == ResourceType.Life) continue;
+                    if (!_engine.State.Discoveries.ContainsKey($"{type.ToString().ToLower()}_unlocked")) continue;
+                    var rect = new Rectangle(curX, btnY, 60, 30);
+                    if (rect.Contains(_input.MousePosition)) _mixing.HandleIngredientClick(type, _engine);
+                    curX += 70;
+                }
+            }
+        }
+
         base.Update(gameTime);
-    }
-
-    private void UpdateVisualState(float deltaTime)
-    {
-        if (_screenShakeIntensity > 0)
-        {
-            _screenShakeIntensity -= deltaTime * 5f;
-            if (_screenShakeIntensity < 0) _screenShakeIntensity = 0;
-        }
-
-        if (_engine.State.Discoveries.ContainsKey("ascended") && !_isAscending)
-        {
-            _isAscending = true;
-            _screenShakeIntensity = 10f;
-        }
-
-        if (_isAscending && _ascensionTransitionAlpha < 1.0f) _ascensionTransitionAlpha += deltaTime * 0.5f;
-
-        if (!_engine.State.Discoveries.ContainsKey("ascended") && _isAscending)
-        {
-            _isAscending = false;
-            _ascensionTransitionAlpha = 0f;
-        }
     }
 
     private void UpdateScrollOffsets()
@@ -199,7 +191,7 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         _visuals.BeginRenderToTarget(GraphicsDevice);
-        var shakeOffset = GetShakeOffset();
+        var shakeOffset = _visuals.GetShakeOffset();
         var curOffset = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
 
         if (_engine.State.Discoveries.ContainsKey("ascended"))
@@ -230,7 +222,9 @@ public class Game1 : Game
             foreach (var btn in _buttons.Where(b => b.Tab == _currentTab)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, curOffset);
 
             if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire) _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
-            if (_currentTab == GameTab.World) _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals);
+            if (_currentTab == GameTab.Spire) _mixing.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, _input.MousePosition, gameTime);
+            if (_currentTab == GameTab.World) _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals, gameTime);
+
             if (_currentTab == GameTab.Debug) _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
             _spriteBatch.End();
 
@@ -239,10 +233,10 @@ public class Game1 : Game
             _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
             _spriteBatch.End();
 
-            if (_ascensionTransitionAlpha > 0)
+            if (_visuals.AscensionTransitionAlpha > 0)
             {
                 _spriteBatch.Begin();
-                _visuals.DrawOverlay(_spriteBatch, _ascensionTransitionAlpha);
+                _visuals.DrawOverlay(_spriteBatch, _visuals.AscensionTransitionAlpha);
                 _spriteBatch.End();
             }
 
@@ -251,12 +245,5 @@ public class Game1 : Game
 
         _visuals.EndRenderToTarget(GraphicsDevice, _spriteBatch);
         base.Draw(gameTime);
-    }
-
-    private Vector2 GetShakeOffset()
-    {
-        if (_screenShakeIntensity <= 0) return Vector2.Zero;
-        var rnd = new Random();
-        return new Vector2((float)(rnd.NextDouble() * 2 - 1) * _screenShakeIntensity, (float)(rnd.NextDouble() * 2 - 1) * _screenShakeIntensity);
     }
 }

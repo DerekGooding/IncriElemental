@@ -24,7 +24,9 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 | **Void Embers** | Residue of a collapsed reality. | Ascension | Currency for permanent upgrades in the Constellation. |
 
 ## 3. UI & Experience
-- **Minimalist Magical:** Dark background with glowing/spectral text and particle effects.
+- **Minimalist Magical:** Dark background with glowing/spectral text and particle effects enhanced by **HLSL Bloom** for a high-fidelity magical aura.
+- **Onboarding:** A multi-stage **Tutorial System** guides players through their initial awakening, highlighting key interactions while dimming unrelated UI elements.
+- **Reactive Backdrop:** A procedural **Background Manager** generates a dynamic starfield that accelerates as the player's Aether production increases, visualizing the acceleration of reality.
 - **Responsive Stacking:** All buttons are dynamically stacked in the center column. If they exceed the window height, the tab becomes scrollable via the mouse wheel.
 - **Interactive Feedback:** Hovering over any manifestation (button or inventory item) reveals a tooltip detailing its production rates and total scaling bonuses.
 - **The Map:** A minimalist 10x10 grid visualizing the manifested reality. Explorations are marked by changing colors of the cells.
@@ -51,4 +53,4 @@ Beyond simple manifestations, combining elements in advanced structures creates 
 - **Alchemy Mixes:** Temporary but powerful generation multipliers triggered by combining opposing elements (e.g., Combustion from Fire/Air).
 
 ---
-*Last Updated: Friday, February 27, 2026 (Updated by Agent Gemini)*
+*Last Updated: Thursday, March 12, 2026 (Updated by Agent Gemini)*
