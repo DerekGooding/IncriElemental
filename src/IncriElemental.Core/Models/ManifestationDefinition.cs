@@ -25,4 +25,5 @@ public class ManifestationDefinition
     public int MaxCount { get; set; } = int.MaxValue;
     public List<ManifestationCost> Costs { get; set; } = [];
     public List<ManifestationEffect> Effects { get; set; } = [];
+    public List<IManifestationComponent> Components { get; set; } = [];
 }

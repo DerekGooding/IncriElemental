@@ -38,10 +38,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Alchemical Mixing Table:** A dedicated mini-game/UI for active multi-element reactions.
 - [x] **Reactive Feedback:** Visual indicators for stability and harmony on the map and mixing table.
 
-## 27. Goal: Architecture: "Component-Driven Manifestations" (Planned)
-- [ ] **Data-Driven Components:** Refactor manifestations into a modular component-based system (ECS-lite).
-- [ ] **Event-Driven UI:** Transition UI updates from polling to an observer pattern using the `EventBus`.
-- [ ] **Polymorphic Serialization:** Implement custom JSON converters for component-based manifestation data.
+## 27. Goal: Architecture: "Component-Driven Manifestations" (Completed)
+- [x] **Data-Driven Components:** Refactor manifestations into a modular component-based system (ECS-lite).
+- [x] **Event-Driven UI:** Transition UI updates from polling to an observer pattern using the `EventBus`.
+- [x] **Polymorphic Serialization:** Implement custom JSON converters for component-based manifestation data.
 
 ## 28. Goal: UI/UX: "The Wizard's Interface" (Planned)
 - [ ] **Rich Text & Icons:** Implement a markdown-lite parser for tooltips and logs with inline icons.

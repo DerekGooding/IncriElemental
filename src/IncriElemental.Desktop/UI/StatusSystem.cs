@@ -85,7 +85,7 @@ public class StatusSystem
             if (entry.Key.Contains(mousePos))
             {
                 var def = defs[entry.Value];
-                var tooltip = GetManifestationTooltip(def, engine);
+                var tooltip = visuals.GetManifestationTooltip(def, engine);
                 DrawTooltip(spriteBatch, font, pixel, tooltip, mousePos);
             }
         }
@@ -106,37 +106,5 @@ public class StatusSystem
         spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Right, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
 
         spriteBatch.DrawString(font, tooltip, tooltipPos, Color.LightGoldenrodYellow, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
-    }
-
-    private string GetManifestationTooltip(ManifestationDefinition def, GameEngine engine)
-    {
-        var lines = new List<string>();
-        var count = engine.State.Manifestations.GetValueOrDefault(def.Id);
-        
-        if (def.Effects.Any())
-        {
-            foreach (var effect in def.Effects)
-            {
-                if (effect.PerSecondBonus != 0)
-                {
-                    var baseVal = effect.PerSecondBonus * engine.State.CosmicInsight;
-                    var totalVal = baseVal * count;
-                    lines.Add($"Produces {baseVal:F1} {effect.Type}/s");
-                    if (count > 0) lines.Add($"(Total: {totalVal:F1} {effect.Type}/s)");
-                }
-                if (effect.MaxAmountBonus != 0)
-                {
-                    lines.Add($"+{effect.MaxAmountBonus} {effect.Type} Storage");
-                }
-            }
-        }
-
-        if (def.Id == "rune_of_attraction") lines.Add("Automatically focuses the void.");
-        if (def.Id == "pickaxe") lines.Add("Increases Aether gain from manual Focus.");
-        if (def.Id == "forge") lines.Add("Unlocks advanced manifestation tools.");
-        if (def.Id == "familiar") lines.Add("Required for world exploration.");
-        if (def.Id.Contains("spire")) lines.Add("A critical component for Ascension.");
-
-        return string.Join("\n", lines);
     }
 }

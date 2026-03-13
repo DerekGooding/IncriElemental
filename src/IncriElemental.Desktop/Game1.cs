@@ -104,7 +104,7 @@ public class Game1 : Game
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
         _pixel.SetData([Color.White]);
 
-        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
+        LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _visuals, _aiMode, ToggleFullscreen);
         _audio.StartHum();
         _log.AddToLog(TextService.Instance.Get("HIST_AWAKEN"));
         _log.AddToLog(TextService.Instance.Get("HIST_FOCUS_PROMPT"));
@@ -133,7 +133,7 @@ public class Game1 : Game
         _input.Update();
         if (_needsButtonLayoutUpdate)
         {
-            LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _aiMode, ToggleFullscreen);
+            LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _visuals, _aiMode, ToggleFullscreen);
             _needsButtonLayoutUpdate = false;
         }
 

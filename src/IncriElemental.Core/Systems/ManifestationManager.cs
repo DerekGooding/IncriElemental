@@ -66,6 +66,24 @@ public class ManifestationManager
             res.Add(effect.InstantAmount);
         }
 
+        // Process Components
+        foreach (var comp in def.Components)
+        {
+            if (comp is StorageComponent storage)
+            {
+                _state.GetResource(storage.Type).MaxAmount += storage.Bonus;
+            }
+            else if (comp is ProducerComponent producer)
+            {
+                _state.GetResource(producer.Type).PerSecond += producer.AmountPerSecond * _state.CosmicInsight;
+            }
+            else if (comp is UnlockComponent unlock)
+            {
+                _state.Discoveries[unlock.DiscoveryKey] = true;
+                EventBus.PublishDiscoveryUnlocked(unlock.DiscoveryKey);
+            }
+        }
+
         if (def.Id == "speck" && _state.Manifestations["speck"] == 1)
             _state.History.Add(TextService.Instance.Get("HIST_SPECK_APPEARS"));
 

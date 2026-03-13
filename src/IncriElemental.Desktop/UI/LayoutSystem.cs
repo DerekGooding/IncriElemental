@@ -8,7 +8,7 @@ namespace IncriElemental.Desktop.UI;
 
 public class LayoutSystem
 {
-    public static void SetupButtons(List<Button> buttons, GameEngine engine, ParticleSystem particles, AudioManager audio, Action<string> logCallback, Action<GameTab> setTab, bool aiMode = false, Action? toggleFullscreen = null)
+    public static void SetupButtons(List<Button> buttons, GameEngine engine, ParticleSystem particles, AudioManager audio, Action<string> logCallback, Action<GameTab> setTab, VisualManager visuals, bool aiMode = false, Action? toggleFullscreen = null)
     {
         buttons.Clear();
 
@@ -77,7 +77,7 @@ public class LayoutSystem
                 return req && (cost || discovery) && count < def.MaxCount;
             }, def.Subtitle, tab: targetTab);
             
-            btn.TooltipFunc = () => GetManifestationTooltip(def, engine);
+            btn.TooltipFunc = () => visuals.GetManifestationTooltip(def, engine);
             buttons.Add(btn);
         }
 
