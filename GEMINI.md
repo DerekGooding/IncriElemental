@@ -38,6 +38,7 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Health Integrity:** I must resolve staleness by providing actual content improvements, never by "touching" files.
 - **Visual Excellence:** Maintain the "Aetherial Glow" through consistent use of post-processing and reactive backgrounds.
 - **Localization First:** All user-facing strings must be added to `strings.json`.
+- **Visual Integrity:** Maintain up-to-date screenshots in `review/` and `docs/screenshots.md`. Run `scripts/update_screenshots.py` whenever UI or visual logic is significantly modified.
 - **Automated Checks:** Run `scripts/check_health.py` before completing any significant feature.
 
 ### Resolving Health Failures

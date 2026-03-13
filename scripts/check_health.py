@@ -56,6 +56,34 @@ def check_docs_staleness():
                 all_up_to_date = False
     return all_up_to_date
 
+def check_screenshot_staleness():
+    print("\n--- Checking Screenshot Staleness ---")
+    screenshots = ["review/void_main.png", "review/spire_flow.png", "review/world_map.png", "review/mixing_table.png"]
+    ui_files = []
+    for root, _, files in os.walk(SOURCE_DIR):
+        if "UI" in root or "Visuals" in root:
+            for f in files:
+                if f.endswith(".cs"):
+                    ui_files.append(os.path.join(root, f))
+    
+    if not ui_files: return True
+    
+    # Get newest UI file change time
+    latest_ui_change = max(os.path.getmtime(f) for f in ui_files)
+    
+    all_pass = True
+    for s in screenshots:
+        if not os.path.exists(s):
+            print(f"[FAIL] Screenshot missing: {s}")
+            all_pass = False
+            continue
+            
+        if os.path.getmtime(s) < latest_ui_change:
+            print(f"[FAIL] Screenshot is stale: {s}")
+            all_pass = False
+            
+    return all_pass
+
 def check_monoliths():
     print("--- Checking for Monoliths (> 250 lines) ---")
     monolith_count = 0
@@ -102,13 +130,13 @@ def parse_coverage():
                 pass_requirements = False
     return overall_line_rate, pass_requirements
 
-def export_shields_data(monolith_count, coverage, docs_pass, tests_pass):
+def export_shields_data(monolith_count, coverage, docs_pass, tests_pass, screenshots_pass):
     # Overall summary
     summary = {
         "schemaVersion": 1,
         "label": "health",
-        "message": "Project Healthy" if (monolith_count == 0 and docs_pass and tests_pass) else "Project Unhealthy",
-        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass) else "red"
+        "message": "Project Healthy" if (monolith_count == 0 and docs_pass and tests_pass and screenshots_pass) else "Project Unhealthy",
+        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass and screenshots_pass) else "red"
     }
     
     # Tests badge
@@ -164,12 +192,13 @@ if __name__ == "__main__":
     m_count = check_monoliths()
     cov_val, cov_pass = parse_coverage()
     d_pass = check_docs_staleness()
+    s_pass = check_screenshot_staleness()
     
     t_pass = cov_val > 0 and cov_pass and tests_passed
     
-    export_shields_data(m_count, cov_val, d_pass, t_pass)
+    export_shields_data(m_count, cov_val, d_pass, t_pass, s_pass)
 
-    if m_count > 0 or not cov_pass or not d_pass or not tests_passed:
+    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not s_pass:
         print("\n[FAIL] Health checks failed.")
         sys.exit(1)
     

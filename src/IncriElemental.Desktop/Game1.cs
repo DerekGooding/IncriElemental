@@ -81,7 +81,7 @@ public class Game1 : Game
     {
         _graphics.PreferredBackBufferWidth = 1024; _graphics.PreferredBackBufferHeight = 768; _graphics.ApplyChanges();
         UiLayout.Width = GraphicsDevice.Viewport.Width; UiLayout.Height = GraphicsDevice.Viewport.Height;
-        base.Initialize();
+        
         _bg = new BackgroundManager(GraphicsDevice); _particles = new ParticleSystem(GraphicsDevice);
         _visuals = new VisualManager(GraphicsDevice); _pixel = new Texture2D(GraphicsDevice, 1, 1); _pixel.SetData([Color.White]);
 
@@ -89,8 +89,16 @@ public class Game1 : Game
         _audio.StartHum();
         _log.AddToLog(TextService.Instance.Get("HIST_AWAKEN")); _log.AddToLog(TextService.Instance.Get("HIST_FOCUS_PROMPT"));
         _tutorial.Start(_engine.State);
-        if (_aiMode) _ai.Process("ai_commands.txt");
+
+        if (_aiMode) 
+        {
+            var cmdPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ai_commands.txt");
+            _ai.Process(cmdPath, (t) => _currentTab = t);
+        }
+
+        base.Initialize();
     }
+
 
     protected override void LoadContent()
     {
@@ -223,7 +231,9 @@ public class Game1 : Game
                 _spriteBatch.End();
             }
 
+            _spriteBatch.Begin();
             _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons);
+            _spriteBatch.End();
         }
 
         _visuals.EndRenderToTarget(GraphicsDevice, _spriteBatch);

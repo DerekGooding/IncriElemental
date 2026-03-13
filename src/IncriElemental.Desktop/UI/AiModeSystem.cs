@@ -7,29 +7,48 @@ namespace IncriElemental.Desktop.UI;
 public class AiModeSystem(GameEngine engine)
 {
     private readonly GameEngine _engine = engine;
+    private readonly List<string> _pendingScreenshots = [];
+    private Action<GameTab>? _setTab;
 
-    public void Process(string commandPath)
+    public void Process(string commandPath, Action<GameTab> setTab)
     {
+        _setTab = setTab;
         if (File.Exists(commandPath))
         {
             var commands = File.ReadAllLines(commandPath);
             foreach (var cmd in commands)
             {
-                var parts = cmd.Split(':');
-                if (parts[0].Equals("focus", StringComparison.CurrentCultureIgnoreCase)) _engine.Focus();
-                if (parts[0].Equals("manifest", StringComparison.CurrentCultureIgnoreCase)) _engine.Manifest(parts[1]);
-                if (parts[0].Equals("update", StringComparison.CurrentCultureIgnoreCase)) {
-                    if (double.TryParse(parts[1], out var dt)) _engine.Update(dt);
-                }
+                var parts = cmd.Split(':', 2);
+                var action = parts[0].ToLower();
+                if (action == "focus") _engine.Focus();
+                if (action == "manifest" && parts.Length > 1) _engine.Manifest(parts[1]);
+                if (action == "update" && parts.Length > 1) { if (double.TryParse(parts[1], out var dt)) _engine.Update(dt); }
+                if (action == "tab" && parts.Length > 1) { if (Enum.TryParse<GameTab>(parts[1], true, out var tab)) _setTab?.Invoke(tab); }
+                if (action == "screenshot" && parts.Length > 1) _pendingScreenshots.Add(parts[1]);
             }
         }
     }
 
-    public void HandleAiUpdate(GameTime gameTime, GraphicsDevice graphicsDevice, string screenshotPath, Action<GameTime> drawAction, Action exitAction)
+    public void HandleAiUpdate(GameTime gameTime, GraphicsDevice graphicsDevice, string defaultPath, Action<GameTime> drawAction, Action exitAction)
     {
+        // Give it a bit of time to settle if needed, but we can process immediately if requested
         if (gameTime.TotalGameTime.TotalSeconds > 1.0)
         {
-            TakeScreenshot(graphicsDevice, screenshotPath, drawAction);
+            if (_pendingScreenshots.Count > 0)
+            {
+                foreach (var name in _pendingScreenshots)
+                {
+                    var path = name.EndsWith(".png") ? name : name + ".png";
+                    // If path is just a name, put it in review/
+                    if (!path.Contains('/') && !path.Contains('\\')) path = Path.Combine("review", path);
+                    TakeScreenshot(graphicsDevice, path, drawAction);
+                }
+                _pendingScreenshots.Clear();
+            }
+            else
+            {
+                TakeScreenshot(graphicsDevice, defaultPath, drawAction);
+            }
             exitAction();
         }
     }

@@ -49,11 +49,14 @@ This document defines the mechanics, balance formulas, and progression for **Inc
 - **New Game Plus:** "A New Awakening" grants **Void Embers** and "Cosmic Insight," multiplying all manual and passive resource gains.
 - **The Constellation:** A prestige tree (available in the `Constellation` tab) where Void Embers are spent on permanent, high-scaling upgrades like "Eternal Focus" and "Dense Matter."
 
-## 5. Elemental Synergies
-Beyond simple manifestations, combining elements in advanced structures creates synergies:
-- **Magma Forge (Fire + Earth):** Significantly boosts production of both elements.
-- **Clouds (Water + Air):** Enhances the flow of atmospheric essences.
-- **Alchemy Mixes:** Temporary but powerful generation multipliers triggered by combining opposing elements (e.g., Combustion from Fire/Air).
+## 5. Visuals & Synergy
+Experience the atmospheric "Aetherial Glow" and dynamic production chains.
+![The Void](../review/void_main.png)
+
+Elemental essences can be combined to produce secondary and tertiary resources.
+- **Aura System:** Manifestations project power to neighboring cells on the World Map.
+- **Mixing Table:** Manually combine essences for temporary high-potency buffs.
+![Mixing Table](../review/mixing_table.png)
 
 ---
-*Last Updated: Thursday, March 12, 2026 (Updated by Agent Gemini)*
+*Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*

@@ -23,6 +23,11 @@
 - **Full Immersion:** Support for **fullscreen mode** and a procedurally generated "void hum" background atmosphere.
 - **New Game+:** Reach Ascension to earn "Cosmic Insight," providing permanent multipliers for future incarnations.
 
+## 🌌 Visuals
+Experience the atmospheric "Aetherial Glow" and dynamic production chains.
+![The Void](review/void_main.png)
+*See the full [Visual Gallery](docs/screenshots.md) for more examples of the Spire, World Map, and Alchemy.*
+
 ## 🛠️ Technical Highlights
 - **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. `Game1.cs` is a thin coordinator delegating to specialized systems (`ManifestationManager`, `AlchemySystem`, `LogSystem`, `WorldMapSystem`, `StatusSystem`, `EndingSystem`, `TutorialSystem`, `BackgroundManager`).
 - **Component-Driven Manifestations:** A flexible, ECS-lite architecture for manifestations using specialized components (`Producer`, `Storage`, `Aura`, `Unlock`) defined in JSON.
@@ -39,6 +44,7 @@
 3.  **Run:** `dotnet run --project src/IncriElemental.Desktop/IncriElemental.Desktop.csproj`
 4.  **Test:** `dotnet test`
 5.  **Health Check:** `python scripts/check_health.py`
+6.  **Update Screenshots:** `python scripts/update_screenshots.py`
 
 ## 🤖 Agentic Review
 To run an automated UI review:
