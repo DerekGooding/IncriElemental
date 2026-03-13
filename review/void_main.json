@@ -1,0 +1,95 @@
+{
+  "Timestamp": "2026-03-13T18:50:30.3562613Z",
+  "Performance": {
+    "TotalTime": 0.0833335,
+    "ElapsedFrameTime": 16.6667
+  },
+  "Buttons": [
+    {
+      "Text": "[TAB_VOID]",
+      "Subtitle": null,
+      "Tooltip": "",
+      "Bounds": {
+        "X": 312,
+        "Y": 10,
+        "Width": 80,
+        "Height": 30
+      },
+      "Tab": "None"
+    },
+    {
+      "Text": "[TAB_DEBUG]",
+      "Subtitle": null,
+      "Tooltip": "",
+      "Bounds": {
+        "X": 782,
+        "Y": 10,
+        "Width": 80,
+        "Height": 30
+      },
+      "Tab": "None"
+    },
+    {
+      "Text": "[BTN_FULLSCREEN]",
+      "Subtitle": null,
+      "Tooltip": "",
+      "Bounds": {
+        "X": 100,
+        "Y": 10,
+        "Width": 80,
+        "Height": 25
+      },
+      "Tab": "None"
+    },
+    {
+      "Text": "[BTN_FOCUS]",
+      "Subtitle": null,
+      "Tooltip": "[TOOLTIP_FOCUS]",
+      "Bounds": {
+        "X": 412,
+        "Y": 60,
+        "Width": 200,
+        "Height": 80
+      },
+      "Tab": "Void"
+    }
+  ],
+  "Resources": [
+    {
+      "Type": "Aether",
+      "Amount": 5,
+      "PerSecond": 0
+    },
+    {
+      "Type": "Earth",
+      "Amount": 0,
+      "PerSecond": 0
+    },
+    {
+      "Type": "Fire",
+      "Amount": 0,
+      "PerSecond": 0
+    },
+    {
+      "Type": "Water",
+      "Amount": 0,
+      "PerSecond": 0
+    },
+    {
+      "Type": "Air",
+      "Amount": 0,
+      "PerSecond": 0
+    },
+    {
+      "Type": "Life",
+      "Amount": 0,
+      "PerSecond": 0
+    },
+    {
+      "Type": "VoidEmbers",
+      "Amount": 0,
+      "PerSecond": 0
+    }
+  ],
+  "ActiveBuffs": []
+}
