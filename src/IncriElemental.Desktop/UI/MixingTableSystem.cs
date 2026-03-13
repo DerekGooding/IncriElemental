@@ -12,7 +12,7 @@ public class MixingTableSystem
     private Rectangle _vesselRect = new(400, 200, 200, 200);
     private float _successPulse = 0f;
 
-    public void Update(GameEngine engine, Point mousePos, bool isLeftClick, List<Button> buttons)
+    public void Update(GameEngine engine, Point mousePos, bool isLeftClick, List<Button> buttons, VisualManager visuals)
     {
         if (_successPulse > 0) _successPulse -= 0.05f;
 
@@ -25,6 +25,7 @@ public class MixingTableSystem
                 {
                     _currentIngredients.Clear();
                     _successPulse = 1.0f;
+                    visuals.StartReactionSequence(Color.Gold);
                 }
             }
         }

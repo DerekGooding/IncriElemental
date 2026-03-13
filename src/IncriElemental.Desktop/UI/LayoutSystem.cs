@@ -13,7 +13,8 @@ public class LayoutSystem
     {
         buttons.Clear();
 
-        var tabW = 80; var tabH = 30; var startX = 200; var centerX = UiLayout.Width / 2;
+        var tabW = 80; var tabH = 30; var startX = UiLayout.Width / 2 - 200;
+        var centerX = UiLayout.Width / 2;
         
         buttons.Add(new Button(new Rectangle(startX, 10, tabW, tabH), TextService.Instance.Get("TAB_VOID"), Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None));
         buttons.Add(new Button(new Rectangle(startX + 85, 10, tabW, tabH), TextService.Instance.Get("TAB_SPIRE"), Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
