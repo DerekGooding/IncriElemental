@@ -33,6 +33,8 @@ public class AiModeSystem(GameEngine engine)
                 {
                     if (Enum.TryParse<Keys>(parts[1], true, out var key)) _pendingKeys.Add(key);
                 }
+                if (action == "pin") _isPinning = true;
+                if (action == "unpin") _isPinning = false;
                 if (action == "hover" && parts.Length > 1) 
                 {
                     // For now, we just log that we want to hover. 
@@ -45,6 +47,7 @@ public class AiModeSystem(GameEngine engine)
     }
 
     private string? _hoverTarget;
+    private bool _isPinning = false;
 
     public void HandleAiUpdate(GameTime gameTime, GraphicsDevice graphicsDevice, string defaultPath, Action<GameTime> drawAction, Action exitAction, VisualManager visuals, List<Button> buttons, InputManager input)
     {
@@ -53,6 +56,8 @@ public class AiModeSystem(GameEngine engine)
             input.MockKeyPress(key);
         }
         _pendingKeys.Clear();
+
+        if (_isPinning) input.MockKeyPress(Keys.P);
 
         if (!string.IsNullOrEmpty(_hoverTarget))
         {

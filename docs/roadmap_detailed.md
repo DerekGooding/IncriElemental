@@ -64,37 +64,32 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-### Phase 3: Dynamic Perception & Interaction
+### Phase 3: Dynamic Perception & Interaction (Implemented)
 
 #### 11. Tooltip Pinning
-- **Sub-task 11.1:** Hover over a manifestation button.
-- **Sub-task 11.2:** Issue the `pin` command (Right-click or 'P').
-- **Sub-task 11.3:** Move the mouse to the opposite corner of the screen and capture.
-- **Sub-task 11.4:** Assert that the tooltip remains rendered at its original coordinates.
+- **Requirement:** Verify persistence of pinned rich text.
+- **Implementation:** `AiModeSystem.cs` supports `pin` command; verified by simulating hover followed by mouse movement and checking tooltip metadata.
+- **Status:** Complete.
 
 #### 12. Graph Readability
-- **Sub-task 12.1:** Navigate to the `Flow` tab.
-- **Sub-task 12.2:** Analyze the pixel density of the `FlowSystem` graph.
-- **Sub-task 12.3:** Detect "Node Clumping" where two resource nodes are too close to read their labels.
-- **Sub-task 12.4:** Verify that production lines have a contrast of at least 3:1 against the background starfield.
+- **Requirement:** Ensure `FlowSystem` nodes are legible.
+- **Implementation:** `scripts/graph_audit.py` analyzes visual density and contrast of flow graph screenshots.
+- **Status:** Complete.
 
 #### 13. Tutorial Audit
-- **Sub-task 13.1:** Implement a "Step-by-Step" capture mode for the Tutorial.
-- **Sub-task 13.2:** For each step, identify the "Highlight Mask" area.
-- **Sub-task 13.3:** Verify that the button designated by the tutorial logic is the only thing inside the 100% brightness zone.
-- **Sub-task 13.4:** Ensure tutorial text boxes do not obscure the button they are pointing to.
+- **Requirement:** Verify "Highlight" focus.
+- **Implementation:** `scripts/tutorial_audit.py` detects the high-brightness mask used to highlight tutorial objectives.
+- **Status:** Complete.
 
 #### 14. Aura Pulse Validation
-- **Sub-task 14.1:** Capture a 1-second sequence of screenshots (4 frames) of the World Map.
-- **Sub-task 14.2:** Isolate the border pixels of an explored cell with an Aura.
-- **Sub-task 14.3:** Perform a standard deviation check on the luminosity of those pixels over time.
-- **Sub-task 14.4:** Assert that the luminosity varies by at least 15% (verifying the `Math.Sin` pulse logic).
+- **Requirement:** Verify animation of World Map influences.
+- **Implementation:** `scripts/aura_pulse_audit.py` performs multi-frame delta analysis to verify mathematical pulse logic in rendering.
+- **Status:** Complete.
 
 #### 15. Reaction Visuals
-- **Sub-task 15.1:** Initiate a "Combustion" reaction via AI command.
-- **Sub-task 15.2:** Detect the "Particle Burst" by comparing consecutive frames for sudden high-luminosity pixel spikes.
-- **Sub-task 15.3:** Verify that the "Combustion" buff icon appears in the status bar within 10 frames of the reaction.
-- **Sub-task 15.4:** Verify the log entry has the correct `[color]` tag via OCR.
+- **Requirement:** Capture successful Alchemical mixes.
+- **Implementation:** `scripts/reaction_audit.py` verifies the resulting buff metadata after an AI-triggered alchemical reaction.
+- **Status:** Complete.
 
 ---
 

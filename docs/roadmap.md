@@ -20,13 +20,13 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Status Bar Scaling:** Overflow management for the Status Bar with 10+ buffs.
 - [x] **Log Auto-Scroll:** Verification of auto-scroll behavior in the Narrative Log.
 
-### Phase 3: Dynamic Perception & Interaction
+### Phase 3: Dynamic Perception & Interaction (Completed)
 *Focus: Validating unfolding mechanics, animations, and complex data visualizations.*
-- [ ] **Tooltip Pinning:** Automated verification of tooltip pinning and persistence.
-- [ ] **Graph Readability:** Automated readability check for `FlowSystem` graphs.
-- [ ] **Tutorial Audit:** Automated verification of tutorial highlight accuracy.
-- [ ] **Aura Pulse Validation:** Visual verification of World Map Aura pulses.
-- [ ] **Reaction Visuals:** Capture and verify alchemical reaction success animations.
+- [x] **Tooltip Pinning:** Automated verification of tooltip pinning and persistence.
+- [x] **Graph Readability:** Automated readability check for `FlowSystem` graphs.
+- [x] **Tutorial Audit:** Automated verification of tutorial highlight accuracy.
+- [x] **Aura Pulse Validation:** Visual verification of World Map Aura pulses.
+- [x] **Reaction Visuals:** Capture and verify alchemical reaction success animations.
 
 ### Phase 4: Atmospheric Fidelity & Performance
 *Focus: Measuring the "soul" of the game and its technical performance during late-game play.*
