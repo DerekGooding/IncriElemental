@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Engine;
+using IncriElemental.Desktop.Visuals;
 
 namespace IncriElemental.Desktop.UI;
 
@@ -29,45 +30,28 @@ public class AiModeSystem(GameEngine engine)
         }
     }
 
-    public void HandleAiUpdate(GameTime gameTime, GraphicsDevice graphicsDevice, string defaultPath, Action<GameTime> drawAction, Action exitAction)
+    public void HandleAiUpdate(GameTime gameTime, GraphicsDevice graphicsDevice, string defaultPath, Action<GameTime> drawAction, Action exitAction, VisualManager visuals)
     {
-        // Give it a bit of time to settle if needed, but we can process immediately if requested
         if (gameTime.TotalGameTime.TotalSeconds > 1.0)
         {
+            // First, force a draw to ensure the visuals render target is populated
+            drawAction(gameTime);
+
             if (_pendingScreenshots.Count > 0)
             {
                 foreach (var name in _pendingScreenshots)
                 {
                     var path = name.EndsWith(".png") ? name : name + ".png";
-                    // If path is just a name, put it in review/
                     if (!path.Contains('/') && !path.Contains('\\')) path = Path.Combine("review", path);
-                    TakeScreenshot(graphicsDevice, path, drawAction);
+                    visuals.SaveScreenshot(path);
                 }
                 _pendingScreenshots.Clear();
             }
             else
             {
-                TakeScreenshot(graphicsDevice, defaultPath, drawAction);
+                visuals.SaveScreenshot(defaultPath);
             }
             exitAction();
         }
-    }
-
-    private void TakeScreenshot(GraphicsDevice graphicsDevice, string path, Action<GameTime> drawAction)
-    {
-        var dir = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-        var w = graphicsDevice.PresentationParameters.BackBufferWidth;
-        var h = graphicsDevice.PresentationParameters.BackBufferHeight;
-        using var target = new RenderTarget2D(graphicsDevice, w, h);
-
-        graphicsDevice.SetRenderTarget(target);
-        drawAction(new GameTime());
-        graphicsDevice.SetRenderTarget(null);
-
-        using var stream = File.Open(path, FileMode.Create);
-        target.SaveAsPng(stream, w, h);
-        Console.WriteLine($"[AI MODE] Screenshot saved to: {Path.GetFullPath(path)}");
     }
 }

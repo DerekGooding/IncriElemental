@@ -187,4 +187,13 @@ public class VisualManager
     {
         ending.Draw(sb, engine, font, pixel, gt, mouse, click, reset);
     }
+
+    public void SaveScreenshot(string path)
+    {
+        if (_renderTarget == null) return;
+        var dir = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
+        using var stream = File.Open(path, FileMode.Create);
+        _renderTarget.SaveAsPng(stream, _renderTarget.Width, _renderTarget.Height);
+    }
 }
