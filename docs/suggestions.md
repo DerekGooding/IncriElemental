@@ -1,6 +1,6 @@
 # Project Suggestions & Future Improvements
 
-This file is currently empty as all previous suggestions have been integrated into the `roadmap.md`.
+This file is currently empty as all greenlit suggestions have been promoted to the `roadmap.md` (Goals 25-28) and detailed in `roadmap_detailed.md`.
 
 ## 🤖 Agentic Improvement Mandate
 When requested to perform a project review or suggest new improvements, I (the AI Agent) should:
@@ -10,4 +10,4 @@ When requested to perform a project review or suggest new improvements, I (the A
 4.  **Update this Document:** Document the findings and proposed solutions here before they are promoted to the `roadmap.md`.
 
 ---
-*Last Cleared: Friday, February 27, 2026*
+*Last Cleared: Thursday, March 12, 2026 (Promoted to Roadmap)*

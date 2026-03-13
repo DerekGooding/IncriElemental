@@ -4,88 +4,95 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-## Goal 20: Technical Perfection & Immersion
+## Goal 24: The Final Polish
 
-### UI Pagination
-- **Requirement:** Implement a "Tab" or "Screen" controller.
-- **Views:** 
-    - `Tab: THE VOID`: Main manifestation and manual focus area.
-    - `Tab: THE SPIRE`: Progress on the Great Project.
-    - `Tab: THE WORLD`: Exploration map and landmarks.
-- **Logic:** Only one tab is active at a time. The resource panel (right) and log (left) remain persistent.
+### Tutorialization
+- **Requirement:** Implement a step-by-step onboarding system.
+- **Stages:** 
+    - `Focusing`: Guide the player to click the Focus button.
+    - `Manifesting`: Highlight the first available manifestation.
+    - `Automating`: Explain how passive production works.
+- **UX:** Dim the rest of the UI and point to the relevant button with a glowing arrow.
 
-### Dynamic Layout
-- **Requirement:** Replace hardcoded `Rectangle` coordinates with relative logic.
-- **Anchors:** Support `TopLeft`, `Center`, `BottomRight`.
-- **Scaling:** UI should remain legible at 800x600 and 1920x1080 resolutions.
-- **Spacing:** Implement a standard padding constant (e.g., `8px`) applied between all modular components.
+### Visual Polish
+- **Requirement:** Enhance feedback for significant actions.
+- **Ascension:** Screen-shake on clicking "Ascend," followed by a fade-to-white effect.
+- **Lore:** Add a typewriter effect to the LogSystem for new narrative entries.
 
-### Procedural Atmosphere
-- **Requirement:** Create a `ProceduralAudioSystem`.
-- **Implementation:** Use `DynamicSoundEffectInstance` to generate low-frequency sine waves.
-- **Dynamics:** The pitch or volume should subtly shift based on the current highest-level Essence (e.g., deeper for Earth, ethereal for Aether).
-
-### CI Font Portability
-- **Requirement:** Remove `sudo apt-get install fonts-dejavu-core` from `ci.yml`.
-- **Action:** Ensure `scripts/download_font.py` is called during the `build` phase of the CI and that the MGCB points to the downloaded `.ttf` file.
+### Localization
+- **Requirement:** Move all text strings to `src/IncriElemental.Desktop/Content/strings.json`.
+- **System:** Create a `TextService` to handle string lookup by key (e.g., `TXT_FOCUS_BTN`).
 
 ---
 
-## Goal 21: Architectural Decoupling & Stability
+## Goal 25: Visual Overhaul: "The Aetherial Glow"
 
-### EventBus
-- **Requirement:** Implement a static or singleton `EventBus` class in `IncriElemental.Core`.
-- **Event Types:** `ResourceChanged`, `DiscoveryUnlocked`, `ManifestationComplete`.
-- **Benefit:** `ManifestationManager` shouldn't call `LogCallback` directly; it should publish a `ThingManifested` event that the `LogSystem` subscribes to.
+### HLSL Post-Processing
+- **Requirement:** Implement a multi-pass post-processing pipeline.
+- **Bloom:** A 2-pass Gaussian blur on a brightness-filtered version of the main render target, blended additively back onto the scene.
+- **Chromatic Aberration:** Offsetting Red and Blue channels towards the edges of the screen, proportional to `focus_intensity`.
+- **Aether Waves:** A distortion shader using a time-scrolling normal map to ripple the UI.
 
-### Save Migration
-- **Requirement:** Add `public int Version { get; set; }` to `GameState`.
-- **Manager:** Update `SaveManager.LoadFromFile` to check the version.
-- **Migrations:** If version < current, apply a series of "upgraders" (e.g., adding missing keys to dictionaries) before returning the object.
-
-### Auto-Healing CI (Research)
-- **Requirement:** Investigate GitHub Webhooks or direct API calls from the `health` job.
-- **Goal:** If `check_health.py` fails due to a monolith (>250 lines), the CI should trigger a specialized prompt to the agent to refactor that specific file.
+### Procedural Background
+- **Requirement:** Create `BackgroundManager.cs` to handle a dynamic, layered backdrop.
+- **Noise:** Use Simplex noise shaders to generate nebula-like patterns.
+- **Reactivity:** Tie noise speed and color (Aether-purple vs Fire-red) to the highest production resource.
+- **Parallax:** Split the background into three layers (Distant Stars, Middle Nebula, Foreground Dust) and offset them by `mousePosition * depthFactor`.
 
 ---
 
-## Goal 22: Deep Unfolding & Synergies
+## Goal 26: Mechanical Depth: "Resonant Harmony"
 
-### The Constellation (Prestige Tree)
-- **Requirement:** Create `ConstellationNode.cs` model.
-- **Resource:** Implement `Void Embers` (earned only via Ascension).
-- **Persistence:** Nodes remain unlocked across New Game+ resets.
-- **UI:** A separate screen visualizing the stars and their connections.
+### Grid Synergies (Auras)
+- **Requirement:** Each manifestation on the map generates an `Aura` object affecting its neighbors.
+- **Aura Strength:** Proportional to the number of manifestations in that cell.
+- **Interactions:**
+    - `Harmony`: Matching auras (e.g. Earth/Earth) provide a +10% production multiplier.
+    - `Steam (Air + Water)`: Increases Air generation, reduces Earth.
+    - `Ash (Fire + Earth)`: Increases Earth generation, reduces Fire.
 
-### Landmark Exploration
-- **Requirement:** Hardcode specific `CellType.Landmark` coordinates in `WorldMap.cs`.
-- **Specifics:**
-    - `[0,0]`: The Spire Foundation.
-    - `[7,3]`: The Forbidden Library (Unlocks Lore Fragments automatically).
-    - `[2,8]`: The Sunken Altar (Boosts Water Essence).
-
-### Elemental Synergies
-- **Requirement:** Add "Permanent Reaction" support to `AlchemySystem`.
-- **Magma Forge:** Increases Fire/Earth cap significantly but prevents them from reaching 0.
-- **Clouds:** Consumes Air/Water to periodically grant Life bursts.
+### Alchemical Mixing Table
+- **Requirement:** A sub-tab in the Spire for active gameplay.
+- **The Vessel:** A 2D area where players drag-and-drop elemental essence icons.
+- **Stability:** Each recipe has a "Vibration Frequency." Players must keep the vessel centered (using mouse or hotkeys) to prevent the reaction from collapsing.
+- **Success:** Grants temporary high-potency buffs (e.g. "Pure Aether Focus" x10).
 
 ---
 
-## Goal 23: Advanced Agentic Tooling
+## Goal 27: Architecture: "Component-Driven Manifestations"
 
-### Efficiency Observer
-- **Requirement:** A headless data-view or a hidden UI overlay.
-- **Metrics:** Calculate `Time until next manifestation` for all available buttons.
-- **Visualization:** Highlight the button with the lowest time-to-completion.
+### Data-Driven Components
+- **Requirement:** Replace the rigid `ManifestationDefinition` with an ECS-lite approach.
+- **Structure:** `ManifestationDefinition { List<IManifestationComponent> Components }`.
+- **Components:**
+    - `ProducerComponent`: Generates resources over time.
+    - `StorageComponent`: Increases resource caps.
+    - `AuraComponent`: Projects auras on the world map.
+- **Benefit:** Allows for infinite manifestation variety by mixing and matching components in JSON.
 
-### Auto-Balancer V2
-- **Requirement:** Update `BalanceSimulator.cs`.
-- **Algorithm:**
-    1. Run simulation.
-    2. If total time > 20 mins, reduce costs of bottleneck resources by 5%.
-    3. If total time < 15 mins, increase costs by 5%.
-    4. Repeat until target window is hit.
-    5. Output the final dictionary as a valid `manifestations.json`.
+### Event-Driven UI Binding
+- **Requirement:** The UI should be an observer of the GameState, not a frequent poller.
+- **Update Logic:** `StatusSystem` subscribes to `ResourceChanged` events. It only updates the "Aether Amount" text if the change exceeds 1% of the total or a threshold (e.g. every 0.1 units).
+- **String Caching:** Resource amounts are formatted into strings only when they change, reducing garbage collection pressure.
 
 ---
-*Created: Friday, February 27, 2026*
+
+## Goal 28: UI/UX: "The Wizard's Interface"
+
+### Rich Text Tooltips & Icons
+- **Requirement:** Implement a custom `RichText` parser in the `UI` namespace.
+- **Tags:** Support `[color:...]`, `[size:...]`, and `[icon:...]` tags.
+- **Icons:** Inline sprite rendering for resource icons (e.g. "Requires 10 [icon:aether] Aether").
+
+### Resource Flow Graphs
+- **Requirement:** A visual representation of the game's economy.
+- **The Flow Tab:** A node-based graph using the `ScissorRectangle` for infinite panning.
+- **Edges:** Lines connecting resources to manifestations, with thickness representing the relative production/consumption rates.
+
+### Power User Controls
+- **Requirement:** Implement a robust `InputManager` binding system.
+- **Pinning:** Right-clicking a resource or manifestation in the Status panel pins a "Monitoring Box" to the corner of the screen that stays visible across all tabs.
+- **Scaling:** UI coordinates in `UiLayout` are multiplied by a `GlobalScale` float (0.5 to 2.0).
+
+---
+*Created: Thursday, March 12, 2026 (Updated by Agent Gemini)*

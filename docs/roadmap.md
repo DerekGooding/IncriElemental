@@ -28,5 +28,25 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [ ] **Visual Polish:** Add screen-shake and transition effects for Ascension.
 - [ ] **Localization:** Externalize all strings for multi-language support.
 
+## 25. Goal: Visual Overhaul: "The Aetherial Glow" (Planned)
+- [ ] **HLSL Post-Processing:** Implement Bloom, Chromatic Aberration, and Aether Wave shaders.
+- [ ] **Procedural Background:** Create a dynamic Aether Nebula background reactive to game state.
+- [ ] **Interactive Parallax:** Implement multi-layered background movement tied to mouse/input.
+
+## 26. Goal: Mechanical Depth: "Resonant Harmony" (Planned)
+- [ ] **Grid Synergies:** Implement an "Aura" system where manifestation placement on the map affects production.
+- [ ] **Alchemical Mixing Table:** A dedicated mini-game/UI for active multi-element reactions.
+- [ ] **Reactive Feedback:** Visual indicators for stability and harmony on the map and mixing table.
+
+## 27. Goal: Architecture: "Component-Driven Manifestations" (Planned)
+- [ ] **Data-Driven Components:** Refactor manifestations into a modular component-based system (ECS-lite).
+- [ ] **Event-Driven UI:** Transition UI updates from polling to an observer pattern using the `EventBus`.
+- [ ] **Polymorphic Serialization:** Implement custom JSON converters for component-based manifestation data.
+
+## 28. Goal: UI/UX: "The Wizard's Interface" (Planned)
+- [ ] **Rich Text & Icons:** Implement a markdown-lite parser for tooltips and logs with inline icons.
+- [ ] **Resource Flow Graphs:** Add a visual "Flow" tab to trace resource production chains.
+- [ ] **Power User Controls:** Implement hotkeys, tooltip pinning, and manual UI scaling.
+
 ---
-*Last Updated: Friday, February 27, 2026*
+*Last Updated: Thursday, March 12, 2026 (Updated by Agent Gemini)*
