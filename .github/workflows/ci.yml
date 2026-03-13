@@ -24,8 +24,9 @@ jobs:
       working-directory: src/IncriElemental.Desktop
     - name: Install Build Dependencies
       run: |
+        sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core wine
+        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core wine wine64 wine32:i386
     - name: Setup Font for MGCB
       run: |
         python scripts/download_font.py
