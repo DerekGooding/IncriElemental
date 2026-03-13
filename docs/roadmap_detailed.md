@@ -64,7 +64,7 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-## Goal 28: UI/UX: "The Wizard's Interface" (Implemented)
+## Goal 28: UI/UX: "The Wizard's Interface" (InProgress)
 
 ### Rich Text Tooltips & Icons
 - **Requirement:** Implement a custom `RichText` parser in the `UI` namespace.
