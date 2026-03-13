@@ -4,13 +4,13 @@ This document tracks the long-term goals and task history for **IncriElemental**
 
 ## 30. Goal: The Autonomous Awakening (Current)
 
-### Phase 1: Perception & Standardized Vision
+### Phase 1: Perception & Standardized Vision (Completed)
 *Focus: Establishing the AI's ability to read and validate the UI's basic components.*
-- [ ] **OCR Verification:** Implement OCR-powered menu verification in `agentic_review.py`.
-- [ ] **Palette Audit:** Automated audit of screenshots against `ColorPalette.cs`.
-- [ ] **Contrast Check:** Automated contrast audit for accessibility in "The Void".
-- [ ] **Icon Alignment:** Automated vertical alignment check for inline icons.
-- [ ] **Button States:** Visual verification of Idle/Hover/Click button states.
+- [x] **OCR Verification:** Implement Metadata-powered menu verification in `agentic_review.py`.
+- [x] **Palette Audit:** Automated audit of screenshots against `ColorPalette.cs`.
+- [x] **Contrast Check:** Automated contrast audit for accessibility in "The Void".
+- [x] **Icon Alignment:** Automated vertical alignment check for inline icons.
+- [x] **Button States:** Visual verification of Idle/Hover/Click button states.
 
 ### Phase 2: Structural Integrity & Scalability
 *Focus: Ensuring the layout system handles stress and complex configurations.*

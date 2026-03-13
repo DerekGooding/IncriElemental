@@ -2,6 +2,7 @@ import os
 import subprocess
 import time
 import sys
+import json
 
 # Configurations
 DESKTOP_PROJECT_PATH = "src/IncriElemental.Desktop"
@@ -11,7 +12,7 @@ SCREENSHOT_FILE = "review/screenshot.png"
 
 def build_project():
     print("Cleaning and Building project...")
-    subprocess.run(["dotnet", "clean", DESKTOP_PROJECT_PATH], capture_output=True)
+    # Skip clean for speed unless explicitly requested
     result = subprocess.run(["dotnet", "build", DESKTOP_PROJECT_PATH], capture_output=True, text=True)
     if result.returncode != 0:
         print("Build failed!")
@@ -20,13 +21,43 @@ def build_project():
         return False
     return True
 
-def run_ai_review(commands):
+def verify_metadata(metadata_path, assertions):
+    if not os.path.exists(metadata_path):
+        print(f"[FAIL] Metadata file not found: {metadata_path}")
+        return False
+    
+    with open(metadata_path, "r") as f:
+        data = json.load(f)
+    
+    all_found = True
+    for text in assertions:
+        found = False
+        # Check buttons
+        for btn in data.get("Buttons", []):
+            btn_text = btn.get("Text") or ""
+            btn_sub = btn.get("Subtitle") or ""
+            if text.lower() in btn_text.lower() or text.lower() in btn_sub.lower():
+                found = True
+                break
+        # Check resources
+        if not found:
+            for res in data.get("Resources", []):
+                res_type = res.get("Type") or ""
+                if text.lower() in res_type.lower():
+                    found = True
+                    break
+        
+        if found:
+            print(f"[SUCCESS] Found asserted text: '{text}'")
+        else:
+            print(f"[FAIL] Could not find asserted text: '{text}'")
+            all_found = False
+            
+    return all_found
+
+def run_ai_review(commands, assertions=None):
     print(f"Running AI review with {len(commands)} commands...")
     
-    # Write commands to file in the output directory
-    # For 'dotnet run', the working directory is the project folder, 
-    # but the binary looks for ai_commands.txt in its own folder.
-    # We'll put it in both to be safe.
     output_dirs = [
         "src/IncriElemental.Desktop/bin/Debug/net10.0",
         "src/IncriElemental.Desktop"
@@ -38,7 +69,6 @@ def run_ai_review(commands):
             for cmd in commands:
                 f.write(f"{cmd}\n")
     
-    # Run the game in AI mode
     try:
         subprocess.run(["dotnet", "run", "--project", DESKTOP_PROJECT_PATH, "--", "--ai-mode"], timeout=30)
     except subprocess.TimeoutExpired:
@@ -46,38 +76,44 @@ def run_ai_review(commands):
     except Exception as e:
         print(f"Error running game: {e}")
 
-    # Check for screenshot in common locations
+    # Check for screenshot
     search_paths = [
         os.path.join(DESKTOP_PROJECT_PATH, "screenshot.png"),
         "screenshot.png"
     ]
     
+    screenshot_found = False
     for path in search_paths:
         if os.path.exists(path):
-            print(f"Review completed. Screenshot found at {path}")
+            screenshot_found = True
+            metadata_path = path.replace(".png", ".json")
             
+            # Metadata Verification
+            metadata_pass = True
+            if assertions:
+                print("Performing metadata verification...")
+                metadata_pass = verify_metadata(metadata_path, assertions)
+
             # Visual Regression Check
             baseline_path = "review/baseline.png"
+            visual_pass = True
             if os.path.exists(baseline_path):
                 print("Performing visual regression check...")
-                if not compare_images(path, baseline_path):
-                    print("[WARNING] Visual regression detected! UI layout has changed.")
+                visual_pass = compare_images(path, baseline_path)
             else:
                 print("[INFO] No baseline found. Saving current screenshot as baseline.")
                 os.makedirs("review", exist_ok=True)
                 import shutil
                 shutil.copy(path, baseline_path)
 
-            # Ensure it's in the root review folder for the user
-            if path != "review/screenshot.png":
-                os.makedirs("review", exist_ok=True)
-                import shutil
-                shutil.copy(path, "review/screenshot.png")
+            # Copy to review/ folder
+            os.makedirs("review", exist_ok=True)
+            import shutil
+            shutil.copy(path, "review/screenshot.png")
+            if os.path.exists(metadata_path):
+                shutil.copy(metadata_path, "review/screenshot.json")
             
-            # For CI: If baseline exists and comparison failed, we return False
-            if os.path.exists(baseline_path):
-                return compare_images(path, baseline_path)
-            return True
+            return metadata_pass and visual_pass
 
     print("Review failed! Screenshot not found.")
     return False
@@ -109,14 +145,16 @@ def compare_images(path1, path2):
         return True
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("commands", nargs="*", help="Commands to run")
+    parser.add_argument("--text-assert", action="append", help="Text to verify in UI metadata")
+    args = parser.parse_args()
+
     success = False
     if build_project():
-        # Default scenario: Wake up and focus a few times
-        scenario = ["focus", "focus", "focus", "focus", "focus"]
-        if len(sys.argv) > 1:
-            scenario = sys.argv[1:]
-            
-        success = run_ai_review(scenario)
+        scenario = args.commands if args.commands else ["focus", "focus", "focus", "focus", "focus"]
+        success = run_ai_review(scenario, assertions=args.text_assert)
     
     if not success:
         sys.exit(1)

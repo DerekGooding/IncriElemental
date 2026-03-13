@@ -128,7 +128,7 @@ public class Game1 : Game
             _needsButtonLayoutUpdate = false;
         }
 
-        if (_aiMode) _ai.HandleAiUpdate(gameTime, GraphicsDevice, _screenshotPath, Draw, Exit, _visuals);
+        if (_aiMode) _ai.HandleAiUpdate(gameTime, GraphicsDevice, _screenshotPath, Draw, Exit, _visuals, _buttons, _input);
         if (_input.IsKeyPressed(Keys.Escape)) Exit();
 
         UpdateGameLogic((float)gameTime.ElapsedGameTime.TotalSeconds);

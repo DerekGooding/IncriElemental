@@ -14,15 +14,30 @@ public class InputManager
     public float UiScale { get; set; } = 1.0f;
     public bool IsTooltipPinned { get; private set; } = false;
 
-    public Point MousePosition => new Point((int)(_currentMouse.X / UiScale), (int)(_currentMouse.Y / UiScale));
-    public int ScrollDelta => _currentMouse.ScrollWheelValue - _lastMouse.ScrollWheelValue;
+    private Point? _mockMousePos;
+
+    public void SetMousePosition(Point pos) => _mockMousePos = pos;
 
     public void Update()
     {
         _lastMouse = _currentMouse;
         _currentMouse = Mouse.GetState();
+        if (_mockMousePos.HasValue)
+        {
+            // We can't easily modify MouseState since it's a struct and Mouse.SetPosition
+            // actually moves the system cursor. We'll just override the property.
+        }
         _lastKey = _currentKey;
         _currentKey = Keyboard.GetState();
+    }
+
+    public Point MousePosition 
+    {
+        get 
+        {
+            if (_mockMousePos.HasValue) return _mockMousePos.Value;
+            return new Point((int)(_currentMouse.X / UiScale), (int)(_currentMouse.Y / UiScale));
+        }
     }
 
     public bool IsLeftClick() => _currentMouse.LeftButton == ButtonState.Pressed && _lastMouse.LeftButton == ButtonState.Released;
