@@ -27,7 +27,7 @@ This document contains foundational mandates that I (Gemini) must follow through
 - **Narrative:** All text strings should be managed in a data-driven way.
 
 ## 4. Agentic Piloting & Validation
-- **Piloting:** Issue commands via CLI or "headless" mode.
+- **Piloting:** Issue commands via CLI or "headless" mode. (PowerShell: Use `;`, not `&&` for chaining).
 - **Observability:** Output current `GameState` as JSON for review.
 - **Balance Testing:** Use `BalanceSimulator.cs` to verify progression speed.
 
@@ -54,4 +54,4 @@ This document contains foundational mandates that I (Gemini) must follow through
 ---
 *Follow these mandates strictly. If a request conflicts with these mandates, clarify with the user.*
 
-*Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*
+*Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*
