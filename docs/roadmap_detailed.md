@@ -64,7 +64,7 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-## Goal 28: UI/UX: "The Wizard's Interface" (InProgress)
+## Goal 28: UI/UX: "The Wizard's Interface" (Implemented)
 
 ### Rich Text Tooltips & Icons
 - **Requirement:** Implement a custom `RichText` parser in the `UI` namespace.
@@ -75,6 +75,17 @@ This document provides granular technical and gameplay requirements for the unfi
 ### Layout Refactor
 - **Requirement:** Improve UI responsiveness.
 - **Implementation:** Refactored `LayoutSystem` and `UiLayout` for more robust anchor-based positioning and dynamic scaling.
+
+### Resource Flow Graphs
+- **Requirement:** Add a visual "Flow" tab to trace resource production chains.
+- **Implementation:** `FlowSystem.cs` renders a directed graph of resources and manifestations.
+- **Visuals:** Uses manual layered positioning (Focus -> Aether -> Elements) and draws production lines dynamically based on `ManifestationDefinition` components.
+
+### Power User Controls
+- **Requirement:** Implement hotkeys, tooltip pinning, and manual UI scaling.
+- **Hotkeys:** Managed by `InputManager` (Space to Focus, 1-5 for Tabs).
+- **Pinning:** Press `P` or Right Click to freeze the current tooltip for inspection.
+- **Scaling:** Press `[` and `]` to dynamically scale the UI via `Matrix` transformation and `RenderTarget` resizing.
 
 ---
 *Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*

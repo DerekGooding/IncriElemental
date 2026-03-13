@@ -21,6 +21,12 @@ public class VisualManager
         _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
     }
 
+    public void Resize(GraphicsDevice graphicsDevice)
+    {
+        _renderTarget?.Dispose();
+        _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
+    }
+
     public void Update(float deltaTime, bool engineHasAscended)
     {
         if (ScreenShakeIntensity > 0) ScreenShakeIntensity = Math.Max(0, ScreenShakeIntensity - deltaTime * 5f);
@@ -48,7 +54,7 @@ public class VisualManager
         gd.SetRenderTarget(null);
         gd.Clear(Color.Black);
         sb.Begin(effect: _bloomEffect);
-        sb.Draw(_renderTarget, Vector2.Zero, Color.White);
+        sb.Draw(_renderTarget, new Rectangle(0, 0, gd.Viewport.Width, gd.Viewport.Height), Color.White);
         sb.End();
     }
 
@@ -153,5 +159,32 @@ public class VisualManager
         var r = new Rectangle((int)pos.X - 5, (int)pos.Y - 5, (int)maxWidth + 10, (int)totalH + 10);
         sb.Draw(px, r, Color.Black * 0.9f); sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 1), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.X, r.Bottom, r.Width, 1), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.X, r.Y, 1, r.Height), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.Right, r.Y, 1, r.Height), Color.Gray * 0.5f);
         var curY = pos.Y; foreach (var tokens in parsed) { RichTextSystem.Draw(sb, font, tokens, new Vector2(pos.X, curY), Color.LightGoldenrodYellow, 0.8f, this); curY += font.LineSpacing * 0.8f + 4; }
+    }
+
+    public void DrawWorldElements(SpriteBatch sb, LogSystem log, SpriteFont font, Texture2D pixel, ParticleSystem particles, List<Button> buttons)
+    {
+        log.Draw(sb, font, pixel, this);
+        particles.Draw(sb);
+        LayoutSystem.DrawFixedButtons(sb, buttons, font, pixel);
+    }
+
+    public void DrawTooltipsAndStatus(SpriteBatch sb, List<Button> buttons, GameTab currentTab, SpriteFont font, Texture2D pixel, int curOffset, bool isPinned, Button? pinnedButton, StatusSystem status, IncriElemental.Core.Engine.GameEngine engine, int width, Point mouse)
+    {
+        LayoutSystem.DrawTooltips(sb, buttons, currentTab, font, pixel, this, curOffset, isPinned, pinnedButton);
+        status.Draw(sb, engine, font, pixel, this, width, mouse);
+    }
+
+    public void DrawTabContent(SpriteBatch sb, GameTab tab, IncriElemental.Core.Engine.GameEngine engine, GameTime gt, MixingTableSystem mixing, Point mouse, WorldMapSystem map, SpriteFont font, Texture2D pixel, DebugSystem debug)
+    {
+        if (tab == GameTab.Void || tab == GameTab.Spire) DrawSpire(sb, engine.State.Discoveries, gt.TotalGameTime.TotalSeconds);
+        if (tab == GameTab.Spire) mixing.Draw(sb, engine, font, pixel, this, mouse, gt);
+        if (tab == GameTab.World) map.Draw(sb, engine, mouse, font, pixel, this, gt);
+        if (tab == GameTab.Flow) FlowSystem.Draw(sb, engine, font, pixel);
+        if (tab == GameTab.Debug) debug.Draw(sb, engine, font, pixel, this);
+    }
+
+    public void DrawAscended(SpriteBatch sb, EndingSystem ending, IncriElemental.Core.Engine.GameEngine engine, SpriteFont font, Texture2D pixel, GameTime gt, Point mouse, bool click, Action reset)
+    {
+        ending.Draw(sb, engine, font, pixel, gt, mouse, click, reset);
     }
 }

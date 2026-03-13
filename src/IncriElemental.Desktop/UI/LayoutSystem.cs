@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Engine;
 using IncriElemental.Core.Models;
 using IncriElemental.Core.Systems;
@@ -22,10 +23,11 @@ public class LayoutSystem
         buttons.Add(new Button(new Rectangle(startX + 85, 10, tabW, tabH), TextService.Instance.Get("TAB_SPIRE"), Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
         buttons.Add(new Button(new Rectangle(startX + 170, 10, tabW, tabH), TextService.Instance.Get("TAB_WORLD"), Color.LimeGreen, () => setTab(GameTab.World), () => engine.State.Discoveries.ContainsKey("garden_manifested"), tab: GameTab.None));
         buttons.Add(new Button(new Rectangle(startX + 255, 10, 120, tabH), TextService.Instance.Get("TAB_CONSTELLATION"), Color.Gold, () => setTab(GameTab.Constellation), () => engine.State.CosmicInsight > 1.0, tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX + 380, 10, 80, tabH), "Flow", Color.Cyan, () => setTab(GameTab.Flow), () => engine.State.Discoveries.ContainsKey("aether_unlocked"), tab: GameTab.None));
         
         if (aiMode)
         {
-            buttons.Add(new Button(new Rectangle(startX + 380, 10, 80, tabH), TextService.Instance.Get("TAB_DEBUG"), Color.Red, () => setTab(GameTab.Debug), tab: GameTab.None));
+            buttons.Add(new Button(new Rectangle(startX + 470, 10, 80, tabH), TextService.Instance.Get("TAB_DEBUG"), Color.Red, () => setTab(GameTab.Debug), tab: GameTab.None));
         }
 
         if (toggleFullscreen != null)
@@ -109,6 +111,45 @@ public class LayoutSystem
                 btn.Bounds.Y = curY;
                 btn.Bounds.X = centerX - btn.Bounds.Width / 2;
                 curY += btn.Bounds.Height + 15;
+            }
+        }
+    }
+
+    public static void DrawFixedButtons(SpriteBatch spriteBatch, List<Button> buttons, SpriteFont font, Texture2D pixel)
+    {
+        foreach (var btn in buttons)
+        {
+            if (btn.Tab == GameTab.None && btn.IsVisible()) btn.Draw(spriteBatch, font, pixel, 0);
+        }
+    }
+
+    public static void DrawTabButtons(SpriteBatch spriteBatch, List<Button> buttons, GameTab tab, SpriteFont font, Texture2D pixel, int scrollOffset)
+    {
+        foreach (var btn in buttons)
+        {
+            if (btn.Tab == tab && btn.IsVisible()) btn.Draw(spriteBatch, font, pixel, scrollOffset);
+        }
+    }
+
+    public static void DrawTooltips(SpriteBatch spriteBatch, List<Button> buttons, GameTab tab, SpriteFont font, Texture2D pixel, VisualManager visuals, int scrollOffset, bool isPinned, Button? pinnedButton)
+    {
+        if (isPinned && pinnedButton != null)
+        {
+            if (pinnedButton.TooltipFunc != null)
+            {
+                var pos = new Point(pinnedButton.Bounds.Right, pinnedButton.Bounds.Top);
+                visuals.DrawTooltip(spriteBatch, font, pixel, pinnedButton.TooltipFunc(), pos);
+            }
+        }
+        else
+        {
+            foreach (var btn in buttons)
+            {
+                if (btn.IsVisible() && (btn.Tab == tab || btn.Tab == GameTab.None))
+                {
+                    var offset = btn.Tab == GameTab.None ? 0 : scrollOffset;
+                    btn.DrawTooltip(spriteBatch, font, pixel, visuals, offset);
+                }
             }
         }
     }

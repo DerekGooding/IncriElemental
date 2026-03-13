@@ -7,5 +7,6 @@ public enum GameTab
     Spire,
     World,
     Constellation,
+    Flow,
     Debug
 }

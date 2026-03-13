@@ -34,11 +34,12 @@ public class Game1 : Game
     private int _lastProcessedHistoryCount = 0;
     private bool _aiMode = false;
     private Dictionary<GameTab, float> _tabScrollOffsets = new() {
-        { GameTab.Void, 0 }, { GameTab.Spire, 0 }, { GameTab.World, 0 }, { GameTab.Constellation, 0 }
+        { GameTab.Void, 0 }, { GameTab.Spire, 0 }, { GameTab.World, 0 }, { GameTab.Constellation, 0 }, { GameTab.Flow, 0 }
     };
     private bool _needsButtonLayoutUpdate = false;
     private string _screenshotPath = "screenshot.png";
     private RasterizerState _scissorState = new() { ScissorTestEnable = true };
+    private Button? _pinnedButton;
 
     public Game1()
     {
@@ -48,29 +49,16 @@ public class Game1 : Game
         _engine = new GameEngine();
         _ai = new AiModeSystem(_engine);
 
-        // Load Data-Driven Manifestations
         var jsonPath = "manifestations.json";
-        if (File.Exists(jsonPath))
-        {
-            _engine.LoadDefinitions(File.ReadAllText(jsonPath));
-        }
+        if (File.Exists(jsonPath)) _engine.LoadDefinitions(File.ReadAllText(jsonPath));
 
         var lorePath = "lore.json";
-        if (File.Exists(lorePath))
-        {
-            _engine.LoadLore(File.ReadAllText(lorePath));
-        }
+        if (File.Exists(lorePath)) _engine.LoadLore(File.ReadAllText(lorePath));
 
         var stringsPath = "Content/strings.json";
-        if (File.Exists(stringsPath))
-        {
-            TextService.Instance.LoadStrings(File.ReadAllText(stringsPath));
-        }
+        if (File.Exists(stringsPath)) TextService.Instance.LoadStrings(File.ReadAllText(stringsPath));
 
-        if (Environment.GetCommandLineArgs().Contains("--ai-mode"))
-        {
-            _aiMode = true;
-        }
+        if (Environment.GetCommandLineArgs().Contains("--ai-mode")) _aiMode = true;
     }
 
     public void ToggleFullscreen()
@@ -91,27 +79,16 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        _graphics.PreferredBackBufferWidth = 1024;
-        _graphics.PreferredBackBufferHeight = 768;
-        _graphics.ApplyChanges();
-
-        UiLayout.Width = GraphicsDevice.Viewport.Width;
-        UiLayout.Height = GraphicsDevice.Viewport.Height;
-
+        _graphics.PreferredBackBufferWidth = 1024; _graphics.PreferredBackBufferHeight = 768; _graphics.ApplyChanges();
+        UiLayout.Width = GraphicsDevice.Viewport.Width; UiLayout.Height = GraphicsDevice.Viewport.Height;
         base.Initialize();
-        _bg = new BackgroundManager(GraphicsDevice);
-        _particles = new ParticleSystem(GraphicsDevice);
-        _visuals = new VisualManager(GraphicsDevice);
-        _pixel = new Texture2D(GraphicsDevice, 1, 1);
-        _pixel.SetData([Color.White]);
+        _bg = new BackgroundManager(GraphicsDevice); _particles = new ParticleSystem(GraphicsDevice);
+        _visuals = new VisualManager(GraphicsDevice); _pixel = new Texture2D(GraphicsDevice, 1, 1); _pixel.SetData([Color.White]);
 
         LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _visuals, _aiMode, ToggleFullscreen);
         _audio.StartHum();
-        _log.AddToLog(TextService.Instance.Get("HIST_AWAKEN"));
-        _log.AddToLog(TextService.Instance.Get("HIST_FOCUS_PROMPT"));
-
+        _log.AddToLog(TextService.Instance.Get("HIST_AWAKEN")); _log.AddToLog(TextService.Instance.Get("HIST_FOCUS_PROMPT"));
         _tutorial.Start(_engine.State);
-
         if (_aiMode) _ai.Process("ai_commands.txt");
     }
 
@@ -119,19 +96,24 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _visuals.LoadEffects(Content);
-        try 
-        { 
-            _font = Content.Load<SpriteFont>("main_font"); 
-        } 
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[CRITICAL] Failed to load font: {ex.Message}");
-        }
+        try { _font = Content.Load<SpriteFont>("main_font"); } catch (Exception ex) { Console.WriteLine($"[CRITICAL] Failed to load font: {ex.Message}"); }
     }
 
     protected override void Update(GameTime gameTime)
     {
         _input.Update();
+        _input.HandleHotkeys(_engine, (t) => _currentTab = t);
+
+        // UI Scaling
+        var targetWidth = (int)(GraphicsDevice.Viewport.Width / _input.UiScale);
+        if (Math.Abs(UiLayout.Width - targetWidth) > 1)
+        {
+             UiLayout.Width = targetWidth;
+             UiLayout.Height = (int)(GraphicsDevice.Viewport.Height / _input.UiScale);
+             _needsButtonLayoutUpdate = true;
+             _visuals.Resize(GraphicsDevice);
+        }
+
         if (_needsButtonLayoutUpdate)
         {
             LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, (t) => _currentTab = t, _visuals, _aiMode, ToggleFullscreen);
@@ -139,10 +121,25 @@ public class Game1 : Game
         }
 
         if (_aiMode) _ai.HandleAiUpdate(gameTime, GraphicsDevice, _screenshotPath, Draw, Exit);
-
-        var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
         if (_input.IsKeyPressed(Keys.Escape)) Exit();
 
+        UpdateGameLogic((float)gameTime.ElapsedGameTime.TotalSeconds);
+
+        LayoutSystem.ApplyLayout(_buttons, _currentTab);
+        UpdateScrollOffsets();
+        _input.ProcessButtons(_buttons, _currentTab, _tabScrollOffsets.GetValueOrDefault(_currentTab, 0));
+
+        if (_input.IsTooltipPinned && _pinnedButton == null) _pinnedButton = _buttons.FirstOrDefault(b => b.IsVisible() && b.IsHovered);
+        else if (!_input.IsTooltipPinned) _pinnedButton = null;
+
+        if (_currentTab == GameTab.World) _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
+        if (_currentTab == GameTab.Spire) UpdateSpireInteraction();
+
+        base.Update(gameTime);
+    }
+
+    private void UpdateGameLogic(float deltaTime)
+    {
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
         _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount);
@@ -154,31 +151,24 @@ public class Game1 : Game
             _log.AddToLog(_engine.State.History[_lastProcessedHistoryCount]);
             _lastProcessedHistoryCount++;
         }
+    }
 
-        LayoutSystem.ApplyLayout(_buttons, _currentTab);
-        UpdateScrollOffsets();
-        _input.ProcessButtons(_buttons, _currentTab, _tabScrollOffsets.GetValueOrDefault(_currentTab, 0));
-
-        if (_currentTab == GameTab.World) _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
-        if (_currentTab == GameTab.Spire)
+    private void UpdateSpireInteraction()
+    {
+        _mixing.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _buttons);
+        if (_input.IsLeftClick())
         {
-            _mixing.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _buttons);
-            if (_input.IsLeftClick())
+            var curX = 350;
+            var btnY = 440;
+            foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
             {
-                var curX = 350;
-                var btnY = 440;
-                foreach (ResourceType type in Enum.GetValues(typeof(ResourceType)))
-                {
-                    if (type == ResourceType.Aether || type == ResourceType.VoidEmbers || type == ResourceType.Life) continue;
-                    if (!_engine.State.Discoveries.ContainsKey($"{type.ToString().ToLower()}_unlocked")) continue;
-                    var rect = new Rectangle(curX, btnY, 60, 30);
-                    if (rect.Contains(_input.MousePosition)) _mixing.HandleIngredientClick(type, _engine);
-                    curX += 70;
-                }
+                if (type == ResourceType.Aether || type == ResourceType.VoidEmbers || type == ResourceType.Life) continue;
+                if (!_engine.State.Discoveries.ContainsKey($"{type.ToString().ToLower()}_unlocked")) continue;
+                var rect = new Rectangle(curX, btnY, 60, 30);
+                if (rect.Contains(_input.MousePosition)) _mixing.HandleIngredientClick(type, _engine);
+                curX += 70;
             }
         }
-
-        base.Update(gameTime);
     }
 
     private void UpdateScrollOffsets()
@@ -199,7 +189,7 @@ public class Game1 : Game
         {
             _visuals.Clear(GraphicsDevice, Color.White);
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-            _ending.Draw(_spriteBatch, _engine, _font, _pixel, gameTime, _input.MousePosition, _input.IsLeftClick(), () => {
+            _visuals.DrawAscended(_spriteBatch, _ending, _engine, _font, _pixel, gameTime, _input.MousePosition, _input.IsLeftClick(), () => {
                 _engine.Manifest("reset");
                 _log.Clear();
             });
@@ -213,26 +203,19 @@ public class Game1 : Game
             _spriteBatch.End();
 
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-            _log.Draw(_spriteBatch, _font, _pixel, _visuals);
-            _particles.Draw(_spriteBatch);
-            foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, 0);
+            _visuals.DrawWorldElements(_spriteBatch, _log, _font, _pixel, _particles, _buttons);
             _spriteBatch.End();
 
             GraphicsDevice.ScissorRectangle = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
             _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-            foreach (var btn in _buttons.Where(b => b.Tab == _currentTab)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, curOffset);
-
-            if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire) _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
-            if (_currentTab == GameTab.Spire) _mixing.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, _input.MousePosition, gameTime);
-            if (_currentTab == GameTab.World) _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals, gameTime);
-
-            if (_currentTab == GameTab.Debug) _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
+            LayoutSystem.DrawTabButtons(_spriteBatch, _buttons, _currentTab, _font, _pixel, curOffset);
+            _visuals.DrawTabContent(_spriteBatch, _currentTab, _engine, gameTime, _mixing, _input.MousePosition, _map, _font, _pixel, _debug);
             _spriteBatch.End();
 
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-            foreach (var btn in _buttons.Where(b => b.Tab == _currentTab || b.Tab == GameTab.None)) if (btn.IsVisible()) btn.DrawTooltip(_spriteBatch, _font, _pixel, _visuals, (btn.Tab == GameTab.None ? 0 : curOffset));
-            _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
+            _visuals.DrawTooltipsAndStatus(_spriteBatch, _buttons, _currentTab, _font, _pixel, curOffset, _input.IsTooltipPinned, _pinnedButton, _status, _engine, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
             _spriteBatch.End();
+            
             if (_visuals.AscensionTransitionAlpha > 0)
             {
                 _spriteBatch.Begin();

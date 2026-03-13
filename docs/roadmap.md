@@ -43,10 +43,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Event-Driven UI:** Transition UI updates from polling to an observer pattern using the `EventBus`.
 - [x] **Polymorphic Serialization:** Implement custom JSON converters for component-based manifestation data.
 
-## 28. Goal: UI/UX: "The Wizard's Interface" (InProgress)
+## 28. Goal: UI/UX: "The Wizard's Interface" (Completed)
 - [x] **Rich Text & Icons:** Implement a markdown-lite parser for tooltips and logs with inline icons.
-- [ ] **Resource Flow Graphs:** Add a visual "Flow" tab to trace resource production chains.
-- [ ] **Power User Controls:** Implement hotkeys, tooltip pinning, and manual UI scaling.
+- [x] **Resource Flow Graphs:** Add a visual "Flow" tab to trace resource production chains.
+- [x] **Power User Controls:** Implement hotkeys, tooltip pinning, and manual UI scaling.
 
 ---
 *Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*
