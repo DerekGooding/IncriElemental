@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using IncriElemental.Core.Engine;
+using IncriElemental.Core.Models;
 using IncriElemental.Core.Systems;
 using IncriElemental.Desktop.Visuals;
 using IncriElemental.Desktop.UI;
@@ -212,7 +213,7 @@ public class Game1 : Game
             _spriteBatch.End();
 
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-            _log.Draw(_spriteBatch, _font, _pixel);
+            _log.Draw(_spriteBatch, _font, _pixel, _visuals);
             _particles.Draw(_spriteBatch);
             foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, 0);
             _spriteBatch.End();

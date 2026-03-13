@@ -30,7 +30,7 @@ public class WorldMapSystem
         }
     }
 
-    public void Draw(SpriteBatch spriteBatch, GameEngine engine, Point mousePos, SpriteFont? font, Texture2D pixel, VisualManager visuals)
+    public void Draw(SpriteBatch spriteBatch, GameEngine engine, Point mousePos, SpriteFont? font, Texture2D pixel, VisualManager visuals, GameTime gt)
     {
         if (engine.State.Manifestations.GetValueOrDefault("familiar") <= 0) return;
 
@@ -38,7 +38,7 @@ public class WorldMapSystem
         {
             spriteBatch.DrawString(font, "WORLD EXPLORATION (Click cells to send Familiars)", new Vector2(StartX, StartY - 30), Color.Gray * 0.5f);
         }
-        visuals.DrawMap(spriteBatch, engine.State.Map, mousePos, pixel, StartX, StartY);
+        visuals.DrawMap(spriteBatch, engine.State.Map, mousePos, pixel, StartX, StartY, gt);
     }
 
     private Rectangle GetCellBounds(int x, int y) => new Rectangle(StartX + x * (CellSize + CellPadding), StartY + y * (CellSize + CellPadding), CellSize, CellSize);

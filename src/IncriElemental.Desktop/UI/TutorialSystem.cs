@@ -36,7 +36,7 @@ public class TutorialSystem
         switch (CurrentStep)
         {
             case TutorialStep.Focus:
-                if (state.GetResource(Models.ResourceType.Aether).Amount >= 10)
+                if (state.GetResource(ResourceType.Aether).Amount >= 10)
                     CurrentStep = TutorialStep.ManifestFirst;
                 break;
             case TutorialStep.ManifestFirst:

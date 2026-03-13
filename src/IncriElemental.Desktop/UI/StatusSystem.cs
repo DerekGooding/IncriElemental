@@ -48,10 +48,10 @@ public class StatusSystem
         }
 
         y += 30;
-        DrawManifestations(spriteBatch, engine, font, x, (int)y, mousePos, pixel);
+        DrawManifestations(spriteBatch, engine, font, x, (int)y, mousePos, pixel, visuals);
     }
 
-    private void DrawManifestations(SpriteBatch spriteBatch, GameEngine engine, SpriteFont font, int x, int yOffset, Point mousePos, Texture2D pixel)
+    private void DrawManifestations(SpriteBatch spriteBatch, GameEngine engine, SpriteFont font, int x, int yOffset, Point mousePos, Texture2D pixel, VisualManager visuals)
     {
         _inventoryBounds.Clear();
         var manifestations = engine.State.Manifestations;
@@ -82,13 +82,13 @@ public class StatusSystem
         // Draw Tooltips for hovered items
         foreach (var entry in _inventoryBounds)
         {
-            if (rect.Contains(mousePos))
+            if (entry.Key.Contains(mousePos))
             {
                 var def = defs[entry.Value];
                 var tooltip = visuals.GetManifestationTooltip(def, engine);
                 visuals.DrawTooltip(spriteBatch, font, pixel, tooltip, mousePos);
             }
-            }
-            }
-            }
+        }
+    }
+}
 
