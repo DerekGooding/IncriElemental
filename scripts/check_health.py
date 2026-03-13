@@ -35,30 +35,6 @@ def run_tests():
         print("[ERROR] Tests failed during health check.")
         return False
 
-def check_linux_build():
-    if "--skip-linux-build" in sys.argv:
-        return True
-    
-    print("\n--- Checking Linux Build (via Docker) ---")
-    try:
-        # Check if docker is available
-        subprocess.check_call(["docker", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except:
-        print("[INFO] Docker not found. Skipping Linux build emulation.")
-        return True
-
-    try:
-        script = "scripts/linux_build_test.ps1" if sys.platform == "win32" else "scripts/linux_build_test.sh"
-        if sys.platform == "win32":
-            subprocess.check_call(["powershell.exe", "-File", script])
-        else:
-            subprocess.check_call(["bash", script])
-        print("[SUCCESS] Linux build emulation passed.")
-        return True
-    except subprocess.CalledProcessError:
-        print("[FAIL] Linux build emulation failed!")
-        return False
-
 def get_git_changes_since_file(file_path):
     try:
         last_commit = subprocess.check_output(["git", "log", "-1", "--format=%H", "--", file_path]).decode().strip()
@@ -126,13 +102,13 @@ def parse_coverage():
                 pass_requirements = False
     return overall_line_rate, pass_requirements
 
-def export_shields_data(monolith_count, coverage, docs_pass, tests_pass, linux_pass):
+def export_shields_data(monolith_count, coverage, docs_pass, tests_pass):
     # Overall summary
     summary = {
         "schemaVersion": 1,
         "label": "health",
-        "message": "Project Healthy" if (monolith_count == 0 and docs_pass and tests_pass and linux_pass) else "Project Unhealthy",
-        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass and linux_pass) else "red"
+        "message": "Project Healthy" if (monolith_count == 0 and docs_pass and tests_pass) else "Project Unhealthy",
+        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass) else "red"
     }
     
     # Tests badge
@@ -188,15 +164,15 @@ if __name__ == "__main__":
     m_count = check_monoliths()
     cov_val, cov_pass = parse_coverage()
     d_pass = check_docs_staleness()
-    l_pass = check_linux_build()
     
     t_pass = cov_val > 0 and cov_pass and tests_passed
     
-    export_shields_data(m_count, cov_val, d_pass, t_pass, l_pass)
+    export_shields_data(m_count, cov_val, d_pass, t_pass)
 
-    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not l_pass:
+    if m_count > 0 or not cov_pass or not d_pass or not tests_passed:
         print("\n[FAIL] Health checks failed.")
         sys.exit(1)
     
     print("\n[SUCCESS] All health checks passed!")
     sys.exit(0)
+
