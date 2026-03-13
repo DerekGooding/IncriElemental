@@ -6,145 +6,139 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ## Goal 30: The Autonomous Awakening (InProgress)
 
-### 1. OCR Verification
-- **Requirement:** Confirm UI text presence via screenshots.
-- **Step 1:** Integrate `pytesseract` or a similar OCR library into `scripts/agentic_review.py`.
-- **Step 2:** Add a `--verify-text "STRING"` argument to the review script.
-- **Step 3:** After capturing a screenshot, run OCR on the image and assert that the string exists.
-- **Step 4:** Integrate this check into the health suite.
+### Phase 1: Perception & Standardized Vision
 
-### 2. Semantic Review
-- **Requirement:** Detect UI overlaps and clipping.
-- **Step 1:** Enhance `agentic_review.py` to identify "high-density" pixel areas that don't match expected layouts.
-- **Step 2:** Use edge detection (Sobel/Canny) to find button boundaries in screenshots.
-- **Step 3:** Compare detected boundaries against the `LayoutSystem` coordinate logic.
-- **Step 4:** Flag any overlapping rectangles as health failures.
+#### 1. OCR Verification
+- **Sub-task 1.1:** Setup Tesseract environment within the CI container/runner.
+- **Sub-task 1.2:** Modify `agentic_review.py` to accept a `--text-assert` list.
+- **Sub-task 1.3:** Implement a grayscale pre-processing filter to improve OCR accuracy on glowing text.
+- **Sub-task 1.4:** Create a validation test that ensures the "Aether" label is found after the first 5 focuses.
 
-### 3. Palette Audit
-- **Requirement:** Enforce the "Aetherial Glow" color scheme.
-- **Step 1:** Parse `src/IncriElemental.Desktop/Visuals/ColorPalette.cs` to extract allowed RGBA values.
-- **Step 2:** Implement a script that samples pixel colors from generated screenshots.
-- **Step 3:** Assert that >95% of non-background pixels match the defined palette (allowing for bloom gradients).
-- **Step 4:** Generate a report of "Off-Palette" colors found.
+#### 2. Palette Audit
+- **Sub-task 2.1:** Create a script to reflectively extract static `Color` fields from `ColorPalette.cs`.
+- **Sub-task 2.2:** Implement a pixel-sampling loop that builds a histogram of every unique color in a screenshot.
+- **Sub-task 2.3:** Calculate the "Distance" between sampled pixels and the closest palette color.
+- **Sub-task 2.4:** Report any "Rogue Pixels" that are significantly outside the palette (tolerance: 5% for bloom effects).
 
-### 4. Stress Testing
-- **Requirement:** Verify UI robustness at scale.
-- **Step 1:** Update `scripts/update_screenshots.py` to loop through scales `[0.5, 1.0, 1.5, 2.0]`.
-- **Step 2:** Issue `[ ]` scaling commands via `AiModeSystem`.
-- **Step 3:** Verify that the scrollable area in `Game1.Draw` correctly adjusts its `ScissorRectangle`.
-- **Step 4:** Confirm buttons remain clickable by checking their transformed bounds.
+#### 3. Contrast Check
+- **Sub-task 3.1:** Implement the WCAG 2.1 contrast formula: `(L1 + 0.05) / (L2 + 0.05)`.
+- **Sub-task 3.2:** Sample background color at the coordinates of every button label.
+- **Sub-task 3.3:** Scan for resource labels and ensure they hit at least 4.5:1.
+- **Sub-task 3.4:** Create an "Accessibility Report" artifact in CI.
 
-### 5. Performance Analysis
-- **Requirement:** Track particle-induced frame-time spikes.
-- **Step 1:** Add a hidden "Performance" counter to `AiModeSystem` that logs `ElapsedGameTime`.
-- **Step 2:** Capture 10 sequential screenshots during a "Combustion" event.
-- **Step 3:** Analyze the delta between captures to estimate real-world FPS.
-- **Step 4:** Fail health check if FPS drops below 30 in AI mode.
+#### 4. Icon Alignment
+- **Sub-task 4.1:** Capture high-resolution crops of `RichTextSystem` tooltips.
+- **Sub-task 4.2:** Use template matching to find icons like `[i:aether]`.
+- **Sub-task 4.3:** Find the bounding box of the adjacent text characters.
+- **Sub-task 4.4:** Assert that the Y-coordinate of the icon's vertical center matches the text's vertical center within ±2px.
 
-### 6. Tooltip Pinning
-- **Requirement:** Verify persistence of pinned rich text.
-- **Step 1:** Command AI to `hover:speck` then `pin`.
-- **Step 2:** Command AI to `move:0,0` (moving mouse away).
-- **Step 3:** Capture screenshot and use OCR/Template Matching to confirm the tooltip is still rendered.
-- **Step 4:** Command `unpin` and verify it disappears.
+#### 5. Button States
+- **Sub-task 5.1:** Enhance `AiModeSystem` to support a `hover` command that places the mouse at button centers.
+- **Sub-task 5.2:** Take a "Before" (Idle) and "After" (Hover) screenshot of the same button.
+- **Sub-task 5.3:** Assert that the Hover state has a higher average luminosity or a distinct color change.
+- **Sub-task 5.4:** Verify that the `Click` command results in a momentary "depression" or size shift in the button bounds.
 
-### 7. Graph Readability
-- **Requirement:** Ensure `FlowSystem` nodes are legible.
-- **Step 1:** Capture `spire_flow.png`.
-- **Step 2:** Use Python's `PIL` to check for white-on-white or dark-on-dark text collisions.
-- **Step 3:** Verify that "Focus" and "Aether" nodes have a minimum distance of 100 pixels.
-- **Step 4:** Ensure production lines do not cross directly through text labels.
+---
 
-### 8. Contrast Check
-- **Requirement:** Accessibility audit for the Void.
-- **Step 1:** Sample text color vs. background color in `void_main.png`.
-- **Step 2:** Calculate contrast ratio (WCAG standard).
-- **Step 3:** Assert a minimum 4.5:1 ratio for all resource labels.
-- **Step 4:** Adjust `ColorPalette.cs` automatically if contrast fails.
+### Phase 2: Structural Integrity & Scalability
 
-### 9. Visual Component Testing
-- **Requirement:** Unit test for UI rendering.
-- **Step 1:** Create a "test manifestation" with all possible components (Aura, Producer, Storage).
-- **Step 2:** Render only that button to a clean `RenderTarget`.
-- **Step 3:** Compare against a `baseline_component.png`.
-- **Step 4:** Fail if the rendering logic in `Button.cs` changes unexpectedly.
+#### 6. Semantic Review
+- **Sub-task 6.1:** Generate a "Expected Layout Map" JSON file during `LayoutSystem.ApplyLayout`.
+- **Sub-task 6.2:** Compare the actual pixel edges in a screenshot against this JSON map.
+- **Sub-task 6.3:** Detect "Visual Collisions" where two button edges share the same coordinate space.
+- **Sub-task 6.4:** Flag any text that extends beyond the `Rectangle` bounds of its parent button.
 
-### 10. Tutorial Audit
-- **Requirement:** Verify "Highlight" focus.
-- **Step 1:** Launch game in Tutorial mode.
-- **Step 2:** Capture screenshot during the "Focus on Focus" step.
-- **Step 3:** Assert that the "Focus" button area has 100% brightness while the rest of the screen is < 30%.
-- **Step 4:** Verify the highlight moves correctly to the "Speck" button.
+#### 7. Stress Testing
+- **Sub-task 7.1:** Modify `update_screenshots.py` to automate the `[` and `]` scaling hotkeys.
+- **Sub-task 7.2:** Verify that at 0.5x scale, the text remains legible (OCR still works).
+- **Sub-task 7.3:** Verify that at 2.0x scale, the `ScissorRectangle` correctly clips buttons that overflow the window.
+- **Sub-task 7.4:** Confirm that the "Reset Scale" command restores the 1.0x baseline correctly.
 
-### 11. Aura Pulse Validation
-- **Requirement:** Verify animation of World Map influences.
-- **Step 1:** Capture two screenshots of the World Map 250ms apart.
-- **Step 2:** Perform a pixel-diff on the Aura borders.
-- **Step 3:** Assert that the borders have moved/changed intensity (verifying the `pulse` logic in `VisualManager.DrawMap`).
-- **Step 4:** Fail if the Aura is static.
+#### 8. Font Scaling
+- **Sub-task 8.1:** Render the same complex tooltip at 1024x768 and 1920x1080.
+- **Sub-task 8.2:** Use SSIM (Structural Similarity Index) to compare the glyph shapes.
+- **Sub-task 8.3:** Detect any "Blurring" or aliasing artifacts introduced by the scaling matrix.
+- **Sub-task 8.4:** Fail if the font becomes unreadable at extreme resolutions.
 
-### 12. Reaction Visuals
-- **Requirement:** Capture successful Alchemical mixes.
-- **Step 1:** Command AI to `update:7200` and `mix:fire,air`.
-- **Step 2:** Capture screenshot immediately after the `mix` command.
-- **Step 3:** Verify presence of "Combustion" buff in the `StatusSystem` area.
-- **Step 4:** Confirm the log entry "Combustion initiated!" appears via OCR.
+#### 9. Status Bar Scaling
+- **Sub-task 9.1:** Create a "Stress State" save file with 15 active elemental buffs.
+- **Sub-task 9.2:** Launch the game and capture the Status Bar area.
+- **Sub-task 9.3:** Verify that icons either wrap to a second row or resize dynamically to stay on screen.
+- **Sub-task 9.4:** Ensure no status icons overlap with the Narrative Log or Menu Tabs.
 
-### 13. Font Scaling
-- **Requirement:** Verify `RichTextSystem` legibility.
-- **Step 1:** Render a long string with multiple tags `[c:gold][i:aether]`.
-- **Step 2:** Capture at 720p and 1080p.
-- **Step 3:** Use structural similarity index (SSIM) to ensure font glyphs are not distorted.
-- **Step 4:** Verify icons scale proportionally with text.
+#### 10. Log Auto-Scroll
+- **Sub-task 10.1:** Issue 100 `focus` commands via AI script.
+- **Sub-task 10.2:** Take a screenshot of the log window.
+- **Sub-task 10.3:** OCR the bottom line and verify it matches the 100th "Focus" event.
+- **Sub-task 10.4:** Manually scroll the log up 50% and verify the 50th event is now visible.
 
-### 14. Ascension Brightness
-- **Requirement:** Verify the "White-Out" effect.
-- **Step 1:** Command AI to `manifest:ascend`.
-- **Step 2:** Wait 2 seconds for transition.
-- **Step 3:** Capture screenshot.
-- **Step 4:** Assert that the average R, G, and B values are all > 240.
+---
 
-### 15. Status Bar Scaling
-- **Requirement:** Handle many concurrent buffs.
-- **Step 1:** Inject 12 temporary buffs into `GameState`.
-- **Step 2:** Capture screenshot of the status bar.
-- **Step 3:** Verify that icons either wrap to a second line or scale down to fit.
-- **Step 4:** Ensure no icons are clipped by the screen edge.
+### Phase 3: Dynamic Perception & Interaction
 
-### 16. Icon Alignment
-- **Requirement:** Pixel-perfect rich text.
-- **Step 1:** Capture a high-res screenshot of a tooltip containing `[i:aether]`.
-- **Step 2:** Find the bounding box of the icon and the adjacent text.
-- **Step 3:** Assert that the vertical mid-point of the icon aligns within 2 pixels of the text baseline mid-point.
-- **Step 4:** Adjust `RichTextSystem.Draw` offset if misaligned.
+#### 11. Tooltip Pinning
+- **Sub-task 11.1:** Hover over a manifestation button.
+- **Sub-task 11.2:** Issue the `pin` command (Right-click or 'P').
+- **Sub-task 11.3:** Move the mouse to the opposite corner of the screen and capture.
+- **Sub-task 11.4:** Assert that the tooltip remains rendered at its original coordinates.
 
-### 17. Button States
-- **Requirement:** Visual feedback responsiveness.
-- **Step 1:** Capture button at `Point(0,0)` (Idle).
-- **Step 2:** Move mouse to button center, capture (Hover).
-- **Step 3:** Assert that Hover screenshot is brighter or has a border change compared to Idle.
-- **Step 4:** Verify `IsHovered` flag is true in AI debug metadata.
+#### 12. Graph Readability
+- **Sub-task 12.1:** Navigate to the `Flow` tab.
+- **Sub-task 12.2:** Analyze the pixel density of the `FlowSystem` graph.
+- **Sub-task 12.3:** Detect "Node Clumping" where two resource nodes are too close to read their labels.
+- **Sub-task 12.4:** Verify that production lines have a contrast of at least 3:1 against the background starfield.
 
-### 18. Log Auto-Scroll
-- **Requirement:** Ensure latest events are visible.
-- **Step 1:** Command AI to `focus` 50 times to fill the log.
-- **Step 2:** Capture screenshot of the `LogSystem` area.
-- **Step 3:** Use OCR to verify the 50th "Focus" message is present.
-- **Step 4:** Scroll up and verify previous messages appear.
+#### 13. Tutorial Audit
+- **Sub-task 13.1:** Implement a "Step-by-Step" capture mode for the Tutorial.
+- **Sub-task 13.2:** For each step, identify the "Highlight Mask" area.
+- **Sub-task 13.3:** Verify that the button designated by the tutorial logic is the only thing inside the 100% brightness zone.
+- **Sub-task 13.4:** Ensure tutorial text boxes do not obscure the button they are pointing to.
 
-### 19. Parallax Audit
-- **Requirement:** Depth during screen shake.
-- **Step 1:** Set `ScreenShakeIntensity = 20`.
-- **Step 2:** Capture two frames during the shake.
-- **Step 3:** Verify that the starfield stars moved less than the UI buttons (verifying layer separation).
-- **Step 4:** Confirm the "Void" feels deep and separate from the interface.
+#### 14. Aura Pulse Validation
+- **Sub-task 14.1:** Capture a 1-second sequence of screenshots (4 frames) of the World Map.
+- **Sub-task 14.2:** Isolate the border pixels of an explored cell with an Aura.
+- **Sub-task 14.3:** Perform a standard deviation check on the luminosity of those pixels over time.
+- **Sub-task 14.4:** Assert that the luminosity varies by at least 15% (verifying the `Math.Sin` pulse logic).
 
-### 20. Aesthetic Grading
-- **Requirement:** Automated atmosphere review.
-- **Step 1:** Implement a heuristic that scores "Glow" based on the ratio of saturated pixels to dark pixels.
-- **Step 2:** Capture screenshots at 0, 1000, and 10000 Aether.
-- **Step 3:** Assert that the "Glow Score" increases as Aether production scales.
-- **Step 4:** Fail if the Void feels "flat" during late-game play.
+#### 15. Reaction Visuals
+- **Sub-task 15.1:** Initiate a "Combustion" reaction via AI command.
+- **Sub-task 15.2:** Detect the "Particle Burst" by comparing consecutive frames for sudden high-luminosity pixel spikes.
+- **Sub-task 15.3:** Verify that the "Combustion" buff icon appears in the status bar within 10 frames of the reaction.
+- **Sub-task 15.4:** Verify the log entry has the correct `[color]` tag via OCR.
+
+---
+
+### Phase 4: Atmospheric Fidelity & Performance
+
+#### 16. Performance Analysis
+- **Sub-task 16.1:** Add a `--profile` flag to `agentic_review.py`.
+- **Sub-task 16.2:** Measure the real-world time between `BeginRenderToTarget` and `EndRenderToTarget`.
+- **Sub-task 16.3:** Stress the engine with 5000+ particles and check for frame-time deviation.
+- **Sub-task 16.4:** Log performance regressions if the "Aetherial Glow" post-processing costs exceed 4ms per frame.
+
+#### 17. Visual Component Testing
+- **Sub-task 17.1:** Setup a "Component Lab" scene that renders every UI primitive in isolation.
+- **Sub-task 17.2:** Capture baseline images for every button type, resource icon, and scrollbar.
+- **Sub-task 17.3:** Run a bit-for-bit comparison on every commit that touches `UI/` or `Visuals/`.
+- **Sub-task 17.4:** Provide a "Visual Diff" artifact in GitHub Actions when tests fail.
+
+#### 18. Ascension Brightness
+- **Sub-task 18.1:** Reach the Ascension state via AI fast-forward.
+- **Sub-task 18.2:** Capture the screen during the transition peak.
+- **Sub-task 18.3:** Calculate the global average pixel brightness.
+- **Sub-task 18.4:** Assert that brightness >= 245/255 (the "Pure White" requirement).
+
+#### 19. Parallax Audit
+- **Sub-task 19.1:** Trigger a "Screen Shake" event.
+- **Sub-task 19.2:** Use optical flow analysis to track the movement vectors of UI elements vs. background stars.
+- **Sub-task 19.3:** Verify that background movement vectors are significantly shorter than UI movement vectors.
+- **Sub-task 19.4:** Fail if the background is "sticky" to the UI.
+
+#### 20. Aesthetic Grading
+- **Sub-task 20.1:** Implement a "Glow Heuristic" based on the ratio of Bloom pixels to non-Bloom pixels.
+- **Sub-task 20.2:** Sample screenshots at different stages of production.
+- **Sub-task 20.3:** Ensure the "Atmospheric Density" (Glow Score) correlates positively with Aether generation rates.
+- **Sub-task 20.4:** Verify the scene doesn't look "washed out" (too much white) or "empty" (too much black) at any stage.
 
 ---
 *Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*
