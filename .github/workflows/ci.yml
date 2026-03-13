@@ -30,9 +30,10 @@ jobs:
     - name: Setup Wine
       run: |
         export WINEARCH=win64
-        export WINEPREFIX=$HOME/.wine
-        wineboot --init
-        winetricks -q d3dcompiler_47
+        export WINEPREFIX=/home/runner/.wine
+        mkdir -p $WINEPREFIX
+        xvfb-run wineboot --init
+        xvfb-run winetricks -q d3dcompiler_47
     - name: Setup Font for MGCB
       run: |
         python scripts/download_font.py
@@ -42,7 +43,9 @@ jobs:
     - name: Build
       run: dotnet build IncriElemental.slnx --no-restore
       env:
+        WINEARCH: win64
         WINEPREFIX: /home/runner/.wine
+        MGFXC_WINE_PATH: /home/runner/.wine
         WINEDEBUG: -all
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
