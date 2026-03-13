@@ -80,24 +80,29 @@ public class AiModeSystem(GameEngine engine)
                     var path = name.EndsWith(".png") ? name : name + ".png";
                     if (!path.Contains('/') && !path.Contains('\\')) path = Path.Combine("review", path);
                     visuals.SaveScreenshot(path);
-                    SaveMetadata(path.Replace(".png", ".json"), buttons);
+                    SaveMetadata(path.Replace(".png", ".json"), buttons, gameTime);
                 }
                 _pendingScreenshots.Clear();
             }
             else
             {
                 visuals.SaveScreenshot(defaultPath);
-                SaveMetadata(defaultPath.Replace(".png", ".json"), buttons);
+                SaveMetadata(defaultPath.Replace(".png", ".json"), buttons, gameTime);
             }
             exitAction();
         }
     }
 
-    private void SaveMetadata(string path, List<Button> buttons)
+    private void SaveMetadata(string path, List<Button> buttons, GameTime gameTime)
     {
         var metadata = new
         {
             Timestamp = DateTime.UtcNow,
+            Performance = new
+            {
+                TotalTime = gameTime.TotalGameTime.TotalSeconds,
+                ElapsedFrameTime = gameTime.ElapsedGameTime.TotalMilliseconds
+            },
             Buttons = buttons.Where(b => b.IsVisible()).Select(b => new
             {
                 Text = b.Text,
