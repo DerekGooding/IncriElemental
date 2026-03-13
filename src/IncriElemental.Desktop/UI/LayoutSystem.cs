@@ -98,3 +98,18 @@ public class LayoutSystem
     }
 
     public static void ApplyLayout(List<Button> buttons, GameTab currentTab)
+    {
+        var curY = 60;
+        var centerX = UiLayout.Width / 2;
+
+        foreach (var btn in buttons.Where(b => b.Tab == currentTab))
+        {
+            if (btn.IsVisible())
+            {
+                btn.Bounds.Y = curY;
+                btn.Bounds.X = centerX - btn.Bounds.Width / 2;
+                curY += btn.Bounds.Height + 15;
+            }
+        }
+    }
+}

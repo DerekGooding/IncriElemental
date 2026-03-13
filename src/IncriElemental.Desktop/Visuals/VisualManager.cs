@@ -8,25 +8,6 @@ namespace IncriElemental.Desktop.Visuals;
 public class VisualManager
 {
     private readonly Texture2D _pixel;
-    private readonly Dictionary<ResourceType, Color> _elementColors = new()
-    {
-        { ResourceType.Aether, Color.MediumPurple },
-        { ResourceType.Earth, Color.SaddleBrown },
-        { ResourceType.Fire, Color.OrangeRed },
-        { ResourceType.Water, Color.DodgerBlue },
-        { ResourceType.Air, Color.LightCyan },
-        { ResourceType.Life, Color.LimeGreen }
-    };
-
-    private readonly Dictionary<CellType, Color> _cellColors = new()
-    {
-        { CellType.Void, Color.Black },
-        { CellType.Plain, Color.DarkGreen },
-        { CellType.Mountain, Color.SlateGray },
-        { CellType.Ocean, Color.MidnightBlue },
-        { CellType.Ruins, Color.DarkGoldenrod }
-    };
-
     private Effect? _bloomEffect;
     private RenderTarget2D? _renderTarget;
     public float ScreenShakeIntensity { get; private set; } = 0f;
@@ -42,25 +23,10 @@ public class VisualManager
 
     public void Update(float deltaTime, bool engineHasAscended)
     {
-        if (ScreenShakeIntensity > 0)
-        {
-            ScreenShakeIntensity -= deltaTime * 5f;
-            if (ScreenShakeIntensity < 0) ScreenShakeIntensity = 0;
-        }
-
-        if (engineHasAscended && !_isAscending)
-        {
-            _isAscending = true;
-            ScreenShakeIntensity = 10f;
-        }
-
+        if (ScreenShakeIntensity > 0) ScreenShakeIntensity = Math.Max(0, ScreenShakeIntensity - deltaTime * 5f);
+        if (engineHasAscended && !_isAscending) { _isAscending = true; ScreenShakeIntensity = 10f; }
         if (_isAscending && AscensionTransitionAlpha < 1.0f) AscensionTransitionAlpha += deltaTime * 0.5f;
-
-        if (!engineHasAscended && _isAscending)
-        {
-            _isAscending = false;
-            AscensionTransitionAlpha = 0f;
-        }
+        if (!engineHasAscended && _isAscending) { _isAscending = false; AscensionTransitionAlpha = 0f; }
     }
 
     public Vector2 GetShakeOffset()
@@ -72,48 +38,33 @@ public class VisualManager
 
     public void LoadEffects(Microsoft.Xna.Framework.Content.ContentManager content)
     {
-        try { _bloomEffect = content.Load<Effect>("Bloom"); }
-        catch { /* Fallback if shader not compiled */ }
+        try { _bloomEffect = content.Load<Effect>("Bloom"); } catch { }
     }
 
-    public void BeginRenderToTarget(GraphicsDevice graphicsDevice)
+    public void BeginRenderToTarget(GraphicsDevice graphicsDevice) => graphicsDevice.SetRenderTarget(_renderTarget);
+
+    public void EndRenderToTarget(GraphicsDevice gd, SpriteBatch sb)
     {
-        graphicsDevice.SetRenderTarget(_renderTarget);
+        gd.SetRenderTarget(null);
+        gd.Clear(Color.Black);
+        sb.Begin(effect: _bloomEffect);
+        sb.Draw(_renderTarget, Vector2.Zero, Color.White);
+        sb.End();
     }
 
-    public void EndRenderToTarget(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+    public void Clear(GraphicsDevice gd, Color color) => gd.Clear(color);
+
+    public void DrawScene(SpriteBatch sb, LogSystem log, ParticleSystem p, List<Button> b, GameTab t, int o)
     {
-        graphicsDevice.SetRenderTarget(null);
-        graphicsDevice.Clear(Color.Black);
-
-        spriteBatch.Begin(effect: _bloomEffect);
-        spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
-        spriteBatch.End();
+        log.Draw(sb, null, _pixel, this); 
+        p.Draw(sb);
+        foreach (var btn in b.Where(x => x.Tab == GameTab.None)) if (btn.IsVisible()) btn.Draw(sb, null, _pixel, 0);
     }
 
-    public void Clear(GraphicsDevice graphicsDevice, Color color) => graphicsDevice.Clear(color);
+    public void DrawOverlay(SpriteBatch sb, float alpha) { if (alpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * alpha); }
 
-    public void DrawScene(SpriteBatch spriteBatch, LogSystem log, ParticleSystem particles, List<Button> buttons, GameTab currentTab, int curOffset)
-    {
-        log.Draw(spriteBatch, null, _pixel, this); 
-        particles.Draw(spriteBatch);
-
-        foreach (var btn in buttons.Where(b => b.Tab == GameTab.None))
-        {
-            if (btn.IsVisible()) btn.Draw(spriteBatch, null, _pixel, 0);
-        }
-    }
-
-    public void DrawOverlay(SpriteBatch spriteBatch, float alpha)
-    {
-        if (alpha > 0)
-        {
-            spriteBatch.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * alpha);
-        }
-    }
-
-    public Color GetColor(ResourceType type) => _elementColors.GetValueOrDefault(type, Color.White);
-    public Color GetCellColor(CellType type) => _cellColors.GetValueOrDefault(type, Color.Black);
+    public Color GetColor(ResourceType type) => ColorPalette.ElementColors.GetValueOrDefault(type, Color.White);
+    public Color GetCellColor(CellType type) => ColorPalette.CellColors.GetValueOrDefault(type, Color.Black);
 
     public static Color GetColorForId(string id)
     {
@@ -123,155 +74,84 @@ public class VisualManager
         if (id.Contains("droplet") || id.Contains("well")) return Color.DodgerBlue;
         if (id.Contains("breeze") || id.Contains("shaft") || id.Contains("clouds")) return Color.LightCyan;
         if (id.Contains("garden")) return Color.LimeGreen;
-        if (id.Contains("constellation")) return Color.Gold;
-        return Color.Gray;
+        return id.Contains("constellation") ? Color.Gold : Color.Gray;
     }
 
     public static GameTab GetTabForDef(ManifestationDefinition def)
     {
-        if (def.Id.Contains("spire") || def.Id.Contains("well") || def.Id.Contains("brazier") || def.Id.Contains("forge") || def.Id.Contains("clouds"))
-            return GameTab.Spire;
-        if (def.Id.Contains("garden") || def.Id.Contains("familiar"))
-            return GameTab.World;
-        if (def.Id.Contains("constellation"))
-            return GameTab.Constellation;
-        return GameTab.Void;
+        if (def.Id.Contains("spire") || def.Id.Contains("well") || def.Id.Contains("brazier") || def.Id.Contains("forge") || def.Id.Contains("clouds")) return GameTab.Spire;
+        if (def.Id.Contains("garden") || def.Id.Contains("familiar")) return GameTab.World;
+        return def.Id.Contains("constellation") ? GameTab.Constellation : GameTab.Void;
     }
 
-    public void DrawMap(SpriteBatch spriteBatch, WorldMap map, Point mousePos, Texture2D pixel, int startX, int startY, GameTime gameTime)
+    public void DrawMap(SpriteBatch sb, WorldMap map, Point mouse, Texture2D px, int sx, int sy, GameTime gt)
     {
-        var size = 20;
-        var padding = 2;
-        var pulse = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4) * 0.2f + 0.8f;
-
+        var size = 20; var pad = 2;
+        var pulse = (float)Math.Sin(gt.TotalGameTime.TotalSeconds * 4) * 0.2f + 0.8f;
         for (var x = 0; x < map.Width; x++)
         {
             for (var y = 0; y < map.Height; y++)
             {
                 var cell = map.GetCell(x, y);
-                var rect = new Rectangle(startX + x * (size + padding), startY + y * (size + padding), size, size);
-
+                var r = new Rectangle(sx + x * (size + pad), sy + y * (size + pad), size, size);
                 var color = cell.IsExplored ? GetCellColor(cell.Type) : Color.DarkSlateGray * 0.3f;
-
-                // Highlight if mouse is over
-                if (rect.Contains(mousePos)) color *= 1.5f;
-
-                spriteBatch.Draw(pixel, rect, color);
-
-                // Draw Aura border
+                if (r.Contains(mouse)) color *= 1.5f;
+                sb.Draw(px, r, color);
                 if (cell.IsExplored && cell.Influences.Any())
                 {
-                    var topAura = cell.Influences.OrderByDescending(a => a.Intensity).First();
-                    var auraColor = GetColor(topAura.Type) * (float)Math.Min(1.0, topAura.Intensity) * pulse;
-                    spriteBatch.Draw(pixel, new Rectangle(rect.X - 1, rect.Y - 1, rect.Width + 2, 1), auraColor);
-                    spriteBatch.Draw(pixel, new Rectangle(rect.X - 1, rect.Bottom, rect.Width + 2, 1), auraColor);
-                    spriteBatch.Draw(pixel, new Rectangle(rect.X - 1, rect.Y - 1, 1, rect.Height + 2), auraColor);
-                    spriteBatch.Draw(pixel, new Rectangle(rect.Right, rect.Y - 1, 1, rect.Height + 2), auraColor);
+                    var aura = cell.Influences.OrderByDescending(a => a.Intensity).First();
+                    var auraColor = GetColor(aura.Type) * (float)Math.Min(1.0, aura.Intensity) * pulse;
+                    sb.Draw(px, new Rectangle(r.X - 1, r.Y - 1, r.Width + 2, 1), auraColor);
+                    sb.Draw(px, new Rectangle(r.X - 1, r.Bottom, r.Width + 2, 1), auraColor);
+                    sb.Draw(px, new Rectangle(r.X - 1, r.Y - 1, 1, r.Height + 2), auraColor);
+                    sb.Draw(px, new Rectangle(r.Right, r.Y - 1, 1, r.Height + 2), auraColor);
                 }
-
-                // Border for unexplored but visible
-                if (!cell.IsExplored)
-                {
-                    var t = 1;
-                    spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, rect.Width, t), Color.Gray * 0.1f);
-                    spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Bottom - t, rect.Width, t), Color.Gray * 0.1f);
-                    spriteBatch.Draw(pixel, new Rectangle(rect.Left, rect.Top, t, rect.Height), Color.Gray * 0.1f);
-                    spriteBatch.Draw(pixel, new Rectangle(rect.Right - t, rect.Top, t, rect.Height), Color.Gray * 0.1f);
-                }
+                if (!cell.IsExplored) { sb.Draw(px, new Rectangle(r.Left, r.Top, r.Width, 1), Color.Gray * 0.1f); sb.Draw(px, new Rectangle(r.Left, r.Bottom - 1, r.Width, 1), Color.Gray * 0.1f); sb.Draw(px, new Rectangle(r.Left, r.Top, 1, r.Height), Color.Gray * 0.1f); sb.Draw(px, new Rectangle(r.Right - 1, r.Top, 1, r.Height), Color.Gray * 0.1f); }
             }
         }
     }
 
-    public void DrawElement(SpriteBatch spriteBatch, ResourceType type, Vector2 position, float scale = 10f)
+    public void DrawElement(SpriteBatch sb, ResourceType t, Vector2 p, float s = 10f) => sb.Draw(_pixel, p, null, GetColor(t), 0f, new Vector2(0.5f, 0.5f), s, SpriteEffects.None, 0f);
+
+    public void DrawSpire(SpriteBatch sb, Dictionary<string, bool> disc, double time)
     {
-        var color = GetColor(type);
-        spriteBatch.Draw(_pixel, position, null, color, 0f, new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0f);
+        if (disc.ContainsKey("spire_foundation_ready")) sb.Draw(_pixel, new Rectangle(502, 600, 20, 100), Color.Gray * 0.5f);
+        if (disc.ContainsKey("spire_shaft_ready")) sb.Draw(_pixel, new Rectangle(505, 500, 14, 100), Color.LightGray * 0.5f);
+        if (disc.ContainsKey("spire_complete")) { var p = (float)Math.Sin(time * 2) * 0.2f + 0.8f; sb.Draw(_pixel, new Rectangle(502, 480, 20, 20), Color.Gold * p); }
     }
 
-    public void DrawSpire(SpriteBatch spriteBatch, Dictionary<string, bool> discoveries, double totalTime)
+    public string FormatValue(double v)
     {
-        if (discoveries.ContainsKey("spire_foundation_ready"))
-            spriteBatch.Draw(_pixel, new Rectangle(502, 600, 20, 100), Color.Gray * 0.5f);
-        if (discoveries.ContainsKey("spire_shaft_ready"))
-            spriteBatch.Draw(_pixel, new Rectangle(505, 500, 14, 100), Color.LightGray * 0.5f);
-        if (discoveries.ContainsKey("spire_complete"))
-        {
-            var pulse = (float)Math.Sin(totalTime * 2) * 0.2f + 0.8f;
-            spriteBatch.Draw(_pixel, new Rectangle(502, 480, 20, 20), Color.Gold * pulse);
-        }
+        if (v >= 1_000_000_000) return $"{v / 1_000_000_000:F2}G";
+        if (v >= 1_000_000) return $"{v / 1_000_000:F2}M";
+        return v >= 1_000 ? $"{v / 1_000:F2}K" : v.ToString("F1");
     }
 
-    public string FormatValue(double value)
+    public string GetManifestationTooltip(ManifestationDefinition d, IncriElemental.Core.Engine.GameEngine e)
     {
-        if (value >= 1_000_000_000) return $"{value / 1_000_000_000:F2}G";
-        if (value >= 1_000_000) return $"{value / 1_000:F2}M";
-        if (value >= 1_000) return $"{value / 1_000:F2}K";
-        return value.ToString("F1");
+        var l = new List<string>(); var count = e.State.Manifestations.GetValueOrDefault(d.Id);
+        foreach (var ef in d.Effects)
+        {
+            if (ef.PerSecondBonus != 0) { var b = ef.PerSecondBonus * e.State.CosmicInsight; l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES", b, ef.Type)); if (count > 0) l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES_TOTAL", b * count, ef.Type)); }
+            if (ef.MaxAmountBonus != 0) l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_STORAGE", ef.MaxAmountBonus, ef.Type));
+        }
+        foreach (var c in d.Components) l.Add(c.GetDescription());
+        if (d.Id == "rune_of_attraction") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_RUNE_ATTRACTION"));
+        if (d.Id == "pickaxe") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PICKAXE"));
+        if (d.Id == "forge") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FORGE"));
+        if (d.Id == "familiar") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FAMILIAR"));
+        if (d.Id.Contains("spire")) l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_SPIRE_PART"));
+        return string.Join("\n", l);
     }
 
-    public string GetManifestationTooltip(ManifestationDefinition def, IncriElemental.Core.Engine.GameEngine engine)
+    public void DrawTooltip(SpriteBatch sb, SpriteFont font, Texture2D px, string text, Point mouse)
     {
-        var lines = new List<string>();
-        var count = engine.State.Manifestations.GetValueOrDefault(def.Id);
-        
-        if (def.Effects.Any())
-        {
-            foreach (var effect in def.Effects)
-            {
-                if (effect.PerSecondBonus != 0)
-                {
-                    var baseVal = effect.PerSecondBonus * engine.State.CosmicInsight;
-                    var totalVal = baseVal * count;
-                    lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES", baseVal, effect.Type));
-                    if (count > 0) lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES_TOTAL", totalVal, effect.Type));
-                }
-                if (effect.MaxAmountBonus != 0)
-                {
-                    lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_STORAGE", effect.MaxAmountBonus, effect.Type));
-                }
-            }
-        }
-
-        foreach (var comp in def.Components)
-        {
-            lines.Add(comp.GetDescription());
-        }
-
-        if (def.Id == "rune_of_attraction") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_RUNE_ATTRACTION"));
-        if (def.Id == "pickaxe") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PICKAXE"));
-        if (def.Id == "forge") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FORGE"));
-        if (def.Id == "familiar") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FAMILIAR"));
-        if (def.Id.Contains("spire")) lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_SPIRE_PART"));
-
-        return string.Join("\n", lines);
-    }
-
-    public void DrawTooltip(SpriteBatch spriteBatch, SpriteFont font, Texture2D pixel, string tooltip, Point mousePos)
-    {
-        if (string.IsNullOrEmpty(tooltip)) return;
-
-        var lines = tooltip.Split('\n');
-        var parsedLines = lines.Select(l => RichTextSystem.Parse(l)).ToList();
-        
-        var maxWidth = parsedLines.Max(l => RichTextSystem.Measure(font, l, 0.8f).X);
-        var totalHeight = parsedLines.Sum(l => RichTextSystem.Measure(font, l, 0.8f).Y) + (lines.Length - 1) * 4;
-
-        var tooltipPos = new Vector2(mousePos.X + 20, mousePos.Y);
-        if (tooltipPos.X + maxWidth > UiLayout.Width) tooltipPos.X = mousePos.X - maxWidth - 20;
-
-        var tooltipRect = new Rectangle((int)tooltipPos.X - 5, (int)tooltipPos.Y - 5, (int)maxWidth + 10, (int)totalHeight + 10);
-
-        spriteBatch.Draw(pixel, tooltipRect, Color.Black * 0.9f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, tooltipRect.Width, 1), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Bottom, tooltipRect.Width, 1), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Right, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
-
-        var curY = tooltipPos.Y;
-        foreach (var lineTokens in parsedLines)
-        {
-            RichTextSystem.Draw(spriteBatch, font, lineTokens, new Vector2(tooltipPos.X, curY), Color.LightGoldenrodYellow, 0.8f, this);
-            curY += font.LineSpacing * 0.8f + 4;
-        }
+        if (string.IsNullOrEmpty(text)) return;
+        var lines = text.Split('\n'); var parsed = lines.Select(l => RichTextSystem.Parse(l)).ToList();
+        var maxWidth = parsed.Max(l => RichTextSystem.Measure(font, l, 0.8f).X); var totalH = parsed.Sum(l => RichTextSystem.Measure(font, l, 0.8f).Y) + (lines.Length - 1) * 4;
+        var pos = new Vector2(mouse.X + 20, mouse.Y); if (pos.X + maxWidth > UiLayout.Width) pos.X = mouse.X - maxWidth - 20;
+        var r = new Rectangle((int)pos.X - 5, (int)pos.Y - 5, (int)maxWidth + 10, (int)totalH + 10);
+        sb.Draw(px, r, Color.Black * 0.9f); sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 1), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.X, r.Bottom, r.Width, 1), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.X, r.Y, 1, r.Height), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.Right, r.Y, 1, r.Height), Color.Gray * 0.5f);
+        var curY = pos.Y; foreach (var tokens in parsed) { RichTextSystem.Draw(sb, font, tokens, new Vector2(pos.X, curY), Color.LightGoldenrodYellow, 0.8f, this); curY += font.LineSpacing * 0.8f + 4; }
     }
 }
