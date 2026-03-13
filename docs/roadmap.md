@@ -3,38 +3,37 @@
 This document tracks the long-term goals and task history for **IncriElemental**.
 
 ## 30. Goal: The Autonomous Awakening (Completed)
+*Established the framework for AI-driven visual perception and verification.*
 
-### Phase 1: Perception & Standardized Vision (Completed)
-*Focus: Establishing the AI's ability to read and validate the UI's basic components.*
-- [x] **OCR Verification:** Implement Metadata-powered menu verification in `agentic_review.py`.
-- [x] **Palette Audit:** Automated audit of screenshots against `ColorPalette.cs`.
-- [x] **Contrast Check:** Automated contrast audit for accessibility in "The Void".
-- [x] **Icon Alignment:** Automated vertical alignment check for inline icons.
-- [x] **Button States:** Visual verification of Idle/Hover/Click button states.
+## 31. Goal: The Aesthetic Awakening (Current)
 
-### Phase 2: Structural Integrity & Scalability (Completed)
-*Focus: Ensuring the layout system handles stress and complex configurations.*
-- [x] **Semantic Review:** Implement semantic pixel comparison to detect overlapping UI elements.
-- [x] **Stress Testing:** Dynamic layout stress testing with extreme UI scaling (0.5x - 2.0x).
-- [x] **Font Scaling:** Resolution-independent font rendering verification.
-- [x] **Status Bar Scaling:** Overflow management for the Status Bar with 10+ buffs.
-- [x] **Log Auto-Scroll:** Verification of auto-scroll behavior in the Narrative Log.
+### Phase 1: Foundational Atmosphere & Depth
+- [ ] **Nebula Vistas:** Multi-layered nebula backgrounds with independent parallax. (Tools: `parallax_audit.py`)
+- [ ] **Glassmorphism Panels:** Frosted-glass UI panels with background blurring. (Tools: `palette_audit.py`, `contrast_check.py`)
+- [ ] **Smart Bloom:** Dynamic bloom management tied to production rates. (Tools: `aesthetic_audit.py`)
+- [ ] **Void Atmosphere:** Pulsing background stars synced to audio. (Tools: `Performance Analysis`)
+- [ ] **Color Grading:** Elemental-specific color grading profiles. (Tools: `palette_audit.py`)
 
-### Phase 3: Dynamic Perception & Interaction (Completed)
-*Focus: Validating unfolding mechanics, animations, and complex data visualizations.*
-- [x] **Tooltip Pinning:** Automated verification of tooltip pinning and persistence.
-- [x] **Graph Readability:** Automated readability check for `FlowSystem` graphs.
-- [x] **Tutorial Audit:** Automated verification of tutorial highlight accuracy.
-- [x] **Aura Pulse Validation:** Visual verification of World Map Aura pulses.
-- [x] **Reaction Visuals:** Capture and verify alchemical reaction success animations.
+### Phase 2: Kinetic Interface & Feedback
+- [ ] **Aura Pulse Borders:** Animated button borders that reflect production intensity. (Tools: `aura_pulse_audit.py`)
+- [ ] **Impact Shake:** Subtle screen-shake and particle poofs on interaction. (Tools: `parallax_audit.py`)
+- [ ] **Custom Mouse Trails:** Elemental dust trails following the cursor. (Tools: `Performance Analysis`)
+- [ ] **Button States:** Runically shaped buttons with high-fidelity hover/click states. (Tools: `semantic_review.py`, `button_state_audit.py`)
+- [ ] **Tab Transitions:** Shader-based dissolves and wipes between game tabs. (Tools: `ascension_audit.py`)
 
-### Phase 4: Atmospheric Fidelity & Performance (Completed)
-*Focus: Measuring the "soul" of the game and its technical performance during late-game play.*
-- [x] **Performance Analysis:** Particle density and frame-time validation via sequential screenshots.
-- [x] **Visual Component Testing:** Component-driven UI generation with visual unit tests.
-- [x] **Ascension Brightness:** Brightness-threshold verification for the Ascension transition.
-- [x] **Parallax Audit:** Parallax independent movement audit during screen shake.
-- [x] **Aesthetic Grading:** Heuristic-based aesthetic grading of scene atmosphere.
+### Phase 3: Information Dynamics & Visualization
+- [ ] **Resource Sparklines:** Animated gauges and mini-graphs for all resources. (Tools: `visual_component_testing`)
+- [ ] **Flowing Resource Lines:** Animated energy movement in the Flow Tab. (Tools: `graph_audit.py`)
+- [ ] **Status Medals:** High-quality status icon redesign with border-glow. (Tools: `icon_alignment.py`)
+- [ ] **Contextual Dimming:** Auto-dimming UI when complex tables are open. (Tools: `tutorial_audit.py`)
+- [ ] **RPG Narrative Log:** Enhanced dialogue box with scroll-fading and premium type. (Tools: `log_scroll_audit.py`, `font_scaling`)
+
+### Phase 4: Mastery & High-Fidelity Events
+- [ ] **Alchemical Events:** Full-screen visual sequences for successful mixes. (Tools: `reaction_audit.py`)
+- [ ] **Map Biome Shaders:** Unique refractive and heat shaders for World Map cells. (Tools: `aura_pulse_audit.py`)
+- [ ] **Particle-Infused Tooltips:** Tooltips with subtle background drifting embers. (Tools: `icon_alignment.py`)
+- [ ] **Celebration Sequences:** Narrative milestone visual payloads (Awakening/Ascension). (Tools: `Sequential Screenshot Analysis`)
+- [ ] **Ultra-Wide Support:** Intelligent UI re-anchoring for 21:9 aspect ratios. (Tools: `stress_testing`)
 
 ---
 *Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*

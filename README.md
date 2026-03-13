@@ -29,14 +29,14 @@ Experience the atmospheric "Aetherial Glow" and dynamic production chains.
 *See the full [Visual Gallery](docs/screenshots.md) for more examples of the Spire, World Map, and Alchemy.*
 
 ## 🛠️ Technical Highlights
-- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. `Game1.cs` is a thin coordinator delegating to specialized systems (`ManifestationManager`, `AlchemySystem`, `LogSystem`, `WorldMapSystem`, `StatusSystem`, `EndingSystem`, `TutorialSystem`, `BackgroundManager`).
-- **Component-Driven Manifestations:** A flexible, ECS-lite architecture for manifestations using specialized components (`Producer`, `Storage`, `Aura`, `Unlock`) defined in JSON.
-- **Rich Text Engine:** Custom `RichTextSystem` in the Desktop layer supports tag-based formatting (`[color]`, `[i:icon]`) for tooltips and logs.
-- **Graphics Pipeline:** Custom HLSL shaders for bloom effects and a reactive background system tied to resource generation rates.
-- **Localization:** Centralized `TextService` in `Core` manages dynamic string injection from `strings.json`.
-- **Health Suite:** Strict enforcement of 70% test coverage, 250-line monolith prevention, and comprehensive health monitoring via `scripts/check_health.py`.
-- **Agentic DevOps:** Automated CI/CD pipeline on **Windows** that manages build, test, health scans, and dynamic documentation shields.
-- **AI Review Mode:** Automated screenshotting tools for agent-driven UI verification.
+- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. `Game1.cs` is a thin coordinator delegating to specialized systems.
+- **Component-Driven Manifestations:** A flexible, ECS-lite architecture for manifestations using specialized components defined in JSON.
+- **Advanced Agentic DevOps (Goal 30):** 
+    - **Visual Perception:** AI captures screenshots and **UI Metadata (JSON)** to verify state without fragile pixel-matching.
+    - **Health Audit Suite:** Automated scripts for **Palette Compliance**, **WCAG Contrast Ratios**, **Aura Pulse Validation**, and **Performance Profiling**.
+    - **Heuristic Aesthetics:** Automated "Glow Scoring" and "Parallax Audits" to ensure atmospheric fidelity.
+- **Rich Text Engine:** Custom `RichTextSystem` supports tag-based formatting and inline icons.
+- **Graphics Pipeline:** Custom HLSL shaders for bloom effects and a reactive background system.
 
 ## 🚀 Quick Start
 1.  **Clone:** `git clone https://github.com/DerekGooding/IncriElemental`

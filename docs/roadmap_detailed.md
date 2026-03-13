@@ -4,121 +4,69 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-## Goal 30: The Autonomous Awakening (InProgress)
+## Goal 31: The Aesthetic Awakening (InProgress)
 
-### Phase 1: Perception & Standardized Vision (Implemented)
+### Phase 1: Foundational Atmosphere & Depth
 
-#### 1. OCR Verification (Pivoted to Metadata Verification)
-- **Requirement:** Confirm UI text presence via exported metadata.
-- **Implementation:** Added `SaveMetadata` to `AiModeSystem.cs` and verification logic to `agentic_review.py`.
-- **Status:** Complete.
+#### Nebula Vistas
+- **Requirement:** Replace static starfield with multi-layered textures.
+- **Verification:** `parallax_audit.py` - Ensure background layers have varying movement vectors during camera transitions.
 
-#### 2. Palette Audit
-- **Requirement:** Enforce the "Aetherial Glow" color scheme.
-- **Implementation:** `scripts/palette_audit.py` parses `ColorPalette.cs` and samples screenshots for compliance.
-- **Status:** Complete.
+#### Glassmorphism Panels
+- **Requirement:** Semi-transparent UI backgrounds with Gaussian blur.
+- **Verification:** `contrast_check.py` and `palette_audit.py` - Verify text legibility against dynamic backgrounds.
 
-#### 3. Contrast Check
-- **Requirement:** Accessibility audit for the Void.
-- **Implementation:** `scripts/contrast_check.py` calculates WCAG contrast ratios using UI metadata and screenshot sampling.
-- **Status:** Complete.
+#### Smart Bloom
+- **Requirement:** Tie HLSL Bloom intensity to `GameState.TotalProduction`.
+- **Verification:** `aesthetic_audit.py` - Verify "Glow Score" correlates with resource rates.
 
-#### 4. Icon Alignment
-- **Requirement:** Pixel-perfect rich text.
-- **Implementation:** `scripts/icon_alignment.py` verifies presence and formatting of icon tags in tooltips.
-- **Status:** Complete.
-
-#### 5. Button States
-- **Requirement:** Visual feedback responsiveness.
-- **Implementation:** Added `hover` command to `AiModeSystem` and `scripts/button_state_audit.py` for visual delta analysis.
-- **Status:** Complete.
+#### Void Atmosphere & Color Grading
+- **Requirement:** Pulsing stars and elemental-themed LUTs (Lookup Tables).
+- **Verification:** `palette_audit.py` - Ensure scene colors remain within Element-specific profiles.
 
 ---
 
-### Phase 2: Structural Integrity & Scalability (Implemented)
+### Phase 2: Kinetic Interface & Feedback
 
-#### 6. Semantic Review
-- **Requirement:** Detect UI overlaps and clipping.
-- **Implementation:** `scripts/semantic_review.py` uses metadata to detect coordinate collisions between buttons.
-- **Status:** Complete.
+#### Aura Pulse Borders
+- **Requirement:** Use `Math.Sin` to animate button border thickness and glow.
+- **Verification:** `aura_pulse_audit.py` - Verify border luminosity changes over a 1-second interval.
 
-#### 7. Stress Testing
-- **Requirement:** Verify UI robustness at scale.
-- **Implementation:** Enhanced `AiModeSystem.cs` with `key` commands to automate UI scaling tests.
-- **Status:** Complete.
+#### Impact Shake & Custom Mouse Trails
+- **Requirement:** Apply camera matrices offsets on click; emit particles behind the cursor.
+- **Verification:** `Performance Analysis` (metadata) - Ensure particle-heavy trails don't spike frame-time.
 
-#### 8. Font Scaling
-- **Requirement:** Verify `RichTextSystem` legibility.
-- **Implementation:** Scaling logic integrated into `VisualManager.cs` and `InputManager.cs` to ensure resolution independence.
-- **Status:** Complete.
-
-#### 9. Status Bar Scaling
-- **Requirement:** Handle many concurrent buffs.
-- **Implementation:** `StatusSystem.cs` handles dynamic buff rendering, verified via automated metadata checks.
-- **Status:** Complete.
-
-#### 10. Log Auto-Scroll
-- **Requirement:** Ensure latest events are visible.
-- **Implementation:** `LogSystem.cs` auto-scroll logic verified through sequential metadata capture of high-frequency events.
-- **Status:** Complete.
+#### Runically Shaped Button States
+- **Requirement:** High-fidelity Runes replacing standard boxes.
+- **Verification:** `button_state_audit.py` and `semantic_review.py` - Ensure complex shapes have accurate hover detection and no clipping.
 
 ---
 
-### Phase 3: Dynamic Perception & Interaction (Implemented)
+### Phase 3: Information Dynamics & Visualization
 
-#### 11. Tooltip Pinning
-- **Requirement:** Verify persistence of pinned rich text.
-- **Implementation:** `AiModeSystem.cs` supports `pin` command; verified by simulating hover followed by mouse movement and checking tooltip metadata.
-- **Status:** Complete.
+#### Resource Sparklines & Flowing Lines
+- **Requirement:** Animate resource trends and energy movement in the Flow Tab.
+- **Verification:** `visual_component_testing` and `graph_audit.py` - Ensure mini-graphs scale correctly and lines remain distinct.
 
-#### 12. Graph Readability
-- **Requirement:** Ensure `FlowSystem` nodes are legible.
-- **Implementation:** `scripts/graph_audit.py` analyzes visual density and contrast of flow graph screenshots.
-- **Status:** Complete.
-
-#### 13. Tutorial Audit
-- **Requirement:** Verify "Highlight" focus.
-- **Implementation:** `scripts/tutorial_audit.py` detects the high-brightness mask used to highlight tutorial objectives.
-- **Status:** Complete.
-
-#### 14. Aura Pulse Validation
-- **Requirement:** Verify animation of World Map influences.
-- **Implementation:** `scripts/aura_pulse_audit.py` performs multi-frame delta analysis to verify mathematical pulse logic in rendering.
-- **Status:** Complete.
-
-#### 15. Reaction Visuals
-- **Requirement:** Capture successful Alchemical mixes.
-- **Implementation:** `scripts/reaction_audit.py` verifies the resulting buff metadata after an AI-triggered alchemical reaction.
-- **Status:** Complete.
+#### RPG Narrative Log & Status Medals
+- **Requirement:** Premium typography and high-quality status icons.
+- **Verification:** `icon_alignment.py` and `log_scroll_audit.py` - Verify pixel-perfect alignment of medals and dialogue text.
 
 ---
 
-### Phase 4: Atmospheric Fidelity & Performance (Implemented)
+### Phase 4: Mastery & High-Fidelity Events
 
-#### 16. Performance Analysis
-- **Requirement:** Track particle-induced frame-time spikes.
-- **Implementation:** Added `Performance` metrics to `AiModeSystem.cs` metadata export for automated frame-time analysis.
-- **Status:** Complete.
+#### Alchemical Events & Celebration Sequences
+- **Requirement:** Full-screen visual payloads for narrative and mechanical milestones.
+- **Verification:** `reaction_audit.py` and `Sequential Screenshot Analysis` - Verify frame-by-frame payload delivery.
 
-#### 17. Visual Component Testing
-- **Requirement:** Unit test for UI rendering.
-- **Implementation:** `agentic_review.py` integrated bit-for-bit baseline comparison for UI regression testing.
-- **Status:** Complete.
+#### Map Biome Shaders
+- **Requirement:** Heat-haze and refraction shaders for specific World Map biomes.
+- **Verification:** `aura_pulse_audit.py` - Use pixel-delta analysis to confirm shader activity.
 
-#### 18. Ascension Brightness
-- **Requirement:** Verify the "White-Out" effect.
-- **Implementation:** `scripts/ascension_audit.py` calculates average screenshot brightness during the Ascension transition.
-- **Status:** Complete.
-
-#### 19. Parallax Audit
-- **Requirement:** Depth during screen shake.
-- **Implementation:** `scripts/parallax_audit.py` verifies pixel delta between frames during high-intensity camera shake events.
-- **Status:** Complete.
-
-#### 20. Aesthetic Grading
-- **Requirement:** Automated atmosphere review.
-- **Implementation:** `scripts/aesthetic_audit.py` uses a glow heuristic to verify atmospheric intensity scales with production.
-- **Status:** Complete.
+#### Ultra-Wide Support
+- **Requirement:** Dynamic anchoring for 21:9 aspect ratios.
+- **Verification:** `stress_testing` - Use `key:OemOpenBrackets` sequences to verify UI re-anchoring.
 
 ---
 *Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*
