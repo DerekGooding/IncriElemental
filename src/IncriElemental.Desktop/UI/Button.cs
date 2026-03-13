@@ -42,6 +42,7 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
         if (font != null)
         {
             var locText = (Text.StartsWith("[") && Text.EndsWith("]")) ? TextService.Instance.Get(Text.Trim('[', ']')) : Text;
+            if (string.IsNullOrEmpty(locText)) locText = Text; // Fallback to literal text if key not found
             var textSize = font.MeasureString(locText);
             var textPos = new Vector2(b.Center.X - textSize.X / 2, b.Center.Y - textSize.Y / 2);
             if (!string.IsNullOrEmpty(Subtitle)) textPos.Y -= 10;
@@ -50,6 +51,7 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
             if (!string.IsNullOrEmpty(Subtitle))
             {
                 var locSub = (Subtitle.StartsWith("[") && Subtitle.EndsWith("]")) ? TextService.Instance.Get(Subtitle.Trim('[', ']')) : Subtitle;
+                if (string.IsNullOrEmpty(locSub)) locSub = Subtitle;
                 var subSize = font.MeasureString(locSub) * 0.8f;
                 var subPos = new Vector2(b.Center.X - subSize.X / 2, textPos.Y + textSize.Y - 5);
                 spriteBatch.DrawString(font, locSub, subPos, Color * 0.5f, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);

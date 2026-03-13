@@ -24,13 +24,13 @@ public class VisualManager
     {
         _pixel = new Texture2D(graphicsDevice, 1, 1);
         _pixel.SetData([Color.White]);
-        _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
+        _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
     }
 
     public void Resize(GraphicsDevice graphicsDevice)
     {
         _renderTarget?.Dispose();
-        _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
+        _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
     }
 
     public void AddShake(float intensity) => ScreenShakeIntensity = Math.Max(ScreenShakeIntensity, intensity);

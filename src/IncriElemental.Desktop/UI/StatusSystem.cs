@@ -81,10 +81,14 @@ public class StatusSystem
         DrawManifestations(spriteBatch, engine, font, x, (int)y, mousePos, pixel, visuals);
     }
 
-    private void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, Color color)
+    private void DrawLine(SpriteBatch sb, Texture2D px, Vector2 start, Vector2 end, Color color, float thickness = 1f)
     {
         var edge = end - start; var angle = (float)Math.Atan2(edge.Y, edge.X);
-        sb.Draw(px, new Rectangle((int)start.X, (int)start.Y, (int)edge.Length(), 1), null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
+        var length = edge.Length();
+        
+        // Draw Glow
+        sb.Draw(px, new Rectangle((int)start.X, (int)start.Y, (int)length, (int)(thickness + 2)), null, color * 0.2f, angle, Vector2.Zero, SpriteEffects.None, 0);
+        sb.Draw(px, new Rectangle((int)start.X, (int)start.Y, (int)length, (int)thickness), null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
     }
 
     private void DrawManifestations(SpriteBatch spriteBatch, GameEngine engine, SpriteFont font, int x, int yOffset, Point mousePos, Texture2D pixel, VisualManager visuals)

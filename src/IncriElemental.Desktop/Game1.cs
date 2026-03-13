@@ -50,7 +50,9 @@ public class Game1 : Game
         _engine = new GameEngine(); _ai = new AiModeSystem(_engine);
         var jp = "manifestations.json"; if (File.Exists(jp)) _engine.LoadDefinitions(File.ReadAllText(jp));
         var lp = "lore.json"; if (File.Exists(lp)) _engine.LoadLore(File.ReadAllText(lp));
-        var sp = "Content/strings.json"; if (File.Exists(sp)) TextService.Instance.LoadStrings(File.ReadAllText(sp));
+        var sp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content/strings.json"); 
+        if (File.Exists(sp)) TextService.Instance.LoadStrings(File.ReadAllText(sp));
+        else if (File.Exists("Content/strings.json")) TextService.Instance.LoadStrings(File.ReadAllText("Content/strings.json"));
         if (Environment.GetCommandLineArgs().Contains("--ai-mode")) _aiMode = true;
     }
 

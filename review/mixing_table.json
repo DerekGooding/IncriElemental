@@ -1,5 +1,5 @@
 {
-  "Timestamp": "2026-03-13T18:50:45.5390838Z",
+  "Timestamp": "2026-03-13T19:34:14.2671945Z",
   "Performance": {
     "TotalTime": 0.0500001,
     "ElapsedFrameTime": 16.6667
@@ -44,7 +44,7 @@
     {
       "Text": "[BTN_FOCUS]",
       "Subtitle": null,
-      "Tooltip": "[TOOLTIP_FOCUS]",
+      "Tooltip": "Gather raw magical potential.\nGain 1.0 [i:aether] [c:purple]Aether[/c] per click.",
       "Bounds": {
         "X": 412,
         "Y": 60,
