@@ -13,6 +13,7 @@ public class VisualManager
     public float ScreenShakeIntensity { get; private set; } = 0f;
     public float AscensionTransitionAlpha { get; private set; } = 0f;
     private bool _isAscending = false;
+    private Color _globalTint = Color.White;
 
     public VisualManager(GraphicsDevice graphicsDevice)
     {
@@ -27,12 +28,24 @@ public class VisualManager
         _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
     }
 
-    public void Update(float deltaTime, bool engineHasAscended)
+    public void Update(float deltaTime, bool engineHasAscended, double totalProduction, ResourceType dominantResource = ResourceType.Aether)
     {
         if (ScreenShakeIntensity > 0) ScreenShakeIntensity = Math.Max(0, ScreenShakeIntensity - deltaTime * 5f);
         if (engineHasAscended && !_isAscending) { _isAscending = true; ScreenShakeIntensity = 10f; }
         if (_isAscending && AscensionTransitionAlpha < 1.0f) AscensionTransitionAlpha += deltaTime * 0.5f;
         if (!engineHasAscended && _isAscending) { _isAscending = false; AscensionTransitionAlpha = 0f; }
+
+        // Color Grading: Interpolate tint towards dominant resource color
+        var targetColor = GetColor(dominantResource);
+        var targetTint = Color.Lerp(Color.White, targetColor, 0.15f);
+        _globalTint = Color.Lerp(_globalTint, targetTint, deltaTime * 0.5f);
+
+        if (_bloomEffect != null)
+        {
+            float intensity = (float)(0.5 + Math.Min(2.0, Math.Log10(Math.Max(1, totalProduction)) * 0.2));
+            _bloomEffect.Parameters["BloomIntensity"]?.SetValue(intensity);
+            _bloomEffect.Parameters["BloomThreshold"]?.SetValue(0.4f);
+        }
     }
 
     public Vector2 GetShakeOffset()
@@ -54,18 +67,11 @@ public class VisualManager
         gd.SetRenderTarget(null);
         gd.Clear(Color.Black);
         sb.Begin(effect: _bloomEffect);
-        sb.Draw(_renderTarget, new Rectangle(0, 0, gd.Viewport.Width, gd.Viewport.Height), Color.White);
+        sb.Draw(_renderTarget, new Rectangle(0, 0, gd.Viewport.Width, gd.Viewport.Height), _globalTint);
         sb.End();
     }
 
     public void Clear(GraphicsDevice gd, Color color) => gd.Clear(color);
-
-    public void DrawScene(SpriteBatch sb, LogSystem log, ParticleSystem p, List<Button> b, GameTab t, int o)
-    {
-        log.Draw(sb, null, _pixel, this); 
-        p.Draw(sb);
-        foreach (var btn in b.Where(x => x.Tab == GameTab.None)) if (btn.IsVisible()) btn.Draw(sb, null, _pixel, 0);
-    }
 
     public void DrawOverlay(SpriteBatch sb, float alpha) { if (alpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * alpha); }
 
@@ -126,13 +132,6 @@ public class VisualManager
         if (disc.ContainsKey("spire_complete")) { var p = (float)Math.Sin(time * 2) * 0.2f + 0.8f; sb.Draw(_pixel, new Rectangle(502, 480, 20, 20), Color.Gold * p); }
     }
 
-    public string FormatValue(double v)
-    {
-        if (v >= 1_000_000_000) return $"{v / 1_000_000_000:F2}G";
-        if (v >= 1_000_000) return $"{v / 1_000_000:F2}M";
-        return v >= 1_000 ? $"{v / 1_000:F2}K" : v.ToString("F1");
-    }
-
     public string GetManifestationTooltip(ManifestationDefinition d, IncriElemental.Core.Engine.GameEngine e)
     {
         var l = new List<string>(); var count = e.State.Manifestations.GetValueOrDefault(d.Id);
@@ -165,7 +164,7 @@ public class VisualManager
     {
         log.Draw(sb, font, pixel, this);
         particles.Draw(sb);
-        LayoutSystem.DrawFixedButtons(sb, buttons, font, pixel);
+        LayoutSystem.DrawFixedButtons(sb, buttons, font, pixel, this);
     }
 
     public void DrawTooltipsAndStatus(SpriteBatch sb, List<Button> buttons, GameTab currentTab, SpriteFont font, Texture2D pixel, int curOffset, bool isPinned, Button? pinnedButton, StatusSystem status, IncriElemental.Core.Engine.GameEngine engine, int width, Point mouse)
@@ -186,6 +185,21 @@ public class VisualManager
     public void DrawAscended(SpriteBatch sb, EndingSystem ending, IncriElemental.Core.Engine.GameEngine engine, SpriteFont font, Texture2D pixel, GameTime gt, Point mouse, bool click, Action reset)
     {
         ending.Draw(sb, engine, font, pixel, gt, mouse, click, reset);
+    }
+
+    public void DrawPanel(SpriteBatch sb, Texture2D px, Rectangle r, Color color, float opacity = 0.1f)
+    {
+        sb.Draw(px, r, Color.Black * opacity);
+        sb.Draw(px, r, color * (opacity * 0.5f));
+        int t = 1;
+        sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, t), color * 0.5f);
+        sb.Draw(px, new Rectangle(r.X, r.Bottom - t, r.Width, t), color * 0.5f);
+        sb.Draw(px, new Rectangle(r.X, r.Y, t, r.Height), color * 0.5f);
+        sb.Draw(px, new Rectangle(r.Right - t, r.Y, t, r.Height), color * 0.5f);
+        sb.Draw(px, new Rectangle(r.X, r.Y, 10, 1), color);
+        sb.Draw(px, new Rectangle(r.X, r.Y, 1, 10), color);
+        sb.Draw(px, new Rectangle(r.Right - 10, r.Y, 10, 1), color);
+        sb.Draw(px, new Rectangle(r.Right - 1, r.Y, 1, 10), color);
     }
 
     public void SaveScreenshot(string path)

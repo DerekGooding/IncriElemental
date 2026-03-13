@@ -115,19 +115,19 @@ public class LayoutSystem
         }
     }
 
-    public static void DrawFixedButtons(SpriteBatch spriteBatch, List<Button> buttons, SpriteFont font, Texture2D pixel)
+    public static void DrawFixedButtons(SpriteBatch spriteBatch, List<Button> buttons, SpriteFont font, Texture2D pixel, VisualManager visuals)
     {
         foreach (var btn in buttons)
         {
-            if (btn.Tab == GameTab.None && btn.IsVisible()) btn.Draw(spriteBatch, font, pixel, 0);
+            if (btn.Tab == GameTab.None && btn.IsVisible()) btn.Draw(spriteBatch, font, pixel, visuals, 0);
         }
     }
 
-    public static void DrawTabButtons(SpriteBatch spriteBatch, List<Button> buttons, GameTab tab, SpriteFont font, Texture2D pixel, int scrollOffset)
+    public static void DrawTabButtons(SpriteBatch spriteBatch, List<Button> buttons, GameTab tab, SpriteFont font, Texture2D pixel, VisualManager visuals, int scrollOffset)
     {
         foreach (var btn in buttons)
         {
-            if (btn.Tab == tab && btn.IsVisible()) btn.Draw(spriteBatch, font, pixel, scrollOffset);
+            if (btn.Tab == tab && btn.IsVisible()) btn.Draw(spriteBatch, font, pixel, visuals, scrollOffset);
         }
     }
 

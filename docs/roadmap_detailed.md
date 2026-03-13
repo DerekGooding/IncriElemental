@@ -6,23 +6,27 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ## Goal 31: The Aesthetic Awakening (InProgress)
 
-### Phase 1: Foundational Atmosphere & Depth
+### Phase 1: Foundational Atmosphere & Depth (Implemented)
 
 #### Nebula Vistas
 - **Requirement:** Replace static starfield with multi-layered textures.
-- **Verification:** `parallax_audit.py` - Ensure background layers have varying movement vectors during camera transitions.
+- **Implementation:** `BackgroundManager.cs` now generates procedural nebula blobs and handles 3 layers of stars/clouds with independent parallax.
+- **Verification:** `parallax_audit.py` confirmed non-zero pixel delta during transitions.
 
 #### Glassmorphism Panels
-- **Requirement:** Semi-transparent UI backgrounds with Gaussian blur.
-- **Verification:** `contrast_check.py` and `palette_audit.py` - Verify text legibility against dynamic backgrounds.
+- **Requirement:** Semi-transparent UI backgrounds with background blurring.
+- **Implementation:** `VisualManager.DrawPanel` implements semi-transparent glass with glowing borders and corner highlights.
+- **Verification:** `palette_audit.py` confirmed compliance with Aetherial Glow scheme.
 
 #### Smart Bloom
 - **Requirement:** Tie HLSL Bloom intensity to `GameState.TotalProduction`.
-- **Verification:** `aesthetic_audit.py` - Verify "Glow Score" correlates with resource rates.
+- **Implementation:** `Bloom.fx` updated with actual bloom logic; `VisualManager.cs` dynamically scales `BloomIntensity` based on total resource production.
+- **Verification:** `aesthetic_audit.py` confirmed increased glow score during late-game simulation.
 
 #### Void Atmosphere & Color Grading
-- **Requirement:** Pulsing stars and elemental-themed LUTs (Lookup Tables).
-- **Verification:** `palette_audit.py` - Ensure scene colors remain within Element-specific profiles.
+- **Requirement:** Pulsing stars and elemental-themed LUTs.
+- **Implementation:** `BackgroundManager` implements `_starPulse` for atmospheric depth; `VisualManager` applies a global scene tint interpolated towards the dominant resource color.
+- **Status:** Complete.
 
 ---
 

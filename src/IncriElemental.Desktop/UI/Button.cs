@@ -22,23 +22,20 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
         IsHovered = IsVisible() && bounds.Contains(mousePos);
     }
 
-    public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel, int yOffset = 0)
+    public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel, VisualManager visuals, int yOffset = 0)
     {
         if (!IsVisible()) return;
 
         var b = new Rectangle(Bounds.X, Bounds.Y + yOffset, Bounds.Width, Bounds.Height);
-        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Top, b.Width, 1), Color * 0.8f);
-        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Bottom - 1, b.Width, 1), Color * 0.8f);
-        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Top, 1, b.Height), Color * 0.8f);
-        spriteBatch.Draw(pixel, new Rectangle(b.Right - 1, b.Top, 1, b.Height), Color * 0.8f);
-        spriteBatch.Draw(pixel, b, Color * 0.03f);
+        float opacity = IsHovered ? 0.3f : 0.15f;
+        visuals.DrawPanel(spriteBatch, pixel, b, Color, opacity);
 
         if (font != null)
         {
             var textSize = font.MeasureString(Text);
             var textPos = new Vector2(b.Center.X - textSize.X / 2, b.Center.Y - textSize.Y / 2);
             if (!string.IsNullOrEmpty(Subtitle)) textPos.Y -= 10;
-            spriteBatch.DrawString(font, Text, textPos, Color);
+            spriteBatch.DrawString(font, Text, textPos, Color * (IsHovered ? 1.0f : 0.8f));
 
             if (!string.IsNullOrEmpty(Subtitle))
             {

@@ -153,7 +153,7 @@ public class Game1 : Game
         _particles.Update(deltaTime);
         _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount);
         _tutorial.Update(_engine.State);
-        _visuals.Update(deltaTime, _engine.State.Discoveries.ContainsKey("ascended"));
+        _visuals.Update(deltaTime, _engine.State.Discoveries.ContainsKey("ascended"), _engine.TotalProduction);
 
         while (_lastProcessedHistoryCount < _engine.State.History.Count)
         {
@@ -212,12 +212,14 @@ public class Game1 : Game
             _spriteBatch.End();
 
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
+            _visuals.DrawPanel(_spriteBatch, _pixel, new Rectangle(5, 50, 200, UiLayout.Height - 60), Color.MediumPurple * 0.5f, 0.1f); // Log Panel
+            _visuals.DrawPanel(_spriteBatch, _pixel, new Rectangle(UiLayout.Width - 210, 50, 205, UiLayout.Height - 60), Color.MediumPurple * 0.5f, 0.1f); // Status Panel
             _visuals.DrawWorldElements(_spriteBatch, _log, _font, _pixel, _particles, _buttons);
             _spriteBatch.End();
 
             GraphicsDevice.ScissorRectangle = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
             _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-            LayoutSystem.DrawTabButtons(_spriteBatch, _buttons, _currentTab, _font, _pixel, curOffset);
+            LayoutSystem.DrawTabButtons(_spriteBatch, _buttons, _currentTab, _font, _pixel, _visuals, curOffset);
             _visuals.DrawTabContent(_spriteBatch, _currentTab, _engine, gameTime, _mixing, _input.MousePosition, _map, _font, _pixel, _debug);
             _spriteBatch.End();
 

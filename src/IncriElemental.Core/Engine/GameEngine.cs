@@ -51,6 +51,8 @@ public class GameEngine
 
     public IEnumerable<ManifestationDefinition> GetDefinitions() => _manifestManager.GetDefinitions();
 
+    public double TotalProduction => State.Resources.Values.Sum(r => r.PerSecond);
+
     public void Update(double deltaTime)
     {
         State.TotalGameTime += deltaTime;
