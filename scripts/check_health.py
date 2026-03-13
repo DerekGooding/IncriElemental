@@ -4,58 +4,6 @@ import xml.etree.ElementTree as ET
 import re
 import subprocess
 import json
-
-# Configurations
-MAX_LINES_PER_FILE = 250
-MIN_OVERALL_COVERAGE = 70.0
-MIN_FILE_COVERAGE = 50.0
-DOCS_STALENESS_THRESHOLD = 8
-SOURCE_DIR = "src"
-COVERAGE_REPORT_PATTERN = r"coverage\.cobertura\.xml"
-DOC_FILES = ["README.md", "docs/architecture.md", "docs/game_design.md", "docs/roadmap.md", "docs/devops.md", "GEMINI.md"]
-
-def get_git_changes_since_file(file_path):
-    try:
-        last_commit = subprocess.check_output(["git", "log", "-1", "--format=%H", "--", file_path]).decode().strip()
-        if not last_commit: return 0
-        changes = subprocess.check_output(["git", "diff", "--name-only", last_commit, "HEAD", "--", SOURCE_DIR]).decode().strip()
-        return len(set(changes.splitlines())) if changes else 0
-    except:
-        return 0
-
-def check_docs_staleness():
-    print("\n--- Checking Documentation Staleness ---")
-    stale_docs = []
-    all_up_to_date = True
-    for doc in DOC_FILES:
-        if os.path.exists(doc):
-            changes = get_git_changes_since_file(doc)
-            print(f"{doc}: {changes} source files changed.")
-            if changes > DOCS_STALENESS_THRESHOLD:
-                print(f"[FAIL] {doc} is stale!")
-                all_up_to_date = False
-    return all_up_to_date
-
-def check_monoliths():
-    print("--- Checking for Monoliths (> 250 lines) ---")
-    monolith_count = 0
-    for root, _, files in os.walk(SOURCE_DIR):
-        for file in files:
-            if file.endswith(".cs") and "obj" not in root and "bin" not in root:
-                path = os.path.join(root, file)
-                with open(path, "r", encoding="utf-8") as f:
-                    lines = len(f.readlines())
-                    if lines > MAX_LINES_PER_FILE:
-                        print(f"[FAIL] {path} has {lines} lines.")
-                        monolith_count += 1
-    return monolith_count
-
-import os
-import sys
-import xml.etree.ElementTree as ET
-import re
-import subprocess
-import json
 import shutil
 
 # Configurations
@@ -85,6 +33,30 @@ def run_tests():
         return True
     except subprocess.CalledProcessError:
         print("[ERROR] Tests failed during health check.")
+        return False
+
+def check_linux_build():
+    if "--skip-linux-build" in sys.argv:
+        return True
+    
+    print("\n--- Checking Linux Build (via Docker) ---")
+    try:
+        # Check if docker is available
+        subprocess.check_call(["docker", "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        print("[INFO] Docker not found. Skipping Linux build emulation.")
+        return True
+
+    try:
+        script = "scripts/linux_build_test.ps1" if sys.platform == "win32" else "scripts/linux_build_test.sh"
+        if sys.platform == "win32":
+            subprocess.check_call(["powershell.exe", "-File", script])
+        else:
+            subprocess.check_call(["bash", script])
+        print("[SUCCESS] Linux build emulation passed.")
+        return True
+    except subprocess.CalledProcessError:
+        print("[FAIL] Linux build emulation failed!")
         return False
 
 def get_git_changes_since_file(file_path):
@@ -154,13 +126,13 @@ def parse_coverage():
                 pass_requirements = False
     return overall_line_rate, pass_requirements
 
-def export_shields_data(monolith_count, coverage, docs_pass, tests_pass):
+def export_shields_data(monolith_count, coverage, docs_pass, tests_pass, linux_pass):
     # Overall summary
     summary = {
         "schemaVersion": 1,
         "label": "health",
-        "message": "Project Healthy" if (monolith_count == 0 and docs_pass and tests_pass) else "Project Unhealthy",
-        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass) else "red"
+        "message": "Project Healthy" if (monolith_count == 0 and docs_pass and tests_pass and linux_pass) else "Project Unhealthy",
+        "color": "brightgreen" if (monolith_count == 0 and docs_pass and tests_pass and linux_pass) else "red"
     }
     
     # Tests badge
@@ -216,12 +188,13 @@ if __name__ == "__main__":
     m_count = check_monoliths()
     cov_val, cov_pass = parse_coverage()
     d_pass = check_docs_staleness()
+    l_pass = check_linux_build()
     
     t_pass = cov_val > 0 and cov_pass and tests_passed
     
-    export_shields_data(m_count, cov_val, d_pass, t_pass)
+    export_shields_data(m_count, cov_val, d_pass, t_pass, l_pass)
 
-    if m_count > 0 or not cov_pass or not d_pass or not tests_passed:
+    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not l_pass:
         print("\n[FAIL] Health checks failed.")
         sys.exit(1)
     

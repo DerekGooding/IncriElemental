@@ -36,7 +36,7 @@ jobs:
         xvfb-run winetricks -q d3dcompiler_47
     - name: Check mgfxc native
       run: |
-        find ~/.nuget/packages/monogame.content.builder.task -name "mgfxc"
+        find ~/.nuget/packages -name "mgfxc" || echo "mgfxc not found in ~/.nuget/packages"
     - name: Setup Font for MGCB
       run: |
         python scripts/download_font.py
