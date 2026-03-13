@@ -34,6 +34,20 @@ public class InputManager
         _mockKeys.Clear();
     }
 
+    public Point MousePosition 
+    {
+        get 
+        {
+            if (_mockMousePos.HasValue) return _mockMousePos.Value;
+            return new Point((int)(_currentMouse.X / UiScale), (int)(_currentMouse.Y / UiScale));
+        }
+    }
+
+    public int ScrollDelta => _currentMouse.ScrollWheelValue - _lastMouse.ScrollWheelValue;
+
+    public bool IsLeftClick() => _currentMouse.LeftButton == ButtonState.Pressed && _lastMouse.LeftButton == ButtonState.Released;
+    public bool IsRightClick() => _currentMouse.RightButton == ButtonState.Pressed && _lastMouse.RightButton == ButtonState.Released;
+
     public bool IsKeyPressed(Keys key) 
     {
         if (_mockKeys.Contains(key)) return true;
