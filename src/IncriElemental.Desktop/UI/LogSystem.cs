@@ -21,7 +21,7 @@ public class LogSystem
 
     public bool Contains(string message) => _log.Contains(message);
 
-    public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel)
+    public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel, VisualManager visuals)
     {
         var logWidth = (int)(UiLayout.Width * 0.25f);
         spriteBatch.Draw(pixel, new Rectangle(0, 0, logWidth, UiLayout.Height), Color.Black * 0.3f);
@@ -33,11 +33,8 @@ public class LogSystem
             for (var i = 0; i < _log.Count; i++)
             {
                 var alpha = 1.0f - (i * 0.1f);
-                var textColor = Color.LightGray;
-                if (_log[i].Contains("void is not") || _log[i].Contains("consciousness") || _log[i].Contains("We are not the first"))
-                    textColor = Color.Cyan;
-
-                spriteBatch.DrawString(font, _log[i], new Vector2(20, 60 + (i * 25)), textColor * alpha, 0f, Vector2.Zero, 0.9f, SpriteEffects.None, 0f);
+                var tokens = RichTextSystem.Parse(_log[i]);
+                RichTextSystem.Draw(spriteBatch, font, tokens, new Vector2(20, 60 + (i * 25)), Color.LightGray * alpha, 0.9f, visuals);
             }
         }
     }

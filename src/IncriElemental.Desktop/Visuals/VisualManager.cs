@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Models;
+using IncriElemental.Desktop.UI;
 
 namespace IncriElemental.Desktop.Visuals;
 
@@ -94,7 +95,7 @@ public class VisualManager
 
     public void DrawScene(SpriteBatch spriteBatch, LogSystem log, ParticleSystem particles, List<Button> buttons, GameTab currentTab, int curOffset)
     {
-        log.Draw(spriteBatch, null, _pixel); // We handle font inside LogSystem
+        log.Draw(spriteBatch, null, _pixel, this); 
         particles.Draw(spriteBatch);
 
         foreach (var btn in buttons.Where(b => b.Tab == GameTab.None))
@@ -208,7 +209,7 @@ public class VisualManager
         return value.ToString("F1");
     }
 
-    public string GetManifestationTooltip(ManifestationDefinition def, GameEngine engine)
+    public string GetManifestationTooltip(ManifestationDefinition def, IncriElemental.Core.Engine.GameEngine engine)
     {
         var lines = new List<string>();
         var count = engine.State.Manifestations.GetValueOrDefault(def.Id);
@@ -221,12 +222,12 @@ public class VisualManager
                 {
                     var baseVal = effect.PerSecondBonus * engine.State.CosmicInsight;
                     var totalVal = baseVal * count;
-                    lines.Add(TextService.Instance.Get("TOOLTIP_PRODUCES", baseVal, effect.Type));
-                    if (count > 0) lines.Add(TextService.Instance.Get("TOOLTIP_PRODUCES_TOTAL", totalVal, effect.Type));
+                    lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES", baseVal, effect.Type));
+                    if (count > 0) lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES_TOTAL", totalVal, effect.Type));
                 }
                 if (effect.MaxAmountBonus != 0)
                 {
-                    lines.Add(TextService.Instance.Get("TOOLTIP_STORAGE", effect.MaxAmountBonus, effect.Type));
+                    lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_STORAGE", effect.MaxAmountBonus, effect.Type));
                 }
             }
         }
@@ -236,12 +237,41 @@ public class VisualManager
             lines.Add(comp.GetDescription());
         }
 
-        if (def.Id == "rune_of_attraction") lines.Add(TextService.Instance.Get("TOOLTIP_RUNE_ATTRACTION"));
-        if (def.Id == "pickaxe") lines.Add(TextService.Instance.Get("TOOLTIP_PICKAXE"));
-        if (def.Id == "forge") lines.Add(TextService.Instance.Get("TOOLTIP_FORGE"));
-        if (def.Id == "familiar") lines.Add(TextService.Instance.Get("TOOLTIP_FAMILIAR"));
-        if (def.Id.Contains("spire")) lines.Add(TextService.Instance.Get("TOOLTIP_SPIRE_PART"));
+        if (def.Id == "rune_of_attraction") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_RUNE_ATTRACTION"));
+        if (def.Id == "pickaxe") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PICKAXE"));
+        if (def.Id == "forge") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FORGE"));
+        if (def.Id == "familiar") lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FAMILIAR"));
+        if (def.Id.Contains("spire")) lines.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_SPIRE_PART"));
 
         return string.Join("\n", lines);
+    }
+
+    public void DrawTooltip(SpriteBatch spriteBatch, SpriteFont font, Texture2D pixel, string tooltip, Point mousePos)
+    {
+        if (string.IsNullOrEmpty(tooltip)) return;
+
+        var lines = tooltip.Split('\n');
+        var parsedLines = lines.Select(l => RichTextSystem.Parse(l)).ToList();
+        
+        var maxWidth = parsedLines.Max(l => RichTextSystem.Measure(font, l, 0.8f).X);
+        var totalHeight = parsedLines.Sum(l => RichTextSystem.Measure(font, l, 0.8f).Y) + (lines.Length - 1) * 4;
+
+        var tooltipPos = new Vector2(mousePos.X + 20, mousePos.Y);
+        if (tooltipPos.X + maxWidth > UiLayout.Width) tooltipPos.X = mousePos.X - maxWidth - 20;
+
+        var tooltipRect = new Rectangle((int)tooltipPos.X - 5, (int)tooltipPos.Y - 5, (int)maxWidth + 10, (int)totalHeight + 10);
+
+        spriteBatch.Draw(pixel, tooltipRect, Color.Black * 0.9f);
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, tooltipRect.Width, 1), Color.Gray * 0.5f);
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Bottom, tooltipRect.Width, 1), Color.Gray * 0.5f);
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
+        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Right, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
+
+        var curY = tooltipPos.Y;
+        foreach (var lineTokens in parsedLines)
+        {
+            RichTextSystem.Draw(spriteBatch, font, lineTokens, new Vector2(tooltipPos.X, curY), Color.LightGoldenrodYellow, 0.8f, this);
+            curY += font.LineSpacing * 0.8f + 4;
+        }
     }
 }

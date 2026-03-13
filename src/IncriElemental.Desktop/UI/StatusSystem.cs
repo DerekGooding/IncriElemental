@@ -82,29 +82,13 @@ public class StatusSystem
         // Draw Tooltips for hovered items
         foreach (var entry in _inventoryBounds)
         {
-            if (entry.Key.Contains(mousePos))
+            if (rect.Contains(mousePos))
             {
                 var def = defs[entry.Value];
                 var tooltip = visuals.GetManifestationTooltip(def, engine);
-                DrawTooltip(spriteBatch, font, pixel, tooltip, mousePos);
+                visuals.DrawTooltip(spriteBatch, font, pixel, tooltip, mousePos);
             }
-        }
-    }
+            }
+            }
+            }
 
-    private void DrawTooltip(SpriteBatch spriteBatch, SpriteFont font, Texture2D pixel, string tooltip, Point mousePos)
-    {
-        if (string.IsNullOrEmpty(tooltip)) return;
-
-        var tooltipSize = font.MeasureString(tooltip) * 0.8f;
-        var tooltipPos = new Vector2(mousePos.X - tooltipSize.X - 20, mousePos.Y);
-        var tooltipRect = new Rectangle((int)tooltipPos.X - 5, (int)tooltipPos.Y - 5, (int)tooltipSize.X + 10, (int)tooltipSize.Y + 10);
-
-        spriteBatch.Draw(pixel, tooltipRect, Color.Black * 0.9f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, tooltipRect.Width, 1), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Bottom, tooltipRect.Width, 1), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Right, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
-
-        spriteBatch.DrawString(font, tooltip, tooltipPos, Color.LightGoldenrodYellow, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
-    }
-}

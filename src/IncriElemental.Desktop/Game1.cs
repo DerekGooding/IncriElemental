@@ -229,10 +229,9 @@ public class Game1 : Game
             _spriteBatch.End();
 
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-            foreach (var btn in _buttons.Where(b => b.Tab == _currentTab || b.Tab == GameTab.None)) if (btn.IsVisible()) btn.DrawTooltip(_spriteBatch, _font, _pixel, (btn.Tab == GameTab.None ? 0 : curOffset));
+            foreach (var btn in _buttons.Where(b => b.Tab == _currentTab || b.Tab == GameTab.None)) if (btn.IsVisible()) btn.DrawTooltip(_spriteBatch, _font, _pixel, _visuals, (btn.Tab == GameTab.None ? 0 : curOffset));
             _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
             _spriteBatch.End();
-
             if (_visuals.AscensionTransitionAlpha > 0)
             {
                 _spriteBatch.Begin();

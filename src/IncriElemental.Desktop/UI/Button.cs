@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using IncriElemental.Desktop.Visuals;
 
 namespace IncriElemental.Desktop.UI;
 
@@ -25,15 +26,11 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
     {
         if (!IsVisible()) return;
 
-        // Draw Outline
-        var thickness = 1;
         var b = new Rectangle(Bounds.X, Bounds.Y + yOffset, Bounds.Width, Bounds.Height);
-        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Top, b.Width, thickness), Color * 0.8f);
-        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Bottom - thickness, b.Width, thickness), Color * 0.8f);
-        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Top, thickness, b.Height), Color * 0.8f);
-        spriteBatch.Draw(pixel, new Rectangle(b.Right - thickness, b.Top, thickness, b.Height), Color * 0.8f);
-
-        // Subtle background fill
+        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Top, b.Width, 1), Color * 0.8f);
+        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Bottom - 1, b.Width, 1), Color * 0.8f);
+        spriteBatch.Draw(pixel, new Rectangle(b.Left, b.Top, 1, b.Height), Color * 0.8f);
+        spriteBatch.Draw(pixel, new Rectangle(b.Right - 1, b.Top, 1, b.Height), Color * 0.8f);
         spriteBatch.Draw(pixel, b, Color * 0.03f);
 
         if (font != null)
@@ -41,7 +38,6 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
             var textSize = font.MeasureString(Text);
             var textPos = new Vector2(b.Center.X - textSize.X / 2, b.Center.Y - textSize.Y / 2);
             if (!string.IsNullOrEmpty(Subtitle)) textPos.Y -= 10;
-            
             spriteBatch.DrawString(font, Text, textPos, Color);
 
             if (!string.IsNullOrEmpty(Subtitle))
@@ -64,25 +60,13 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
         return false;
     }
 
-    public void DrawTooltip(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel, int yOffset = 0)
+    public void DrawTooltip(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel, VisualManager visuals, int yOffset = 0)
     {
         if (font == null || !IsHovered || TooltipFunc == null) return;
         var tooltip = TooltipFunc();
         if (string.IsNullOrEmpty(tooltip)) return;
 
         var bounds = new Rectangle(Bounds.X, Bounds.Y + yOffset, Bounds.Width, Bounds.Height);
-        var tooltipSize = font.MeasureString(tooltip) * 0.8f;
-        var tooltipPos = new Vector2(bounds.Center.X - tooltipSize.X / 2, bounds.Top - tooltipSize.Y - 10);
-        var tooltipRect = new Rectangle((int)tooltipPos.X - 5, (int)tooltipPos.Y - 5, (int)tooltipSize.X + 10, (int)tooltipSize.Y + 10);
-
-        // Background
-        spriteBatch.Draw(pixel, tooltipRect, Color.Black * 0.9f);
-        // Border
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, tooltipRect.Width, 1), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Bottom, tooltipRect.Width, 1), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Left, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
-        spriteBatch.Draw(pixel, new Rectangle(tooltipRect.Right, tooltipRect.Top, 1, tooltipRect.Height), Color.Gray * 0.5f);
-
-        spriteBatch.DrawString(font, tooltip, tooltipPos, Color.LightGoldenrodYellow, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+        visuals.DrawTooltip(spriteBatch, font, pixel, tooltip, new Point(bounds.X, bounds.Top - 10));
     }
 }
