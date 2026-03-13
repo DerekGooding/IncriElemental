@@ -6,52 +6,35 @@
 ![Monoliths](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/monoliths.json)
 ![Docs](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/DerekGooding/IncriElemental/shields/docs.json)
 
-> **Note:** This project is developed with **heavy agentic support**. All code, documentation, and design decisions are a collaborative effort between the user and an AI agent (Gemini CLI), following the mandates defined in `GEMINI.md`.
-
 **IncriElemental** is an atmospheric, unfolding incremental game built with **MonoGame** and **.NET 10.0**. You play as a consciousness awakening in a void, manifesting physical reality through elemental magic.
 
-## 🌌 The Experience
-- **Unfolding Gameplay:** Start with a single "Focus" action and gradually manifest a complex elemental engine.
-- **Guided Onboarding:** A built-in **Tutorial System** dims the void and highlights key manifestations to help new consciousnesses awaken.
-- **Visual Depth:** Experience the void through a **dynamic starfield background** and high-fidelity **HLSL Bloom post-processing**.
-- **Localized Interface:** Full support for externalized strings via a data-driven **Localization System**.
-- **20-Minute Loop:** A complete experience from awakening to "Ascension," with a balanced progression path.
-- **Interactive Feedback:** Dynamic tooltips with **Rich Text and Inline Icons** explain the ongoing effects of manifestations and their total scaling.
-- **Spatial Synergies:** The World Map now features **Auras**, where manifestations project power to neighboring cells, creating complex production harmonies.
-- **Alchemical Mixing:** A dedicated **Mixing Table** allows players to combine elemental essences for temporary high-potency buffs.
-- **Scrollable UI:** A robust scrolling system with vertical button stacking ensures all manifestations are accessible regardless of resolution.
-- **Full Immersion:** Support for **fullscreen mode** and a procedurally generated "void hum" background atmosphere.
-- **New Game+:** Reach Ascension to earn "Cosmic Insight," providing permanent multipliers for future incarnations.
-
 ## 🌌 Visuals
-Experience the atmospheric "Aetherial Glow" and dynamic production chains.
+The game features a high-fidelity **Aetherial Glow** aesthetic, powered by dynamic HLSL bloom, multi-layered parallax backgrounds, and glassmorphism UI panels.
 ![The Void](review/void_main.png)
-*See the full [Visual Gallery](docs/screenshots.md) for more examples of the Spire, World Map, and Alchemy.*
+*See the full [Visual Gallery](docs/screenshots.md) for examples of the Spire, World Map, and Alchemical Mixing.*
+
+## 🌌 The Experience
+- **Unfolding Gameplay:** Start with a single "Focus" action and manifest a complex elemental engine.
+- **Glassmorphism UI:** Modern, semi-transparent frosted glass panels with runic accents and glowing borders.
+- **Dynamic Atmosphere:** Multi-layered Nebula backgrounds with independent parallax and pulsing stars synced to the void hum.
+- **Interactive Feedback:** Impact screen-shake, procedural mouse trails, and full-screen alchemical reaction visuals.
+- **Resource Visualization:** Real-time sparkline graphs for every elemental essence and animated energy flow lines.
+- **Spatial Synergies:** The World Map features animated biome-specific shaders (Ocean ripples, Mountain heat-haze) and pulsing Auras.
+- **New Game+:** Reach Ascension to earn "Cosmic Insight," earned through an intense white-out celebration sequence.
 
 ## 🛠️ Technical Highlights
-- **Architecture:** Clean separation between `Core` logic and `Desktop` rendering. `Game1.cs` is a thin coordinator delegating to specialized systems.
-- **Component-Driven Manifestations:** A flexible, ECS-lite architecture for manifestations using specialized components defined in JSON.
-- **Advanced Agentic DevOps (Goal 30):** 
-    - **Visual Perception:** AI captures screenshots and **UI Metadata (JSON)** to verify state without fragile pixel-matching.
-    - **Health Audit Suite:** Automated scripts for **Palette Compliance**, **WCAG Contrast Ratios**, **Aura Pulse Validation**, and **Performance Profiling**.
-    - **Heuristic Aesthetics:** Automated "Glow Scoring" and "Parallax Audits" to ensure atmospheric fidelity.
-- **Rich Text Engine:** Custom `RichTextSystem` supports tag-based formatting and inline icons.
-- **Graphics Pipeline:** Custom HLSL shaders for bloom effects and a reactive background system.
+- **Advanced Agentic DevOps:** 
+    - **Visual Perception:** AI utilizes screenshots and **UI Metadata (JSON)** to verify game state autonomously.
+    - **Heuristic Audits:** Automated scripts for **Palette Compliance**, **WCAG Contrast**, and **Parallax Depth**.
+    - **Aesthetic Verification:** "Glow Scoring" ensures atmospheric fidelity remains consistent across all loops.
+- **Graphics Pipeline:** Custom HLSL shaders for bloom and dynamic color grading based on dominant elements.
+- **Component Architecture:** ECS-lite manifestation system defined in JSON for rapid mechanical expansion.
 
 ## 🚀 Quick Start
-1.  **Clone:** `git clone https://github.com/DerekGooding/IncriElemental`
-2.  **Build:** `dotnet build`
-3.  **Run:** `dotnet run --project src/IncriElemental.Desktop/IncriElemental.Desktop.csproj`
-4.  **Test:** `dotnet test`
-5.  **Health Check:** `python scripts/check_health.py`
-6.  **Update Screenshots:** `python scripts/update_screenshots.py`
-
-## 🤖 Agentic Review
-To run an automated UI review:
-```powershell
-python scripts/agentic_review.py focus:30 manifest:rune_of_attraction
-```
-The resulting snapshot will be saved to `review/screenshot.png`.
+1.  **Build & Run:** `dotnet run --project src/IncriElemental.Desktop/IncriElemental.Desktop.csproj`
+2.  **Test:** `dotnet test`
+3.  **Health Check:** `python scripts/check_health.py`
+4.  **Update Screenshots:** `python scripts/update_screenshots.py`
 
 ## 📜 License
 This project is licensed under the **MIT License**.

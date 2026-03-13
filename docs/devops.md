@@ -2,32 +2,25 @@
 
 This document defines the DevOps and CI/CD strategy for **IncriElemental**, emphasizing agentic ownership.
 
-## 1. Source Control
-- **Repository:** Public GitHub Repository (Managed by the Agent).
-- **Branching:** Main branch for stable releases.
-- **Commits:** Every agentic task completion must be followed by a commit that clearly describes the change and its impact.
+## 1. CI/CD Pipeline
+Managed via GitHub Actions (`.github/workflows/ci.yml`) on **Windows**:
+- **Builds:** Solution-wide compilation on every push.
+- **Tests:** XUnit suite with code coverage tracking (70% minimum).
+- **Health Scan:** Enforces monolith prevention and documentation freshness.
+- **Shields Deployment:** Updates README badges via a dedicated `shields` branch.
 
-## 2. CI/CD Pipeline
-The agent maintains a GitHub Actions pipeline (`.github/workflows/ci.yml`) that:
-- **Builds:** The entire solution on every push using .NET 10.0 on **Windows**.
-- **Tests:** Runs all unit tests and collects code coverage.
-- **Font Portability:** Uses `scripts/download_font.py` to ensure build-time assets are available without system-level hacks.
-- **Visual Review:** Executes `scripts/agentic_review.py` in the Windows CI environment to catch UI regressions.
-- **Health:** Executes `scripts/check_health.py` to enforce quality mandates, including test coverage, monolith prevention, and documentation staleness.
-- **Shields Deployment:** Automatically pushes health metrics and coverage data to a dedicated `shields` branch, which serves as the data source for dynamic status badges in the README.
+## 2. Advanced Agentic Auditing
+Goal 31 introduced a suite of visual verification tools that allow the agent to "see" and "audit" the game's aesthetic state:
+- **`palette_audit.py`:** Ensures all screenshots adhere to the "Aetherial Glow" color profiles.
+- **`contrast_check.py`:** Verifies WCAG 2.1 accessibility for UI text against dynamic backgrounds.
+- **`parallax_audit.py`:** Confirms independent movement of background layers and screen shake effects.
+- **`aura_pulse_audit.py`:** Verifies animation smoothness for UI borders and map shaders.
+- **`aesthetic_audit.py`:** Calculates a "Glow Score" to ensure atmosphere scales with production.
 
-## 3. Deployment
-- **Manifests:** Updating the `docs/roadmap.md`, `GEMINI.md`, and other documentation is considered part of the "deployment" of project context and is required when files become "stale."
-
-## 4. Agentic Responsibility
-- **Pushing:** I am responsible for staging, committing, and pushing my own work to the remote repository.
-- **Health:** I must monitor build/test results and fix any CI failures or health regressions immediately. I am prohibited from "touching" documentation files to bypass staleness checks; I must provide actual content updates.
-
-## 5. Health Enforcement
-The project maintains strict quality and coverage standards enforced via `scripts/check_health.py`:
-- **Coverage:** Overall >= 70%.
-- **Monoliths:** No source file > 250 lines. The `Game1.cs` entry point is decoupled into specialized systems (`LogSystem`, `WorldMapSystem`, `StatusSystem`, `EndingSystem`, `AiModeSystem`).
-- **Documentation Staleness:** Documentation files are monitored for staleness. A doc is considered "stale" if more than **8 source files** have been changed since its last update. Staleness requires a manual review and update of the document's content.
+## 3. Metadata-Driven Verification
+Instead of fragile pixel-matching, the agent uses **UI Metadata** exported by `AiModeSystem.cs`:
+- **State Analysis:** Confirms text, visibility, and coordinates of all UI elements.
+- **Performance Profiling:** Tracks frame-time and total-time to detect regressions during heavy particle effects.
 
 ---
-*Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*
+*Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*

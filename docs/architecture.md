@@ -1,71 +1,36 @@
-# ARCHITECTURE.md - IncriElemental Design Patterns
+# ARCHITECTURE.md - IncriElemental Technical Design
 
-This document defines the system design, data flow, and class hierarchies for **IncriElemental**.
+This document defines the high-level architecture and system responsibilities for **IncriElemental**.
 
-## 1. Project Organization
-The project is split into three main layers:
+## 1. Project Structure
+- **IncriElemental.Core:** Pure C# logic. Contains the `GameEngine`, `GameState`, and all mechanical systems.
+- **IncriElemental.Desktop:** MonoGame/XNA implementation. Handles input, rendering, and asset management.
+- **IncriElemental.Tests:** XUnit project ensuring logic integrity and progression balance.
 
-| Layer | Responsibility |
-|---|---|
-| **Core (Shared)** | Game state, logic, formulas, serialization. |
-| **Desktop (Runner)** | MonoGame `Game1.cs`, rendering, input, assets. |
-| **Tests (Validation)** | Unit tests for Core logic. |
+## 2. Rendering Pipeline (`VisualManager.cs`)
+The game uses a specialized rendering coordinator to maintain the "Aetherial Glow":
+- **RenderTarget Management:** All game elements are rendered to a dedicated buffer to allow for full-screen post-processing.
+- **HLSL Bloom:** A custom shader (`Bloom.fx`) applies a multi-tap blur and threshold to bright pixels, scaling intensity based on total resource production.
+- **Color Grading:** A dynamic tint is applied to the final scene, interpolating between neutral white and the color of the dominant resource.
+- **Kinetic Systems:** Centralized screen-shake and tab transition logic ensure consistent visual feedback.
 
-## 2. Game State and Persistence
-The `GameState` class in `IncriElemental.Core` is the single source of truth.
-- **Serialization:** System.Text.Json is used for save games.
-- **State Updates:** All mutations must go through a dedicated `GameLogic` or `Update` method in the `Core` project.
-- **Save Integrity:** `GameState` includes versioning, and `SaveManager` handles migrations to ensure older save files remain compatible with new updates.
+## 3. UI Framework
+The UI is built on a custom, resolution-independent layout system:
+- **`UiLayout.cs`:** Provides relative positioning and dynamic anchoring for consistent rendering on 16:9 and ultra-wide displays.
+- **`Button.cs`:** Implements glassmorphism panels with runic highlights and pulsing borders.
+- **`RichTextSystem.cs`:** A tag-based parser supporting inline icons (`[i:icon]`) and colors (`[c:gold]`).
+- **`StatusSystem.cs`:** Tracks 20-second historical data to render dynamic resource sparklines.
 
-## 3. Unfolding Engine
-- **Discovery State:** A `Dictionary<string, bool>` or similar structure to track which features are "unlocked."
-- **Event Bus:** (Implemented) A lightweight static event system in `IncriElemental.Core.Engine.EventBus` for notifying subscribers when a resource is gained, a discovery is unlocked, or a thing is manifested.
+## 4. Background Systems (`BackgroundManager.cs`)
+"The Void" is rendered as a deep, multi-layered environment:
+- **Nebula Vistas:** Procedural soft-blob textures move at very slow speeds in the farthest layer.
+- **Parallax Layers:** Three distinct star/cloud layers move at varying vectors to provide a sense of vast depth.
+- **Atmospheric Pulse:** Global brightness pulses based on `_totalTime` to sync with the background audio.
 
-## 4. UI Abstraction
-- **Layout:** A modular UI system managed by a refactored `LayoutSystem` and `UiLayout` which calculates relative positions based on screen resolution (anchors/margins). The refactor improved handling of dynamic element resizing and alignment.
-- **Rich Text Engine:** `RichTextSystem` provides tag-based formatting (`[color:...]`, `[i:...]` for icons) and layout for tooltips and logs, allowing for high-signal visual feedback.
-- **Pagination & Scrolling:** A `GameTab` system manages UI density. Each tab supports a scrollable viewport using `ScissorRectangle` clipping and mouse wheel interaction to handle large numbers of manifestations.
-- **Specialized Systems:** 
-    - `LogSystem`: Manages the narrative log, prevents message duplication, and employs `RichTextSystem` for fading text rendering.
-    - `WorldMapSystem`: Handles grid-based exploration logic, coordinate translation, and map rendering, including visual representation of Auras.
-    - `StatusSystem`: Displays current resources, active buffs, and manifestations with hover tooltips powered by Rich Text.
-    - `MixingTableSystem`: Manages the Alchemical Mixing Table UI and drag-and-drop interaction logic.
-    - `TutorialSystem`: A state-driven onboarding guide that manages UI dimming and button highlighting.
-    - `EndingSystem`: Manages the Ascension completion screen and New Game+ reset logic.
-    - `InputManager`: Abstracts MonoGame mouse, keyboard, and scroll wheel state for cleaner interaction logic.
-- **Binding:** The Desktop layer reads the `GameState` and employs these specialized systems to render UI elements and process input.
-
-## 5. Visuals and Post-Processing
-- **VisualManager:** A refactored high-level coordinator in the `Desktop` layer that manages render targets, effects, and Rich Text rendering.
-- **HLSL Bloom:** A custom shader (`Bloom.fx`) that extracts bright pixels and blends them back into the main scene for a spectral glow.
-- **BackgroundManager:** Handles a procedurally generated starfield backdrop where movement speeds are reactive to the player's Aether generation rate.
-- **ParticleSystem:** Manages short-lived visual feedback for manifesting actions.
-
-## 6. Agentic Piloting & Headless Mode
-To support heavy agentic development, the architecture allows for automated execution and UI verification:
-- **GameEngine Driver:** The `GameEngine` in `Core` is the primary interface.
-- **HeadlessDriver:** A text-based interface for `GameEngine` used in tests and balance simulations.
-- **AiModeSystem:** A Desktop-layer system that handles command processing and automated screenshotting during agentic review.
-- **Efficiency Observer:** A debug UI (available in the `Debug` tab in AI mode) that visualizes resource generation rates and identifies bottlenecks for automated balancing.
-- **Validation:** Automated scripts in `scripts/` and unit tests in `tests/` use these drivers to verify game balance and UI layout via screenshots.
-
-## 7. Data-Driven Logic & Localization
-- **Manifestations:** Defined in `manifestations.json` using a **Component-Driven** architecture (`IManifestationComponent`). Specialized components include `ProducerComponent` (generation), `StorageComponent` (caps), `AuraComponent` (spatial effects), and `UnlockComponent` (discovery).
-- **Lore:** Narrative fragments defined in `lore.json`, triggered by `GameEngine` based on discoveries or map exploration.
-- **Localization:** Managed by `TextService` in the `Core` project. All UI strings are loaded from `Content/strings.json` and support dynamic argument injection.
-- **Assets:** Fonts and textures are managed through the MonoGame Content Pipeline, with fallback logic for missing assets.
-
-## 8. Health & Validation
-The project uses a comprehensive health check system (`scripts/check_health.py`) to maintain quality.
-- **Coverage:** Minimum 70% required.
-- **Monoliths:** Maximum 250 lines per file.
-- **Documentation:** Monitored for staleness based on source changes.
-- **Linux Compatibility:** Verified via Docker-based builds (`Dockerfile.linux_test`).
-
-## 9. Build System
-The project uses .NET 10.0 and MonoGame 3.8.4.1.
-- **MonoGame Content Builder (MGCB):** Used for processing sprites, fonts, and shaders.
-- **Cross-Platform:** The game is designed to run on Windows and Linux (DesktopGL).
+## 5. Agentic Infrastructure
+The project is built for autonomous maintenance:
+- **`AiModeSystem.cs`:** Processes sequential command files (`ai_commands.txt`) and exports **UI Metadata** (JSON) for state verification.
+- **Audit Suite:** Python-based tools verify visual integrity (Palette, Contrast, Parallax, Aura Pulse).
 
 ---
 *Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*
