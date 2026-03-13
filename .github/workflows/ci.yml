@@ -26,9 +26,11 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core wine wine64 wine32:i386 libdbus-1-3 winetricks
+        sudo apt-get install -y libfontconfig1 libfreetype6 libsdl2-2.0-0 fontconfig fonts-dejavu-core wine wine64 wine32:i386 libdbus-1-3 libdbus-1-3:i386 winetricks
     - name: Setup Wine
       run: |
+        export WINEARCH=win64
+        export WINEPREFIX=$HOME/.wine
         wineboot --init
         winetricks -q d3dcompiler_47
     - name: Setup Font for MGCB
@@ -39,6 +41,9 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build IncriElemental.slnx --no-restore
+      env:
+        WINEPREFIX: /home/runner/.wine
+        WINEDEBUG: -all
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
