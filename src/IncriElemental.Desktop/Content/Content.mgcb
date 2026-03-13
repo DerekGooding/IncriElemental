@@ -15,3 +15,9 @@
 #begin main_font.spritefont
 /build:main_font.spritefont
 #end main_font.spritefont
+
+#begin Bloom.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/build:Bloom.fx
+#end Bloom.fx

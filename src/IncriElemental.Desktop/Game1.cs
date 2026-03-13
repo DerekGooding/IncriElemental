@@ -26,6 +26,7 @@ public class Game1 : Game
     private DebugSystem _debug = new();
     private EndingSystem _ending = new();
     private TutorialSystem _tutorial = new();
+    private BackgroundManager _bg = null!;
     private AiModeSystem _ai;
     private GameTab _currentTab = GameTab.Void;
     private int _lastProcessedHistoryCount = 0;
@@ -99,6 +100,7 @@ public class Game1 : Game
         UiLayout.Height = GraphicsDevice.Viewport.Height;
 
         base.Initialize();
+        _bg = new BackgroundManager(GraphicsDevice);
         _particles = new ParticleSystem(GraphicsDevice);
         _visuals = new VisualManager(GraphicsDevice);
         _pixel = new Texture2D(GraphicsDevice, 1, 1);
@@ -117,6 +119,7 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        _visuals.LoadEffects(Content);
         try 
         { 
             _font = Content.Load<SpriteFont>("main_font"); 
@@ -143,6 +146,7 @@ public class Game1 : Game
 
         _engine.Update(deltaTime);
         _particles.Update(deltaTime);
+        _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount);
         _tutorial.Update(_engine.State);
 
         UpdateVisualState(deltaTime);
@@ -194,6 +198,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        _visuals.BeginRenderToTarget(GraphicsDevice);
         var shakeOffset = GetShakeOffset();
         var curOffset = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
 
@@ -206,38 +211,45 @@ public class Game1 : Game
                 _log.Clear();
             });
             _spriteBatch.End();
-            return;
         }
-
-        _visuals.Clear(GraphicsDevice, new Color(5, 5, 10));
-        _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-        _log.Draw(_spriteBatch, _font, _pixel);
-        _particles.Draw(_spriteBatch);
-        foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, 0);
-        _spriteBatch.End();
-
-        GraphicsDevice.ScissorRectangle = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
-        _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-        foreach (var btn in _buttons.Where(b => b.Tab == _currentTab)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, curOffset);
-
-        if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire) _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
-        if (_currentTab == GameTab.World) _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals);
-        if (_currentTab == GameTab.Debug) _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
-        _spriteBatch.End();
-
-        _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
-        foreach (var btn in _buttons.Where(b => b.Tab == _currentTab || b.Tab == GameTab.None)) if (btn.IsVisible()) btn.DrawTooltip(_spriteBatch, _font, _pixel, (btn.Tab == GameTab.None ? 0 : curOffset));
-        _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
-        _spriteBatch.End();
-
-        if (_ascensionTransitionAlpha > 0)
+        else
         {
+            _visuals.Clear(GraphicsDevice, new Color(5, 5, 10));
             _spriteBatch.Begin();
-            _visuals.DrawOverlay(_spriteBatch, _ascensionTransitionAlpha);
+            _bg.Draw(_spriteBatch);
             _spriteBatch.End();
+
+            _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
+            _log.Draw(_spriteBatch, _font, _pixel);
+            _particles.Draw(_spriteBatch);
+            foreach (var btn in _buttons.Where(b => b.Tab == GameTab.None)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, 0);
+            _spriteBatch.End();
+
+            GraphicsDevice.ScissorRectangle = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
+            _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
+            foreach (var btn in _buttons.Where(b => b.Tab == _currentTab)) if (btn.IsVisible()) btn.Draw(_spriteBatch, _font, _pixel, curOffset);
+
+            if (_currentTab == GameTab.Void || _currentTab == GameTab.Spire) _visuals.DrawSpire(_spriteBatch, _engine.State.Discoveries, gameTime.TotalGameTime.TotalSeconds);
+            if (_currentTab == GameTab.World) _map.Draw(_spriteBatch, _engine, _input.MousePosition, _font, _pixel, _visuals);
+            if (_currentTab == GameTab.Debug) _debug.Draw(_spriteBatch, _engine, _font, _pixel, _visuals);
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0));
+            foreach (var btn in _buttons.Where(b => b.Tab == _currentTab || b.Tab == GameTab.None)) if (btn.IsVisible()) btn.DrawTooltip(_spriteBatch, _font, _pixel, (btn.Tab == GameTab.None ? 0 : curOffset));
+            _status.Draw(_spriteBatch, _engine, _font, _pixel, _visuals, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
+            _spriteBatch.End();
+
+            if (_ascensionTransitionAlpha > 0)
+            {
+                _spriteBatch.Begin();
+                _visuals.DrawOverlay(_spriteBatch, _ascensionTransitionAlpha);
+                _spriteBatch.End();
+            }
+
+            _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons);
         }
 
-        _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons);
+        _visuals.EndRenderToTarget(GraphicsDevice, _spriteBatch);
         base.Draw(gameTime);
     }
 

@@ -28,10 +28,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Visual Polish:** Add screen-shake and transition effects for Ascension.
 - [x] **Localization:** Externalize all strings for multi-language support.
 
-## 25. Goal: Visual Overhaul: "The Aetherial Glow" (Planned)
-- [ ] **HLSL Post-Processing:** Implement Bloom, Chromatic Aberration, and Aether Wave shaders.
-- [ ] **Procedural Background:** Create a dynamic Aether Nebula background reactive to game state.
-- [ ] **Interactive Parallax:** Implement multi-layered background movement tied to mouse/input.
+## 25. Goal: Visual Overhaul: "The Aetherial Glow" (Completed)
+- [x] **HLSL Post-Processing:** Implement Bloom, Chromatic Aberration, and Aether Wave shaders.
+- [x] **Procedural Background:** Create a dynamic Aether Nebula background reactive to game state.
+- [x] **Interactive Parallax:** Implement multi-layered background movement tied to mouse/input.
 
 ## 26. Goal: Mechanical Depth: "Resonant Harmony" (Planned)
 - [ ] **Grid Synergies:** Implement an "Aura" system where manifestation placement on the map affects production.

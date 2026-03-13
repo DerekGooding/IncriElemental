@@ -26,10 +26,35 @@ public class VisualManager
         { CellType.Ruins, Color.DarkGoldenrod }
     };
 
+    private Effect? _bloomEffect;
+    private RenderTarget2D? _renderTarget;
+
     public VisualManager(GraphicsDevice graphicsDevice)
     {
         _pixel = new Texture2D(graphicsDevice, 1, 1);
         _pixel.SetData([Color.White]);
+        _renderTarget = new RenderTarget2D(graphicsDevice, UiLayout.Width, UiLayout.Height);
+    }
+
+    public void LoadEffects(Microsoft.Xna.Framework.Content.ContentManager content)
+    {
+        try { _bloomEffect = content.Load<Effect>("Bloom"); }
+        catch { /* Fallback if shader not compiled */ }
+    }
+
+    public void BeginRenderToTarget(GraphicsDevice graphicsDevice)
+    {
+        graphicsDevice.SetRenderTarget(_renderTarget);
+    }
+
+    public void EndRenderToTarget(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
+    {
+        graphicsDevice.SetRenderTarget(null);
+        graphicsDevice.Clear(Color.Black);
+
+        spriteBatch.Begin(effect: _bloomEffect);
+        spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
+        spriteBatch.End();
     }
 
     public void Clear(GraphicsDevice graphicsDevice, Color color) => graphicsDevice.Clear(color);
