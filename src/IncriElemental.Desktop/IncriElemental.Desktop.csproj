@@ -31,6 +31,9 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
+  <PropertyGroup>
+    <MonoGameMGCBAdditionalArguments></MonoGameMGCBAdditionalArguments>
+  </PropertyGroup>
   <ItemGroup>
     <None Update="manifestations.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

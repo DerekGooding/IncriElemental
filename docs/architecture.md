@@ -55,5 +55,17 @@ To support heavy agentic development, the architecture allows for automated exec
 - **Localization:** Managed by `TextService` in the `Core` project. All UI strings are loaded from `Content/strings.json` and support dynamic argument injection.
 - **Assets:** Fonts and textures are managed through the MonoGame Content Pipeline, with fallback logic for missing assets.
 
+## 8. Health & Validation
+The project uses a comprehensive health check system (`scripts/check_health.py`) to maintain quality.
+- **Coverage:** Minimum 70% required.
+- **Monoliths:** Maximum 250 lines per file.
+- **Documentation:** Monitored for staleness based on source changes.
+- **Linux Compatibility:** Verified via Docker-based builds (`Dockerfile.linux_test`).
+
+## 9. Build System
+The project uses .NET 10.0 and MonoGame 3.8.4.1.
+- **MonoGame Content Builder (MGCB):** Used for processing sprites, fonts, and shaders.
+- **Cross-Platform:** The game is designed to run on Windows and Linux (DesktopGL).
+
 ---
-*Last Updated: Wednesday, March 12, 2026 (Updated by Agent Gemini)*
+*Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*
