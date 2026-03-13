@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using IncriElemental.Core.Engine;
 using IncriElemental.Desktop.Visuals;
 using System.Text.Json;
@@ -10,6 +11,7 @@ public class AiModeSystem(GameEngine engine)
 {
     private readonly GameEngine _engine = engine;
     private readonly List<string> _pendingScreenshots = [];
+    private readonly List<Keys> _pendingKeys = [];
     private Action<GameTab>? _setTab;
 
     public void Process(string commandPath, Action<GameTab> setTab)
@@ -27,6 +29,10 @@ public class AiModeSystem(GameEngine engine)
                 if (action == "update" && parts.Length > 1) { if (double.TryParse(parts[1], out var dt)) _engine.Update(dt); }
                 if (action == "tab" && parts.Length > 1) { if (Enum.TryParse<GameTab>(parts[1], true, out var tab)) _setTab?.Invoke(tab); }
                 if (action == "screenshot" && parts.Length > 1) _pendingScreenshots.Add(parts[1]);
+                if (action == "key" && parts.Length > 1)
+                {
+                    if (Enum.TryParse<Keys>(parts[1], true, out var key)) _pendingKeys.Add(key);
+                }
                 if (action == "hover" && parts.Length > 1) 
                 {
                     // For now, we just log that we want to hover. 
@@ -42,6 +48,12 @@ public class AiModeSystem(GameEngine engine)
 
     public void HandleAiUpdate(GameTime gameTime, GraphicsDevice graphicsDevice, string defaultPath, Action<GameTime> drawAction, Action exitAction, VisualManager visuals, List<Button> buttons, InputManager input)
     {
+        foreach (var key in _pendingKeys)
+        {
+            input.MockKeyPress(key);
+        }
+        _pendingKeys.Clear();
+
         if (!string.IsNullOrEmpty(_hoverTarget))
         {
             var btn = buttons.FirstOrDefault(b => b.Text.Contains(_hoverTarget, StringComparison.OrdinalIgnoreCase) && b.IsVisible());

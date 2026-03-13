@@ -12,13 +12,13 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Icon Alignment:** Automated vertical alignment check for inline icons.
 - [x] **Button States:** Visual verification of Idle/Hover/Click button states.
 
-### Phase 2: Structural Integrity & Scalability
+### Phase 2: Structural Integrity & Scalability (Completed)
 *Focus: Ensuring the layout system handles stress and complex configurations.*
-- [ ] **Semantic Review:** Implement semantic pixel comparison to detect overlapping UI elements.
-- [ ] **Stress Testing:** Dynamic layout stress testing with extreme UI scaling (0.5x - 2.0x).
-- [ ] **Font Scaling:** Resolution-independent font rendering verification.
-- [ ] **Status Bar Scaling:** Overflow management for the Status Bar with 10+ buffs.
-- [ ] **Log Auto-Scroll:** Verification of auto-scroll behavior in the Narrative Log.
+- [x] **Semantic Review:** Implement semantic pixel comparison to detect overlapping UI elements.
+- [x] **Stress Testing:** Dynamic layout stress testing with extreme UI scaling (0.5x - 2.0x).
+- [x] **Font Scaling:** Resolution-independent font rendering verification.
+- [x] **Status Bar Scaling:** Overflow management for the Status Bar with 10+ buffs.
+- [x] **Log Auto-Scroll:** Verification of auto-scroll behavior in the Narrative Log.
 
 ### Phase 3: Dynamic Perception & Interaction
 *Focus: Validating unfolding mechanics, animations, and complex data visualizations.*

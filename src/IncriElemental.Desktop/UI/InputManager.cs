@@ -15,35 +15,30 @@ public class InputManager
     public bool IsTooltipPinned { get; private set; } = false;
 
     private Point? _mockMousePos;
+    private HashSet<Keys> _mockKeys = new();
 
     public void SetMousePosition(Point pos) => _mockMousePos = pos;
+    public void MockKeyPress(Keys key) => _mockKeys.Add(key);
 
     public void Update()
     {
         _lastMouse = _currentMouse;
         _currentMouse = Mouse.GetState();
-        if (_mockMousePos.HasValue)
-        {
-            // We can't easily modify MouseState since it's a struct and Mouse.SetPosition
-            // actually moves the system cursor. We'll just override the property.
-        }
         _lastKey = _currentKey;
         _currentKey = Keyboard.GetState();
+        // Mock keys are cleared after each update
     }
 
-    public Point MousePosition 
+    public void ClearMock()
     {
-        get 
-        {
-            if (_mockMousePos.HasValue) return _mockMousePos.Value;
-            return new Point((int)(_currentMouse.X / UiScale), (int)(_currentMouse.Y / UiScale));
-        }
+        _mockKeys.Clear();
     }
 
-    public bool IsLeftClick() => _currentMouse.LeftButton == ButtonState.Pressed && _lastMouse.LeftButton == ButtonState.Released;
-    public bool IsRightClick() => _currentMouse.RightButton == ButtonState.Pressed && _lastMouse.RightButton == ButtonState.Released;
-
-    public bool IsKeyPressed(Keys key) => _currentKey.IsKeyDown(key) && _lastKey.IsKeyUp(key);
+    public bool IsKeyPressed(Keys key) 
+    {
+        if (_mockKeys.Contains(key)) return true;
+        return _currentKey.IsKeyDown(key) && _lastKey.IsKeyUp(key);
+    }
 
     public void HandleHotkeys(GameEngine engine, Action<GameTab> setTab)
     {

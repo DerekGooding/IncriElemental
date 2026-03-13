@@ -143,6 +143,7 @@ public class Game1 : Game
         if (_currentTab == GameTab.World) _map.Update(_engine, _input.MousePosition, _input.IsLeftClick(), _audio);
         if (_currentTab == GameTab.Spire) UpdateSpireInteraction();
 
+        _input.ClearMock();
         base.Update(gameTime);
     }
 
