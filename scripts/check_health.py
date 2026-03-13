@@ -14,7 +14,7 @@ DOCS_STALENESS_THRESHOLD = 8
 SOURCE_DIR = "src"
 RESULTS_DIR = "TestResults"
 COVERAGE_REPORT_PATTERN = r"coverage\.cobertura\.xml"
-DOC_FILES = ["README.md", "docs/architecture.md", "docs/game_design.md", "docs/roadmap.md", "docs/devops.md", "GEMINI.md"]
+DOC_FILES = ["README.md", "docs/architecture.md", "docs/game_design.md", "docs/devops.md", "GEMINI.md"]
 
 def run_tests():
     print("--- Generating Fresh Test Results ---")
