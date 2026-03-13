@@ -35,12 +35,22 @@ def run_tests():
         print("[ERROR] Tests failed during health check.")
         return False
 
-def get_git_changes_since_file(file_path):
+def get_git_changes_since_file(file_path, filter_func=None):
     try:
-        last_commit = subprocess.check_output(["git", "log", "-1", "--format=%H", "--", file_path]).decode().strip()
+        # Ensure we are in a git repository
+        subprocess.check_call(["git", "rev-parse", "--is-inside-work-tree"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        last_commit = subprocess.check_output(["git", "log", "-1", "--format=%H", "--", file_path], stderr=subprocess.DEVNULL).decode().strip()
         if not last_commit: return 0
-        changes = subprocess.check_output(["git", "diff", "--name-only", last_commit, "HEAD", "--", SOURCE_DIR]).decode().strip()
-        return len(set(changes.splitlines())) if changes else 0
+        
+        changes = subprocess.check_output(["git", "diff", "--name-only", last_commit, "HEAD", "--", SOURCE_DIR], stderr=subprocess.DEVNULL).decode().strip()
+        if not changes: return 0
+        
+        lines = changes.splitlines()
+        if filter_func:
+            lines = [l for l in lines if filter_func(l)]
+            
+        return len(set(lines))
     except:
         return 0
 
@@ -59,17 +69,7 @@ def check_docs_staleness():
 def check_screenshot_staleness():
     print("\n--- Checking Screenshot Staleness ---")
     screenshots = ["review/void_main.png", "review/spire_flow.png", "review/world_map.png", "review/mixing_table.png"]
-    ui_files = []
-    for root, _, files in os.walk(SOURCE_DIR):
-        if "UI" in root or "Visuals" in root:
-            for f in files:
-                if f.endswith(".cs"):
-                    ui_files.append(os.path.join(root, f))
     
-    if not ui_files: return True
-    
-    # We now allow screenshots to be older than the latest UI changes,
-    # provided that no more than 16 UI source files have changed since the screenshot was taken.
     all_pass = True
     for s in screenshots:
         if not os.path.exists(s):
@@ -77,15 +77,11 @@ def check_screenshot_staleness():
             all_pass = False
             continue
             
-        # Get count of UI/Visual files changed since the screenshot was last modified
-        s_mtime = os.path.getmtime(s)
-        changes = 0
-        for f in ui_files:
-            if os.path.getmtime(f) > s_mtime:
-                changes += 1
+        # Count changes in UI or Visuals directories since this screenshot was committed
+        changes = get_git_changes_since_file(s, filter_func=lambda x: "UI" in x or "Visuals" in x)
         
-        print(f"{s}: {changes} UI source files changed.")
-        if changes > 16: # Doubled from the implied 8 (matching docs threshold) or 0 (previous strict check)
+        print(f"{s}: {changes} UI/Visual source files changed.")
+        if changes > 16:
             print(f"[FAIL] Screenshot is stale: {s}")
             all_pass = False
             
