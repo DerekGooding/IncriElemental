@@ -87,6 +87,39 @@ def check_screenshot_staleness():
             
     return all_pass
 
+def check_ui_collisions():
+    print("\n--- Checking UI Collisions ---")
+    metadata_files = ["review/void_main.json", "review/spire_flow.json", "review/world_map.json", "review/mixing_table.json"]
+    all_pass = True
+    
+    # Import semantic_review logic
+    sys.path.append("scripts")
+    try:
+        from semantic_review import detect_collisions
+    except ImportError:
+        print("[ERROR] semantic_review.py not found.")
+        return False
+
+    for meta in metadata_files:
+        if not os.path.exists(meta):
+            print(f"[FAIL] Metadata missing: {meta}")
+            all_pass = False
+            continue
+            
+        with open(meta, "r") as f:
+            data = json.load(f)
+            buttons = data.get("Buttons", [])
+            collisions = detect_collisions(buttons)
+            if collisions:
+                print(f"[FAIL] Collisions in {meta}:")
+                for c in collisions:
+                    print(f"  - {c[0]} overlaps with {c[1]}")
+                all_pass = False
+            else:
+                print(f"[SUCCESS] No collisions in {meta}")
+                
+    return all_pass
+
 def check_monoliths():
     print("--- Checking for Monoliths (> 250 lines) ---")
     monolith_count = 0
@@ -196,12 +229,13 @@ if __name__ == "__main__":
     cov_val, cov_pass = parse_coverage()
     d_pass = check_docs_staleness()
     s_pass = check_screenshot_staleness()
+    u_pass = check_ui_collisions()
     
     t_pass = cov_val > 0 and cov_pass and tests_passed
     
     export_shields_data(m_count, cov_val, d_pass, t_pass, s_pass)
 
-    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not s_pass:
+    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not s_pass or not u_pass:
         print("\n[FAIL] Health checks failed.")
         sys.exit(1)
     
