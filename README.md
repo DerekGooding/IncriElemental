@@ -29,25 +29,16 @@
 - **Rich Text Engine:** Custom `RichTextSystem` in the Desktop layer supports tag-based formatting (`[color]`, `[i:icon]`) for tooltips and logs.
 - **Graphics Pipeline:** Custom HLSL shaders for bloom effects and a reactive background system tied to resource generation rates.
 - **Localization:** Centralized `TextService` in `Core` manages dynamic string injection from `strings.json`.
-- **Linux Build Emulation:** Dockerized testing environment mirroring GitHub Actions (`ubuntu-latest`) to verify Wine-based shader compilation and platform consistency.
-- **Health Suite:** Strict enforcement of 70% test coverage, 250-line monolith prevention, and Linux build passing via `scripts/check_health.py`.
-- **Agentic DevOps:** Automated CI/CD pipeline that manages build, test, health scans, and dynamic documentation shields.
-- **AI Review Mode:** Headless execution and automated screenshotting tools for agent-driven UI verification.
+- **Health Suite:** Strict enforcement of 70% test coverage, 250-line monolith prevention, and comprehensive health monitoring via `scripts/check_health.py`.
+- **Agentic DevOps:** Automated CI/CD pipeline on **Windows** that manages build, test, health scans, and dynamic documentation shields.
+- **AI Review Mode:** Automated screenshotting tools for agent-driven UI verification.
 
 ## 🚀 Quick Start
 1.  **Clone:** `git clone https://github.com/DerekGooding/IncriElemental`
 2.  **Build:** `dotnet build`
 3.  **Run:** `dotnet run --project src/IncriElemental.Desktop/IncriElemental.Desktop.csproj`
 4.  **Test:** `dotnet test`
-5.  **Health Check:** `python scripts/check_health.py` (Requires Docker for Linux build emulation)
-
-## 🐧 Linux Build Emulation (Local CI)
-To ensure the game builds correctly on Linux (including Wine-based shader compilation used by the CI), run:
-```powershell
-./scripts/linux_build_test.ps1  # Windows (requires Docker)
-./scripts/linux_build_test.sh   # Linux/macOS (requires Docker)
-```
-This is automatically included in the `check_health.py` suite.
+5.  **Health Check:** `python scripts/check_health.py`
 
 ## 🤖 Agentic Review
 To run an automated UI review:
