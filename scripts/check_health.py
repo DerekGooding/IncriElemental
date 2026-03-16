@@ -93,11 +93,13 @@ def check_ui_collisions():
     all_pass = True
     
     # Import semantic_review logic
-    sys.path.append("scripts")
+    scripts_dir = os.path.abspath("scripts")
+    if scripts_dir not in sys.path:
+        sys.path.append(scripts_dir)
     try:
         from semantic_review import detect_collisions
-    except ImportError:
-        print("[ERROR] semantic_review.py not found.")
+    except ImportError as e:
+        print(f"[ERROR] Could not import semantic_review: {e}")
         return False
 
     for meta in metadata_files:

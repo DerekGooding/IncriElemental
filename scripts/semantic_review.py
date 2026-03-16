@@ -1,7 +1,5 @@
 import os
 import json
-import numpy as np
-from PIL import Image
 
 def detect_collisions(buttons):
     collisions = []
