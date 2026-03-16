@@ -111,14 +111,20 @@ def check_ui_collisions():
         with open(meta, "r") as f:
             data = json.load(f)
             buttons = data.get("Buttons", [])
-            collisions = detect_collisions(buttons)
-            if collisions:
-                print(f"[FAIL] Collisions in {meta}:")
-                for c in collisions:
-                    print(f"  - {c[0]} overlaps with {c[1]}")
+            width = data.get("ScreenWidth", 1024)
+            height = data.get("ScreenHeight", 768)
+            
+            violations = detect_collisions(buttons, width, height)
+            if violations:
+                print(f"[FAIL] UI Violations in {meta}:")
+                for v in violations:
+                    if v[1] == "SCREEN_BOUNDS":
+                        print(f"  - {v[0]} is out of screen bounds.")
+                    else:
+                        print(f"  - {v[0]} overlaps with {v[1]}")
                 all_pass = False
             else:
-                print(f"[SUCCESS] No collisions in {meta}")
+                print(f"[SUCCESS] No UI violations in {meta}")
                 
     return all_pass
 
@@ -249,6 +255,25 @@ def check_visual_health():
 
     return all_pass
 
+def check_button_states():
+    print("\n--- Checking Button Hover States ---")
+    idle = "review/pulse_frame1.png"
+    hover = "review/pulse_frame2.png"
+    
+    if not os.path.exists(idle) or not os.path.exists(hover):
+        print("[INFO] Hover state frames missing, skipping button state audit.")
+        return True
+        
+    scripts_dir = os.path.abspath("scripts")
+    if scripts_dir not in sys.path:
+        sys.path.append(scripts_dir)
+    try:
+        from button_state_audit import compare_button_states
+        return compare_button_states(idle, hover)
+    except ImportError as e:
+        print(f"[ERROR] Could not import button_state_audit: {e}")
+        return False
+
 if __name__ == "__main__":
     skip_tests = "--skip-tests" in sys.argv
     
@@ -261,13 +286,14 @@ if __name__ == "__main__":
     d_pass = check_docs_staleness()
     s_pass = check_screenshot_staleness()
     u_pass = check_ui_collisions()
+    b_pass = check_button_states()
     v_pass = check_visual_health()
     
     t_pass = cov_val > 0 and cov_pass and tests_passed
     
     export_shields_data(m_count, cov_val, d_pass, t_pass, s_pass)
 
-    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not s_pass or not u_pass or not v_pass:
+    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not s_pass or not u_pass or not b_pass or not v_pass:
         print("\n[FAIL] Health checks failed.")
         sys.exit(1)
     

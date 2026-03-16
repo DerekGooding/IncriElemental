@@ -35,6 +35,13 @@ public class VisualManager
 
     public void AddShake(float intensity) => ScreenShakeIntensity = Math.Max(ScreenShakeIntensity, intensity);
     public void ClearShake() => ScreenShakeIntensity = 0f;
+    public void ClearFlashes()
+    {
+        ScreenShakeIntensity = 0f;
+        TabTransitionAlpha = 0f;
+        ReactionFlashAlpha = 0f;
+        CelebrationFlashAlpha = 0f;
+    }
     public void StartTabTransition() => TabTransitionAlpha = 1.0f;
     public void StartReactionSequence(Color color) { ReactionFlashAlpha = 1.0f; _reactionColor = color; AddShake(5f); }
     public void StartCelebration() { CelebrationFlashAlpha = 1.0f; AddShake(10f); }

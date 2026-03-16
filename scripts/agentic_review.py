@@ -94,6 +94,11 @@ def run_ai_review(commands, assertions=None):
                 print("Performing metadata verification...")
                 metadata_pass = verify_metadata(metadata_path, assertions)
 
+            # Semantic Review (Collision Detection)
+            print("Performing semantic UI review...")
+            from semantic_review import semantic_review
+            semantic_pass = semantic_review(metadata_path)
+
             # Visual Regression Check
             baseline_path = "review/baseline.png"
             visual_pass = True
@@ -113,7 +118,7 @@ def run_ai_review(commands, assertions=None):
             if os.path.exists(metadata_path):
                 shutil.copy(metadata_path, "review/screenshot.json")
             
-            return metadata_pass and visual_pass
+            return metadata_pass and semantic_pass and visual_pass
 
     print("Review failed! Screenshot not found.")
     return False

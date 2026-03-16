@@ -1,5 +1,5 @@
 {
-  "Timestamp": "2026-03-16T20:10:39.112659Z",
+  "Timestamp": "2026-03-16T23:39:38.2928208Z",
   "Performance": {
     "TotalTime": 1.1000022,
     "ElapsedFrameTime": 16.6667
@@ -10,7 +10,7 @@
       "Subtitle": null,
       "Tooltip": "",
       "Bounds": {
-        "X": 312,
+        "X": 292,
         "Y": 5,
         "Width": 85,
         "Height": 25
@@ -22,9 +22,9 @@
       "Subtitle": null,
       "Tooltip": "",
       "Bounds": {
-        "X": 787,
+        "X": 767,
         "Y": 5,
-        "Width": 85,
+        "Width": 65,
         "Height": 25
       },
       "Tab": "None"
@@ -34,7 +34,7 @@
       "Subtitle": null,
       "Tooltip": "",
       "Bounds": {
-        "X": 5,
+        "X": 210,
         "Y": 5,
         "Width": 80,
         "Height": 20
