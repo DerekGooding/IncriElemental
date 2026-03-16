@@ -45,15 +45,22 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
             if (string.IsNullOrEmpty(locText)) locText = Text; // Fallback to literal text if key not found
             var textSize = font.MeasureString(locText);
             var textPos = new Vector2(b.Center.X - textSize.X / 2, b.Center.Y - textSize.Y / 2);
-            if (!string.IsNullOrEmpty(Subtitle)) textPos.Y -= 10;
-            spriteBatch.DrawString(font, locText, textPos, Color * (IsHovered ? 1.0f : 0.8f));
-
+            
+            string? locSub = null;
+            Vector2 subSize = Vector2.Zero;
             if (!string.IsNullOrEmpty(Subtitle))
             {
-                var locSub = (Subtitle.StartsWith("[") && Subtitle.EndsWith("]")) ? TextService.Instance.Get(Subtitle.Trim('[', ']')) : Subtitle;
+                locSub = (Subtitle.StartsWith("[") && Subtitle.EndsWith("]")) ? TextService.Instance.Get(Subtitle.Trim('[', ']')) : Subtitle;
                 if (string.IsNullOrEmpty(locSub)) locSub = Subtitle;
-                var subSize = font.MeasureString(locSub) * 0.8f;
-                var subPos = new Vector2(b.Center.X - subSize.X / 2, textPos.Y + textSize.Y - 5);
+                subSize = font.MeasureString(locSub) * 0.8f;
+                textPos.Y -= (subSize.Y / 2 + 2);
+            }
+
+            spriteBatch.DrawString(font, locText, textPos, Color * (IsHovered ? 1.0f : 0.8f));
+
+            if (!string.IsNullOrEmpty(locSub))
+            {
+                var subPos = new Vector2(b.Center.X - subSize.X / 2, textPos.Y + textSize.Y - 2);
                 spriteBatch.DrawString(font, locSub, subPos, Color * 0.5f, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
             }
         }

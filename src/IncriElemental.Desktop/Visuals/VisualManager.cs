@@ -176,24 +176,7 @@ public class VisualManager
         return string.Join("\n", l);
     }
 
-    public void DrawTooltip(SpriteBatch sb, SpriteFont font, Texture2D px, string text, Point mouse)
-    {
-        if (string.IsNullOrEmpty(text)) return;
-        var lines = text.Split('\n'); var parsed = lines.Select(l => RichTextSystem.Parse(l)).ToList();
-        var maxWidth = parsed.Max(l => RichTextSystem.Measure(font, l, 0.8f).X); var totalH = parsed.Sum(l => RichTextSystem.Measure(font, l, 0.8f).Y) + (lines.Length - 1) * 4;
-        var pos = new Vector2(mouse.X + 20, mouse.Y); if (pos.X + maxWidth > UiLayout.Width) pos.X = mouse.X - maxWidth - 20;
-        var r = new Rectangle((int)pos.X - 5, (int)pos.Y - 5, (int)maxWidth + 10, (int)totalH + 10);
-        sb.Draw(px, r, Color.Black * 0.9f);
-        var rnd = new Random(r.X + r.Y);
-        for (int i = 0; i < 5; i++)
-        {
-            float ox = (float)((rnd.NextDouble() * r.Width + _totalTime * 10) % r.Width);
-            float oy = (float)((rnd.NextDouble() * r.Height + _totalTime * 5) % r.Height);
-            sb.Draw(px, new Rectangle((int)(r.X + ox), (int)(r.Y + oy), 2, 2), Color.Gold * 0.2f);
-        }
-        sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, 1), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.X, r.Bottom, r.Width, 1), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.X, r.Y, 1, r.Height), Color.Gray * 0.5f); sb.Draw(px, new Rectangle(r.Right, r.Y, 1, r.Height), Color.Gray * 0.5f);
-        var curY = pos.Y; foreach (var tokens in parsed) { RichTextSystem.Draw(sb, font, tokens, new Vector2(pos.X, curY), Color.LightGoldenrodYellow, 0.8f, this); curY += font.LineSpacing * 0.8f + 4; }
-    }
+    public void DrawTooltip(SpriteBatch sb, SpriteFont font, Texture2D px, string text, Point mouse) => UiVisuals.DrawTooltip(sb, font, px, text, mouse, _totalTime, this);
 
     public void DrawWorldElements(SpriteBatch sb, LogSystem log, SpriteFont font, Texture2D pixel, ParticleSystem particles, List<Button> buttons)
     {
@@ -222,22 +205,7 @@ public class VisualManager
         ending.Draw(sb, engine, font, pixel, gt, mouse, click, reset);
     }
 
-    public void DrawPanel(SpriteBatch sb, Texture2D px, Rectangle r, Color color, float opacity = 0.1f)
-    {
-        sb.Draw(px, r, Color.Black * opacity);
-        sb.Draw(px, r, color * (opacity * 0.5f));
-        var pulse = (float)Math.Sin(_totalTime * 3.0) * 0.2f + 0.8f;
-        int t = 1;
-        sb.Draw(px, new Rectangle(r.X, r.Y, r.Width, t), color * (0.5f * pulse));
-        sb.Draw(px, new Rectangle(r.X, r.Bottom - t, r.Width, t), color * (0.5f * pulse));
-        sb.Draw(px, new Rectangle(r.X, r.Y, t, r.Height), color * (0.5f * pulse));
-        sb.Draw(px, new Rectangle(r.Right - t, r.Y, t, r.Height), color * (0.5f * pulse));
-        sb.Draw(px, new Rectangle(r.X, r.Y, 15, 2), color * pulse); sb.Draw(px, new Rectangle(r.X, r.Y, 2, 15), color * pulse);
-        sb.Draw(px, new Rectangle(r.Right - 15, r.Y, 15, 2), color * pulse); sb.Draw(px, new Rectangle(r.Right - 2, r.Y, 2, 15), color * pulse);
-        sb.Draw(px, new Rectangle(r.X, r.Bottom - 2, 15, 2), color * pulse); sb.Draw(px, new Rectangle(r.X, r.Bottom - 15, 2, 15), color * pulse);
-        sb.Draw(px, new Rectangle(r.Right - 15, r.Bottom - 2, 15, 2), color * pulse); sb.Draw(px, new Rectangle(r.Right - 2, r.Bottom - 15, 2, 15), color * pulse);
-        sb.Draw(px, new Rectangle(r.Center.X - 5, r.Y - 2, 10, 4), color * pulse); sb.Draw(px, new Rectangle(r.Center.X - 5, r.Bottom - 2, 10, 4), color * pulse);
-    }
+    public void DrawPanel(SpriteBatch sb, Texture2D px, Rectangle r, Color color, float opacity = 0.1f) => UiVisuals.DrawPanel(sb, px, r, color, _totalTime, opacity);
 
     public void SaveScreenshot(string path)
     {

@@ -13,6 +13,7 @@ public class AiModeSystem(GameEngine engine)
     private readonly GameEngine _engine = engine;
     private readonly List<string> _commands = [];
     private int _commandIndex = 0;
+    private int _initialFramesToSkip = 5;
     private Action<GameTab>? _setTab;
     private string? _hoverTarget;
     private bool _isPinning = false;
@@ -28,6 +29,7 @@ public class AiModeSystem(GameEngine engine)
 
     public void HandleAiUpdate(GameTime gt, GraphicsDevice gd, string defPath, Action<GameTime> draw, Action exit, VisualManager vis, List<Button> btns, InputManager input)
     {
+        if (_initialFramesToSkip > 0) { _initialFramesToSkip--; return; }
         float dt = (float)gt.ElapsedGameTime.TotalSeconds;
         if (_waitTimer > 0) { _waitTimer -= dt; return; }
 
@@ -44,14 +46,14 @@ public class AiModeSystem(GameEngine engine)
             else if (act == "hover" && parts.Length > 1) _hoverTarget = parts[1].Trim();
             else if (act == "click") _isClicking = true;
             else if (act == "wait" && parts.Length > 1) { if (double.TryParse(parts[1], out var v)) _waitTimer = v; }
-            else if (act == "screenshot" && parts.Length > 1) { var n = parts[1].Trim(); var p = n.EndsWith(".png") ? n : n + ".png"; if (!p.Contains('/') && !p.Contains('\\')) p = Path.Combine("review", p); draw(gt); vis.SaveScreenshot(p); SaveMetadata(p.Replace(".png", ".json"), btns, gt); }
+            else if (act == "screenshot" && parts.Length > 1) { var n = parts[1].Trim(); var p = n.EndsWith(".png") ? n : n + ".png"; if (!p.Contains('/') && !p.Contains('\\')) p = Path.Combine("review", p); draw(gt); gd.Present(); vis.SaveScreenshot(p); SaveMetadata(p.Replace(".png", ".json"), btns, gt); }
 
             foreach (var k in _pendingKeys) input.MockKeyPress(k); _pendingKeys.Clear();
             if (_isPinning) input.MockKeyPress(Keys.P);
             if (_isClicking) { input.MockClick(); _isClicking = false; }
             if (!string.IsNullOrEmpty(_hoverTarget)) { var btn = btns.FirstOrDefault(b => (b.Text.Contains(_hoverTarget, StringComparison.OrdinalIgnoreCase) || (_hoverTarget == "vessel" && b.Text == "")) && b.IsVisible()); if (btn != null) input.SetMousePosition(new Point(btn.Bounds.Center.X, btn.Bounds.Center.Y)); }
         }
-        else if (gt.TotalGameTime.TotalSeconds > 2.0) { if (_commandIndex == _commands.Count && !string.IsNullOrEmpty(defPath) && !File.Exists(defPath)) { draw(gt); vis.SaveScreenshot(defPath); SaveMetadata(defPath.Replace(".png", ".json"), btns, gt); } exit(); }
+        else if (gt.TotalGameTime.TotalSeconds > 3.0) { if (_commandIndex == _commands.Count && !string.IsNullOrEmpty(defPath) && !File.Exists(defPath)) { draw(gt); gd.Present(); vis.SaveScreenshot(defPath); SaveMetadata(defPath.Replace(".png", ".json"), btns, gt); } exit(); }
     }
 
     private void SaveMetadata(string path, List<Button> buttons, GameTime gameTime)

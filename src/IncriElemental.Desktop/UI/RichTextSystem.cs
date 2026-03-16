@@ -119,7 +119,7 @@ public static class RichTextSystem
         foreach (var token in tokens)
         {
             if (token.Type == TokenType.Text) width += font.MeasureString(token.Value).X * scale;
-            else if (token.Type == TokenType.Icon) width += 20 * scale;
+            else if (token.Type == TokenType.Icon) width += (16f + 4f) * scale;
         }
 
         return new Vector2(width, height);
