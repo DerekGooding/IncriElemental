@@ -13,19 +13,22 @@ public class LayoutSystem
     {
         buttons.Clear();
 
-        var tabW = 80; var tabH = 30; var startX = UiLayout.Width / 2 - 200;
-        var centerX = UiLayout.Width / 2;
+        var tabW = 85; var tabH = 25; 
+        // Center the tabs in the middle area (between the 200px side panels)
+        var availableWidth = UiLayout.Width - 420;
+        var startX = 210 + (availableWidth / 2) - 200;
         
-        buttons.Add(new Button(new Rectangle(startX, 10, tabW, tabH), "[TAB_VOID]", Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 85, 10, tabW, tabH), "[TAB_SPIRE]", Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 170, 10, tabW, tabH), "[TAB_WORLD]", Color.LimeGreen, () => setTab(GameTab.World), () => engine.State.Discoveries.ContainsKey("garden_manifested"), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 255, 10, 120, tabH), "[TAB_CONSTELLATION]", Color.Gold, () => setTab(GameTab.Constellation), () => engine.State.CosmicInsight > 1.0, tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 380, 10, 80, tabH), "[TAB_FLOW]", Color.Cyan, () => setTab(GameTab.Flow), () => engine.State.Discoveries.ContainsKey("aether_unlocked"), tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX, 5, tabW, tabH), "[TAB_VOID]", Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX + 90, 5, tabW, tabH), "[TAB_SPIRE]", Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX + 180, 5, tabW, tabH), "[TAB_WORLD]", Color.LimeGreen, () => setTab(GameTab.World), () => engine.State.Discoveries.ContainsKey("garden_manifested"), tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX + 270, 5, 110, tabH), "[TAB_CONSTELLATION]", Color.Gold, () => setTab(GameTab.Constellation), () => engine.State.CosmicInsight > 1.0, tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX + 385, 5, tabW, tabH), "[TAB_FLOW]", Color.Cyan, () => setTab(GameTab.Flow), () => engine.State.Discoveries.ContainsKey("aether_unlocked"), tab: GameTab.None));
         
-        if (aiMode) buttons.Add(new Button(new Rectangle(startX + 470, 10, 80, tabH), "[TAB_DEBUG]", Color.Red, () => setTab(GameTab.Debug), tab: GameTab.None));
-        if (toggleFullscreen != null) buttons.Add(new Button(new Rectangle(100, 10, 80, 25), "[BTN_FULLSCREEN]", Color.Gray * 0.8f, toggleFullscreen, tab: GameTab.None));
+        if (aiMode) buttons.Add(new Button(new Rectangle(startX + 475, 5, tabW, tabH), "[TAB_DEBUG]", Color.Red, () => setTab(GameTab.Debug), tab: GameTab.None));
+        if (toggleFullscreen != null) buttons.Add(new Button(new Rectangle(5, 5, 80, 20), "[BTN_FULLSCREEN]", Color.Gray * 0.6f, toggleFullscreen, tab: GameTab.None));
 
-        var focusBtn = new Button(new Rectangle(centerX - 100, 0, 200, 80), "[BTN_FOCUS]", Color.MediumPurple, () => {
+        var centerX = UiLayout.Width / 2;
+        var focusBtn = new Button(new Rectangle(centerX - 100, 45, 200, 70), "[BTN_FOCUS]", Color.MediumPurple, () => {
             engine.Focus();
             particles.EmitFocus(new Vector2(centerX, 100));
             audio.PlayFocus();

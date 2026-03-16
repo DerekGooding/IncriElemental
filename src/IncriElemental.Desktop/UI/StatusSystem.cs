@@ -32,9 +32,12 @@ public class StatusSystem
     {
         if (font == null) return;
 
-        float y = 20;
-        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ESSENCE"), new Vector2(x, y), Color.Gray);
-        y += 30;
+        float y = 60; // Start lower to avoid top-aligned buttons, but we need to fit everything
+        // Actually, looking at void_main.json, buttons are at Y=10.
+        // Let's use Y=55 for the first header.
+        y = 55;
+        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ESSENCE"), new Vector2(x, y), Color.Gray, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+        y += 25;
 
         foreach (var res in engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000))
         {
@@ -42,8 +45,8 @@ public class StatusSystem
             var resName = TextService.Instance.Get($"RES_{res.Type.ToString().ToUpper()}");
             var label = $"{resName}: {amountStr}";
 
-            visuals.DrawElement(spriteBatch, res.Type, new Vector2(x - 15, y + 8), 6f);
-            spriteBatch.DrawString(font, label, new Vector2(x, y), visuals.GetColor(res.Type));
+            visuals.DrawElement(spriteBatch, res.Type, new Vector2(x - 12, y + 6), 5f);
+            spriteBatch.DrawString(font, label, new Vector2(x, y), visuals.GetColor(res.Type), 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
 
             if (_history.TryGetValue(res.Type, out var h) && h.Count > 1)
             {
@@ -51,33 +54,33 @@ public class StatusSystem
                 for (int i = 0; i < h.Count - 1; i++)
                 {
                     float v1 = (h[i] - min) / range; float v2 = (h[i+1] - min) / range;
-                    var p1 = new Vector2(x + 155 + i * 2, y + 15 - v1 * 10);
-                    var p2 = new Vector2(x + 155 + (i+1) * 2, y + 15 - v2 * 10);
-                    DrawLine(spriteBatch, pixel, p1, p2, visuals.GetColor(res.Type) * 0.5f);
+                    var p1 = new Vector2(x + 130 + i * 2, y + 12 - v1 * 8);
+                    var p2 = new Vector2(x + 130 + (i+1) * 2, y + 12 - v2 * 8);
+                    DrawLine(spriteBatch, pixel, p1, p2, visuals.GetColor(res.Type) * 0.4f);
                 }
             }
 
             if (res.MaxAmount < 1_000_000_000_000)
             {
                 var percent = (float)(res.Amount / res.MaxAmount);
-                spriteBatch.Draw(pixel, new Rectangle(x, (int)y + 22, 150, 2), Color.Gray * 0.2f);
-                spriteBatch.Draw(pixel, new Rectangle(x, (int)y + 22, (int)(150 * percent), 2), visuals.GetColor(res.Type) * 0.5f);
+                spriteBatch.Draw(pixel, new Rectangle(x, (int)y + 18, 120, 1), Color.Gray * 0.2f);
+                spriteBatch.Draw(pixel, new Rectangle(x, (int)y + 18, (int)(120 * percent), 1), visuals.GetColor(res.Type) * 0.4f);
             }
-            y += 40;
+            y += 30;
         }
 
+        y += 15;
+        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ACTIVE_REACTION"), new Vector2(x, y), Color.Gray * 0.4f, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
         y += 20;
-        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ACTIVE_REACTION"), new Vector2(x, y), Color.Gray * 0.5f);
-        y += 30;
         foreach (var buff in engine.State.ActiveBuffs)
         {
             var pulse = (float)Math.Sin(visuals.GetTotalTime() * 5.0) * 0.2f + 0.8f;
-            visuals.DrawElement(spriteBatch, ResourceType.Aether, new Vector2(x - 15, y + 8), 8f * pulse); // Glowing medal
-            spriteBatch.DrawString(font, $"{buff.Id}: {buff.RemainingTime:F0}s", new Vector2(x, y), Color.Gold * 0.8f);
-            y += 25;
+            visuals.DrawElement(spriteBatch, ResourceType.Aether, new Vector2(x - 12, y + 6), 6f * pulse);
+            spriteBatch.DrawString(font, $"{buff.Id}: {buff.RemainingTime:F0}s", new Vector2(x, y), Color.Gold * 0.7f, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+            y += 20;
         }
 
-        y += 30;
+        y += 20;
         DrawManifestations(spriteBatch, engine, font, x, (int)y, mousePos, pixel, visuals);
     }
 

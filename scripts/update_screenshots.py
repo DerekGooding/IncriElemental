@@ -10,24 +10,38 @@ REVIEW_DIR = "review"
 SCENARIOS = {
     "void_main": [
         "focus", "focus", "focus", "focus", "focus",
+        "update:1.0",
+        "manifest:speck_of_matter",
+        "update:1.0",
         "screenshot:void_main"
     ],
     "spire_flow": [
-        "update:3600", # Fast forward an hour to unlock things
-        "manifest:aether_unlocked",
-        "tab:flow",
+        "focus", "focus", "focus", "focus", "focus",
+        "focus", "focus", "focus", "focus", "focus",
+        "manifest:pickaxe",
+        "focus", "focus", "focus", "focus", "focus",
+        "manifest:speck_of_matter",
+        "update:10.0",
+        "tab:Spire",
+        "wait:1.0",
         "screenshot:spire_flow"
     ],
     "world_map": [
-        "update:7200",
-        "manifest:garden_manifested",
-        "tab:world",
+        "focus", "focus", "focus", "focus", "focus",
+        "focus", "focus", "focus", "focus", "focus",
+        "manifest:familiar",
+        "update:5.0",
+        "tab:World",
+        "wait:1.0",
         "screenshot:world_map"
     ],
     "mixing_table": [
-        "update:7200",
-        "manifest:forge_constructed",
-        "tab:spire",
+        "focus", "focus", "focus", "focus", "focus",
+        "focus", "focus", "focus", "focus", "focus",
+        "manifest:forge",
+        "update:5.0",
+        "tab:Spire",
+        "wait:1.0",
         "screenshot:mixing_table"
     ]
 }

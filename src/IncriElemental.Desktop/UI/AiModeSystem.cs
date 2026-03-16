@@ -11,6 +11,7 @@ namespace IncriElemental.Desktop.UI;
 public class AiModeSystem(GameEngine engine)
 {
     private readonly GameEngine _engine = engine;
+    private Game1? _game;
     private readonly List<string> _commands = [];
     private int _commandIndex = 0;
     private int _initialFramesToSkip = 5;
@@ -21,21 +22,25 @@ public class AiModeSystem(GameEngine engine)
     private double _waitTimer = 0;
     private readonly List<Keys> _pendingKeys = [];
 
+    public void SetGame(Game1 game) => _game = game;
+
     public void Process(string commandPath, Action<GameTab> setTab)
     {
         _setTab = setTab;
         if (File.Exists(commandPath)) _commands.AddRange(File.ReadAllLines(commandPath));
     }
 
-    public void HandleAiUpdate(GameTime gt, GraphicsDevice gd, string defPath, Action<GameTime> draw, Action exit, VisualManager vis, List<Button> btns, InputManager input)
+    public void HandleAiUpdate(GameTime gt, GraphicsDevice gd, string defPath, Action<GameTime> draw, Action exit, VisualManager vis, List<Button> btns, InputManager input, TutorialSystem tut)
     {
         if (_initialFramesToSkip > 0) { _initialFramesToSkip--; return; }
         float dt = (float)gt.ElapsedGameTime.TotalSeconds;
         if (_waitTimer > 0) { _waitTimer -= dt; return; }
 
-        if (_commandIndex < _commands.Count)
+        while (_commandIndex < _commands.Count)
         {
             var cmd = _commands[_commandIndex++]; var parts = cmd.Split(':', 2); var act = parts[0].ToLower().Trim();
+            bool isBlocking = false;
+
             if (act == "focus") _engine.Focus();
             else if (act == "manifest" && parts.Length > 1) _engine.Manifest(parts[1].Trim());
             else if (act == "update" && parts.Length > 1) { if (double.TryParse(parts[1], out var v)) _engine.Update(v); }
@@ -45,15 +50,35 @@ public class AiModeSystem(GameEngine engine)
             else if (act == "unpin") _isPinning = false;
             else if (act == "hover" && parts.Length > 1) _hoverTarget = parts[1].Trim();
             else if (act == "click") _isClicking = true;
-            else if (act == "wait" && parts.Length > 1) { if (double.TryParse(parts[1], out var v)) _waitTimer = v; }
-            else if (act == "screenshot" && parts.Length > 1) { var n = parts[1].Trim(); var p = n.EndsWith(".png") ? n : n + ".png"; if (!p.Contains('/') && !p.Contains('\\')) p = Path.Combine("review", p); draw(gt); gd.Present(); vis.SaveScreenshot(p); SaveMetadata(p.Replace(".png", ".json"), btns, gt); }
+            else if (act == "wait" && parts.Length > 1) { if (double.TryParse(parts[1], out var v)) { _waitTimer = v; isBlocking = true; } }
+            else if (act == "screenshot" && parts.Length > 1) { 
+                var n = parts[1].Trim(); var p = n.EndsWith(".png") ? n : n + ".png"; if (!p.Contains('/') && !p.Contains('\\')) p = Path.Combine("review", p); 
+                var oldTut = tut.IsActive; tut.IsActive = false; vis.ClearShake();
+                _game?.RequestScreenshot(p);
+                draw(gt); 
+                SaveMetadata(p.Replace(".png", ".json"), btns, gt); 
+                tut.IsActive = oldTut;
+                isBlocking = true;
+            }
 
             foreach (var k in _pendingKeys) input.MockKeyPress(k); _pendingKeys.Clear();
             if (_isPinning) input.MockKeyPress(Keys.P);
             if (_isClicking) { input.MockClick(); _isClicking = false; }
             if (!string.IsNullOrEmpty(_hoverTarget)) { var btn = btns.FirstOrDefault(b => (b.Text.Contains(_hoverTarget, StringComparison.OrdinalIgnoreCase) || (_hoverTarget == "vessel" && b.Text == "")) && b.IsVisible()); if (btn != null) input.SetMousePosition(new Point(btn.Bounds.Center.X, btn.Bounds.Center.Y)); }
+            
+            if (isBlocking) break;
         }
-        else if (gt.TotalGameTime.TotalSeconds > 3.0) { if (_commandIndex == _commands.Count && !string.IsNullOrEmpty(defPath) && !File.Exists(defPath)) { draw(gt); gd.Present(); vis.SaveScreenshot(defPath); SaveMetadata(defPath.Replace(".png", ".json"), btns, gt); } exit(); }
+
+        if (_commandIndex >= _commands.Count && gt.TotalGameTime.TotalSeconds > 3.0) { 
+            if (!string.IsNullOrEmpty(defPath) && !File.Exists(defPath)) { 
+                var oldTut = tut.IsActive; tut.IsActive = false; vis.ClearShake();
+                _game?.RequestScreenshot(defPath);
+                draw(gt); 
+                SaveMetadata(defPath.Replace(".png", ".json"), btns, gt); 
+                tut.IsActive = oldTut;
+            } 
+            exit(); 
+        }
     }
 
     private void SaveMetadata(string path, List<Button> buttons, GameTime gameTime)

@@ -18,6 +18,7 @@ public enum TutorialStep
 public class TutorialSystem
 {
     public TutorialStep CurrentStep { get; private set; } = TutorialStep.None;
+    public bool IsActive { get => _isActive; set => _isActive = value; }
     private bool _isActive = false;
 
     public void Start(GameState state)

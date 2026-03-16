@@ -23,4 +23,4 @@ Instead of fragile pixel-matching, the agent uses **UI Metadata** exported by `A
 - **Performance Profiling:** Tracks frame-time and total-time to detect regressions during heavy particle effects.
 
 ---
-*Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*
+*Last Updated: Monday, March 16, 2026 (Updated by Agent Gemini)*

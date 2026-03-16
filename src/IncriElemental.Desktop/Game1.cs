@@ -41,8 +41,11 @@ public class Game1 : Game
     };
     private bool _needsButtonLayoutUpdate = false;
     private string _screenshotPath = "screenshot.png";
+    private string? _pendingScreenshotPath;
     private RasterizerState _scissorState = new() { ScissorTestEnable = true };
     private Button? _pinnedButton;
+
+    public void RequestScreenshot(string path) => _pendingScreenshotPath = path;
 
     public Game1()
     {
@@ -73,7 +76,11 @@ public class Game1 : Game
         LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, SetTab, _visuals, _aiMode, ToggleFullscreen);
         _audio.StartHum(); _log.AddToLog(TextService.Instance.Get("HIST_AWAKEN")); _log.AddToLog(TextService.Instance.Get("HIST_FOCUS_PROMPT"));
         _tutorial.Start(_engine.State); _visuals.StartCelebration();
-        if (_aiMode) { var cp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ai_commands.txt"); _ai.Process(cp, SetTab); }
+        if (_aiMode) { 
+            _ai.SetGame(this);
+            var cp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ai_commands.txt"); 
+            _ai.Process(cp, SetTab); 
+        }
         base.Initialize();
     }
 
@@ -89,7 +96,7 @@ public class Game1 : Game
         var tw = (int)(GraphicsDevice.Viewport.Width / _input.UiScale);
         if (Math.Abs(UiLayout.Width - tw) > 1) { UiLayout.Width = tw; UiLayout.Height = (int)(GraphicsDevice.Viewport.Height / _input.UiScale); _needsButtonLayoutUpdate = true; _visuals.Resize(GraphicsDevice); }
         if (_needsButtonLayoutUpdate) { LayoutSystem.SetupButtons(_buttons, _engine, _particles, _audio, _log.AddToLog, SetTab, _visuals, _aiMode, ToggleFullscreen); _needsButtonLayoutUpdate = false; }
-        if (_aiMode) _ai.HandleAiUpdate(gameTime, GraphicsDevice, _screenshotPath, Draw, Exit, _visuals, _buttons, _input);
+        if (_aiMode) _ai.HandleAiUpdate(gameTime, GraphicsDevice, _screenshotPath, Draw, Exit, _visuals, _buttons, _input, _tutorial);
         if (_input.IsKeyPressed(Keys.Escape)) Exit();
         UpdateGameLogic((float)gameTime.ElapsedGameTime.TotalSeconds);
         LayoutSystem.ApplyLayout(_buttons, _currentTab);
@@ -151,6 +158,8 @@ public class Game1 : Game
             _spriteBatch.Begin(); _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons); _spriteBatch.End();
             _spriteBatch.Begin(); _visuals.DrawTabTransition(_spriteBatch); _visuals.DrawReactionFlash(_spriteBatch); _spriteBatch.End();
         }
-        _visuals.EndRenderToTarget(GraphicsDevice, _spriteBatch); base.Draw(gameTime);
+        _visuals.EndRenderToTarget(GraphicsDevice, _spriteBatch, _pendingScreenshotPath);
+        _pendingScreenshotPath = null;
+        base.Draw(gameTime);
     }
 }

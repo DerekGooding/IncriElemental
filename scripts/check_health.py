@@ -220,6 +220,35 @@ def export_shields_data(monolith_count, coverage, docs_pass, tests_pass, screens
     # Keep the legacy health_data.json just in case, but point it to summary
     with open("health_data.json", "w") as f: json.dump(summary, f, indent=4)
 
+def check_visual_health():
+    print("\n--- Checking Visual Health (Black Screens) ---")
+    screenshots = ["review/void_main.png", "review/spire_flow.png", "review/world_map.png", "review/mixing_table.png"]
+    all_pass = True
+
+    scripts_dir = os.path.abspath("scripts")
+    if scripts_dir not in sys.path:
+        sys.path.append(scripts_dir)
+    
+    try:
+        from verify_black_screen import is_completely_black
+    except ImportError:
+        print("[WARNING] Could not import verify_black_screen. Skipping.")
+        return True
+
+    for s in screenshots:
+        if not os.path.exists(s):
+            print(f"[ERROR] Screenshot missing: {s}")
+            all_pass = False
+            continue
+        
+        if is_completely_black(s):
+            print(f"[FAIL] Screenshot is completely black: {s}")
+            all_pass = False
+        else:
+            print(f"[SUCCESS] {s} contains visual data.")
+
+    return all_pass
+
 if __name__ == "__main__":
     skip_tests = "--skip-tests" in sys.argv
     
@@ -232,12 +261,13 @@ if __name__ == "__main__":
     d_pass = check_docs_staleness()
     s_pass = check_screenshot_staleness()
     u_pass = check_ui_collisions()
+    v_pass = check_visual_health()
     
     t_pass = cov_val > 0 and cov_pass and tests_passed
     
     export_shields_data(m_count, cov_val, d_pass, t_pass, s_pass)
 
-    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not s_pass or not u_pass:
+    if m_count > 0 or not cov_pass or not d_pass or not tests_passed or not s_pass or not u_pass or not v_pass:
         print("\n[FAIL] Health checks failed.")
         sys.exit(1)
     

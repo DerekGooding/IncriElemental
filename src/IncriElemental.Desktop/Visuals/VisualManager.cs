@@ -34,6 +34,7 @@ public class VisualManager
     }
 
     public void AddShake(float intensity) => ScreenShakeIntensity = Math.Max(ScreenShakeIntensity, intensity);
+    public void ClearShake() => ScreenShakeIntensity = 0f;
     public void StartTabTransition() => TabTransitionAlpha = 1.0f;
     public void StartReactionSequence(Color color) { ReactionFlashAlpha = 1.0f; _reactionColor = color; AddShake(5f); }
     public void StartCelebration() { CelebrationFlashAlpha = 1.0f; AddShake(10f); }
@@ -76,9 +77,12 @@ public class VisualManager
 
     public void BeginRenderToTarget(GraphicsDevice graphicsDevice) => graphicsDevice.SetRenderTarget(_renderTarget);
 
-    public void EndRenderToTarget(GraphicsDevice gd, SpriteBatch sb)
+    public void EndRenderToTarget(GraphicsDevice gd, SpriteBatch sb, string? screenshotPath = null)
     {
         gd.SetRenderTarget(null);
+
+        if (!string.IsNullOrEmpty(screenshotPath)) SaveScreenshot(screenshotPath);
+
         gd.Clear(Color.Black);
         sb.Begin(effect: _bloomEffect);
         sb.Draw(_renderTarget, new Rectangle(0, 0, gd.Viewport.Width, gd.Viewport.Height), _globalTint);

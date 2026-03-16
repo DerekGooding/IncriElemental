@@ -1,7 +1,7 @@
 {
-  "Timestamp": "2026-03-16T19:08:57.303566Z",
+  "Timestamp": "2026-03-16T20:10:25.3784718Z",
   "Performance": {
-    "TotalTime": 0.166667,
+    "TotalTime": 0.0833335,
     "ElapsedFrameTime": 16.6667
   },
   "Buttons": [
@@ -11,9 +11,9 @@
       "Tooltip": "",
       "Bounds": {
         "X": 312,
-        "Y": 10,
-        "Width": 80,
-        "Height": 30
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
       },
       "Tab": "None"
     },
@@ -22,10 +22,10 @@
       "Subtitle": null,
       "Tooltip": "",
       "Bounds": {
-        "X": 782,
-        "Y": 10,
-        "Width": 80,
-        "Height": 30
+        "X": 787,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
       },
       "Tab": "None"
     },
@@ -34,10 +34,10 @@
       "Subtitle": null,
       "Tooltip": "",
       "Bounds": {
-        "X": 100,
-        "Y": 10,
+        "X": 5,
+        "Y": 5,
         "Width": 80,
-        "Height": 25
+        "Height": 20
       },
       "Tab": "None"
     },
@@ -49,7 +49,7 @@
         "X": 412,
         "Y": 60,
         "Width": 200,
-        "Height": 80
+        "Height": 70
       },
       "Tab": "Void"
     }
