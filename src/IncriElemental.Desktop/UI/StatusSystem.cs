@@ -36,7 +36,7 @@ public class StatusSystem
         // Actually, looking at void_main.json, buttons are at Y=10.
         // Let's use Y=55 for the first header.
         y = 55;
-        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ESSENCE"), new Vector2(x, y), Color.Gray, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+        visuals.DrawString(spriteBatch, font, TextService.Instance.Get("HDR_ESSENCE"), new Vector2(x, y), Color.Gray, 0.8f);
         y += 25;
 
         foreach (var res in engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000))
@@ -46,7 +46,7 @@ public class StatusSystem
             var label = $"{resName}: {amountStr}";
 
             visuals.DrawElement(spriteBatch, res.Type, new Vector2(x - 12, y + 6), 5f);
-            spriteBatch.DrawString(font, label, new Vector2(x, y), visuals.GetColor(res.Type), 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+            visuals.DrawString(spriteBatch, font, label, new Vector2(x, y), visuals.GetColor(res.Type), 0.8f);
 
             if (_history.TryGetValue(res.Type, out var h) && h.Count > 1)
             {
@@ -70,13 +70,13 @@ public class StatusSystem
         }
 
         y += 15;
-        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_ACTIVE_REACTION"), new Vector2(x, y), Color.Gray * 0.4f, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
+        visuals.DrawString(spriteBatch, font, TextService.Instance.Get("HDR_ACTIVE_REACTION"), new Vector2(x, y), Color.Gray * 0.4f, 0.7f);
         y += 20;
         foreach (var buff in engine.State.ActiveBuffs)
         {
             var pulse = (float)Math.Sin(visuals.GetTotalTime() * 5.0) * 0.2f + 0.8f;
             visuals.DrawElement(spriteBatch, ResourceType.Aether, new Vector2(x - 12, y + 6), 6f * pulse);
-            spriteBatch.DrawString(font, $"{buff.Id}: {buff.RemainingTime:F0}s", new Vector2(x, y), Color.Gold * 0.7f, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+            visuals.DrawString(spriteBatch, font, $"{buff.Id}: {buff.RemainingTime:F0}s", new Vector2(x, y), Color.Gold * 0.7f, 0.8f);
             y += 20;
         }
 
@@ -101,7 +101,7 @@ public class StatusSystem
         if (manifestations.Count == 0) return;
 
         var defs = engine.GetDefinitions().ToDictionary(d => d.Id, d => d);
-        spriteBatch.DrawString(font, TextService.Instance.Get("HDR_MANIFESTATIONS"), new Vector2(x, yOffset), Color.Gray * 0.5f);
+        visuals.DrawString(spriteBatch, font, TextService.Instance.Get("HDR_MANIFESTATIONS"), new Vector2(x, yOffset), Color.Gray * 0.5f);
         var curY = yOffset + 30;
 
         foreach (var entry in manifestations.Where(m => m.Value > 0).OrderBy(m => m.Key))
@@ -114,7 +114,7 @@ public class StatusSystem
             _inventoryBounds[rect] = entry.Key;
             var color = Color.White * 0.8f;
             if (rect.Contains(mousePos)) color = Color.Gold;
-            spriteBatch.DrawString(font, label, new Vector2(x, curY), color, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+            visuals.DrawString(spriteBatch, font, label, new Vector2(x, curY), color, 0.8f);
             curY += 22;
         }
 

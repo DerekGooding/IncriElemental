@@ -56,12 +56,12 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
                 textPos.Y -= (subSize.Y / 2 + 2);
             }
 
-            spriteBatch.DrawString(font, locText, textPos, Color * (IsHovered ? 1.0f : 0.8f));
+            visuals.DrawString(spriteBatch, font, locText, textPos, Color * (IsHovered ? 1.0f : 0.8f));
 
             if (!string.IsNullOrEmpty(locSub))
             {
                 var subPos = new Vector2(b.Center.X - subSize.X / 2, textPos.Y + textSize.Y - 2);
-                spriteBatch.DrawString(font, locSub, subPos, Color * 0.5f, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+                visuals.DrawString(spriteBatch, font, locSub, subPos, Color * 0.5f, 0.8f);
             }
         }
     }

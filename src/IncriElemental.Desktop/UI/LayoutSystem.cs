@@ -25,7 +25,7 @@ public class LayoutSystem
         buttons.Add(new Button(new Rectangle(startX + 385, 5, tabW, tabH), "[TAB_FLOW]", Color.Cyan, () => setTab(GameTab.Flow), () => engine.State.Discoveries.ContainsKey("aether_unlocked"), tab: GameTab.None));
         
         if (aiMode) buttons.Add(new Button(new Rectangle(startX + 475, 5, tabW, tabH), "[TAB_DEBUG]", Color.Red, () => setTab(GameTab.Debug), tab: GameTab.None));
-        if (toggleFullscreen != null) buttons.Add(new Button(new Rectangle(5, 5, 80, 20), "[BTN_FULLSCREEN]", Color.Gray * 0.6f, toggleFullscreen, tab: GameTab.None));
+        if (toggleFullscreen != null) buttons.Add(new Button(new Rectangle(5, 5, 120, 20), "[BTN_FULLSCREEN]", Color.Gray * 0.6f, toggleFullscreen, tab: GameTab.None));
 
         var centerX = UiLayout.Width / 2;
         var focusBtn = new Button(new Rectangle(centerX - 100, 45, 200, 70), "[BTN_FOCUS]", Color.MediumPurple, () => {

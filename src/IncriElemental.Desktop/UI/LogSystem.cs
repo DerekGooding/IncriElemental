@@ -26,12 +26,12 @@ public class LogSystem
     {
         if (font != null)
         {
-            spriteBatch.DrawString(font, "LOG", new Vector2(20, 20), Color.Gray * 0.5f);
+            visuals.DrawString(spriteBatch, font, "LOG", new Vector2(20, 55), Color.Gray * 0.5f);
             for (var i = 0; i < _log.Count; i++)
             {
                 var alpha = MathHelper.SmoothStep(1.0f, 0.0f, (float)i / MaxLogLines);
                 var tokens = RichTextSystem.Parse(_log[i]);
-                RichTextSystem.Draw(spriteBatch, font, tokens, new Vector2(20, 60 + (i * 25)), Color.LightGray * alpha, 0.9f, visuals);
+                RichTextSystem.Draw(spriteBatch, font, tokens, new Vector2(20, 80 + (i * 25)), Color.LightGray * alpha, 0.9f, visuals, 175f);
             }
         }
     }

@@ -77,7 +77,7 @@ public static class RichTextSystem
         };
     }
 
-    public static void Draw(SpriteBatch spriteBatch, SpriteFont font, List<RichTextToken> tokens, Vector2 position, Color defaultColor, float scale, VisualManager visuals)
+    public static void Draw(SpriteBatch spriteBatch, SpriteFont font, List<RichTextToken> tokens, Vector2 position, Color defaultColor, float scale, VisualManager visuals, float maxWidth = 0)
     {
         var curPos = position;
         var currentColor = defaultColor;
@@ -88,8 +88,20 @@ public static class RichTextSystem
             switch (token.Type)
             {
                 case TokenType.Text:
-                    var size = font.MeasureString(token.Value) * scale;
-                    spriteBatch.DrawString(font, token.Value, curPos, currentColor, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                    var text = token.Value;
+                    if (maxWidth > 0 && curPos.X + font.MeasureString(text).X * scale > position.X + maxWidth)
+                    {
+                        // Simple wrapping - truncated for now as per project standard to keep it surgical
+                        // but ideally we would wrap to next line.
+                        // Let's just truncate with "..." if it's too long for the panel.
+                        var available = (position.X + maxWidth) - curPos.X;
+                        if (available < 10) break;
+                        while (text.Length > 0 && font.MeasureString(text + "...").X * scale > available)
+                            text = text.Substring(0, text.Length - 1);
+                        text += "...";
+                    }
+                    var size = font.MeasureString(text) * scale;
+                    visuals.DrawString(spriteBatch, font, text, curPos, currentColor, scale);
                     curPos.X += size.X;
                     break;
                 case TokenType.Icon:

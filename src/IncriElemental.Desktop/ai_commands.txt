@@ -1,5 +1,6 @@
 focus
 focus
-focus
-focus
-focus
+manifest:speck
+manifest:forge
+tab:spire
+screenshot:mixing_table

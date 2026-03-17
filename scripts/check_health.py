@@ -111,11 +111,12 @@ def check_ui_collisions():
         with open(meta, "r") as f:
             data = json.load(f)
             buttons = data.get("Buttons", [])
-            collisions = detect_collisions(buttons)
+            elements = data.get("Elements", [])
+            collisions = detect_collisions(buttons, elements)
             if collisions:
                 print(f"[FAIL] Collisions in {meta}:")
                 for c in collisions:
-                    print(f"  - {c[0]} overlaps with {c[1]}")
+                    print(f"  - {c}")
                 all_pass = False
             else:
                 print(f"[SUCCESS] No collisions in {meta}")

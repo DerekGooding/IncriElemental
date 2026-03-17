@@ -35,6 +35,7 @@ public class VisualManager
 
     public void AddShake(float intensity) => ScreenShakeIntensity = Math.Max(ScreenShakeIntensity, intensity);
     public void ClearShake() => ScreenShakeIntensity = 0f;
+    public void ClearTransitions() { TabTransitionAlpha = 0f; ReactionFlashAlpha = 0f; CelebrationFlashAlpha = 0f; ScreenShakeIntensity = 0f; }
     public void StartTabTransition() => TabTransitionAlpha = 1.0f;
     public void StartReactionSequence(Color color) { ReactionFlashAlpha = 1.0f; _reactionColor = color; AddShake(5f); }
     public void StartCelebration() { CelebrationFlashAlpha = 1.0f; AddShake(10f); }
@@ -209,7 +210,18 @@ public class VisualManager
         ending.Draw(sb, engine, font, pixel, gt, mouse, click, reset);
     }
 
-    public void DrawPanel(SpriteBatch sb, Texture2D px, Rectangle r, Color color, float opacity = 0.1f) => UiVisuals.DrawPanel(sb, px, r, color, _totalTime, opacity);
+    public void DrawPanel(SpriteBatch sb, Texture2D px, Rectangle r, Color color, float opacity = 0.1f)
+    {
+        UiVisuals.DrawPanel(sb, px, r, color, _totalTime, opacity);
+        UiMetadataTracker.Register("Panel", "", r);
+    }
+
+    public void DrawString(SpriteBatch sb, SpriteFont font, string text, Vector2 pos, Color color, float scale = 1.0f)
+    {
+        sb.DrawString(font, text, pos, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+        var size = font.MeasureString(text) * scale;
+        UiMetadataTracker.Register("Text", text, new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y));
+    }
 
     public void SaveScreenshot(string path)
     {

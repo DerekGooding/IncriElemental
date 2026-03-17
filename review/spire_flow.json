@@ -1,7 +1,7 @@
 {
-  "Timestamp": "2026-03-16T20:10:32.7307457Z",
+  "Timestamp": "2026-03-17T13:15:57.847957Z",
   "Performance": {
-    "TotalTime": 1.1000022,
+    "TotalTime": 0.0833335,
     "ElapsedFrameTime": 16.6667
   },
   "Buttons": [
@@ -36,7 +36,7 @@
       "Bounds": {
         "X": 5,
         "Y": 5,
-        "Width": 80,
+        "Width": 120,
         "Height": 20
       },
       "Tab": "None"
@@ -54,10 +54,152 @@
       "Tab": "Void"
     }
   ],
+  "Elements": [
+    {
+      "Type": "Panel",
+      "Text": "",
+      "Bounds": {
+        "X": 5,
+        "Y": 50,
+        "Width": 200,
+        "Height": 708
+      }
+    },
+    {
+      "Type": "Panel",
+      "Text": "",
+      "Bounds": {
+        "X": 814,
+        "Y": 50,
+        "Width": 205,
+        "Height": 708
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "LOG",
+      "Bounds": {
+        "X": 20,
+        "Y": 55,
+        "Width": 33,
+        "Height": 18
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "Focus to begin manifestin...",
+      "Bounds": {
+        "X": 20,
+        "Y": 80,
+        "Width": 174,
+        "Height": 16
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "You awaken in the void.",
+      "Bounds": {
+        "X": 20,
+        "Y": 105,
+        "Width": 153,
+        "Height": 16
+      }
+    },
+    {
+      "Type": "Panel",
+      "Text": "",
+      "Bounds": {
+        "X": 312,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "VOID",
+      "Bounds": {
+        "X": 334,
+        "Y": 8,
+        "Width": 39,
+        "Height": 18
+      }
+    },
+    {
+      "Type": "Panel",
+      "Text": "",
+      "Bounds": {
+        "X": 787,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "DEBUG",
+      "Bounds": {
+        "X": 800,
+        "Y": 8,
+        "Width": 58,
+        "Height": 18
+      }
+    },
+    {
+      "Type": "Panel",
+      "Text": "",
+      "Bounds": {
+        "X": 5,
+        "Y": 5,
+        "Width": 120,
+        "Height": 20
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "FULLSCREEN",
+      "Bounds": {
+        "X": 10,
+        "Y": 6,
+        "Width": 109,
+        "Height": 18
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "ESSENCE",
+      "Bounds": {
+        "X": 819,
+        "Y": 55,
+        "Width": 63,
+        "Height": 14
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "Aether: 2.0",
+      "Bounds": {
+        "X": 819,
+        "Y": 80,
+        "Width": 61,
+        "Height": 14
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "ACTIVE REACTION",
+      "Bounds": {
+        "X": 819,
+        "Y": 125,
+        "Width": 102,
+        "Height": 12
+      }
+    }
+  ],
   "Resources": [
     {
       "Type": "Aether",
-      "Amount": 15,
+      "Amount": 2,
       "PerSecond": 0
     },
     {

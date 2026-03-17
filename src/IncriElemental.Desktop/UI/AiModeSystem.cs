@@ -53,10 +53,12 @@ public class AiModeSystem(GameEngine engine)
             else if (act == "wait" && parts.Length > 1) { if (double.TryParse(parts[1], out var v)) { _waitTimer = v; isBlocking = true; } }
             else if (act == "screenshot" && parts.Length > 1) { 
                 var n = parts[1].Trim(); var p = n.EndsWith(".png") ? n : n + ".png"; if (!p.Contains('/') && !p.Contains('\\')) p = Path.Combine("review", p); 
-                var oldTut = tut.IsActive; tut.IsActive = false; vis.ClearShake();
+                var oldTut = tut.IsActive; tut.IsActive = false; vis.ClearShake(); vis.ClearTransitions();
+                UiMetadataTracker.Clear(); UiMetadataTracker.IsEnabled = true;
                 _game?.RequestScreenshot(p);
                 draw(gt); 
                 SaveMetadata(p.Replace(".png", ".json"), btns, gt); 
+                UiMetadataTracker.IsEnabled = false;
                 tut.IsActive = oldTut;
                 isBlocking = true;
             }
@@ -71,10 +73,12 @@ public class AiModeSystem(GameEngine engine)
 
         if (_commandIndex >= _commands.Count && gt.TotalGameTime.TotalSeconds > 3.0) { 
             if (!string.IsNullOrEmpty(defPath) && !File.Exists(defPath)) { 
-                var oldTut = tut.IsActive; tut.IsActive = false; vis.ClearShake();
+                var oldTut = tut.IsActive; tut.IsActive = false; vis.ClearShake(); vis.ClearTransitions();
+                UiMetadataTracker.Clear(); UiMetadataTracker.IsEnabled = true;
                 _game?.RequestScreenshot(defPath);
                 draw(gt); 
                 SaveMetadata(defPath.Replace(".png", ".json"), btns, gt); 
+                UiMetadataTracker.IsEnabled = false;
                 tut.IsActive = oldTut;
             } 
             exit(); 
@@ -83,7 +87,14 @@ public class AiModeSystem(GameEngine engine)
 
     private void SaveMetadata(string path, List<Button> buttons, GameTime gameTime)
     {
-        var metadata = new { Timestamp = DateTime.UtcNow, Performance = new { TotalTime = gameTime.TotalGameTime.TotalSeconds, ElapsedFrameTime = gameTime.ElapsedGameTime.TotalMilliseconds }, Buttons = buttons.Where(b => b.IsVisible()).Select(b => new { Text = b.Text, Subtitle = b.Subtitle, Tooltip = b.TooltipFunc?.Invoke() ?? "", Bounds = new { b.Bounds.X, b.Bounds.Y, b.Bounds.Width, b.Bounds.Height }, Tab = b.Tab.ToString() }).ToList(), Resources = _engine.State.Resources.Select(r => new { Type = r.Key.ToString(), Amount = r.Value.Amount, PerSecond = r.Value.PerSecond }).ToList(), ActiveBuffs = _engine.State.ActiveBuffs.Select(b => new { b.Id, b.RemainingTime }).ToList() };
+        var metadata = new { 
+            Timestamp = DateTime.UtcNow, 
+            Performance = new { TotalTime = gameTime.TotalGameTime.TotalSeconds, ElapsedFrameTime = gameTime.ElapsedGameTime.TotalMilliseconds }, 
+            Buttons = buttons.Where(b => b.IsVisible()).Select(b => new { Text = b.Text, Subtitle = b.Subtitle, Tooltip = b.TooltipFunc?.Invoke() ?? "", Bounds = new { b.Bounds.X, b.Bounds.Y, b.Bounds.Width, b.Bounds.Height }, Tab = b.Tab.ToString() }).ToList(), 
+            Elements = UiMetadataTracker.GetElements().Select(e => new { e.Type, e.Text, Bounds = new { e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height } }).ToList(),
+            Resources = _engine.State.Resources.Select(r => new { Type = r.Key.ToString(), Amount = r.Value.Amount, PerSecond = r.Value.PerSecond }).ToList(), 
+            ActiveBuffs = _engine.State.ActiveBuffs.Select(b => new { b.Id, b.RemainingTime }).ToList() 
+        };
         var options = new JsonSerializerOptions { WriteIndented = true }; var dir = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
         File.WriteAllText(path, JsonSerializer.Serialize(metadata, options));
