@@ -10,8 +10,12 @@ public class VisualManager
     private readonly Texture2D _pixel;
     private Effect? _bloomEffect;
     private Effect? _fluidEffect;
+    private Effect? _hologramEffect;
+    public Effect? HologramEffect => _hologramEffect;
     private RenderTarget2D? _renderTarget;
+    public float ProductionIntensity { get; private set; } = 0.5f;
     public float ScreenShakeIntensity { get; private set; } = 0f;
+
     public float AscensionTransitionAlpha { get; private set; } = 0f;
     public float TabTransitionAlpha { get; private set; } = 0f;
     public float ReactionFlashAlpha { get; private set; } = 0f;
@@ -20,6 +24,8 @@ public class VisualManager
     private bool _isAscending = false;
     private Color _globalTint = Color.White;
     private double _totalTime = 0;
+    private float _cameraZoom = 1.0f;
+    private float _cameraRotation = 0f;
 
     public VisualManager(GraphicsDevice graphicsDevice)
     {
@@ -38,8 +44,8 @@ public class VisualManager
     public void ClearShake() => ScreenShakeIntensity = 0f;
     public void ClearTransitions() { TabTransitionAlpha = 0f; ReactionFlashAlpha = 0f; CelebrationFlashAlpha = 0f; ScreenShakeIntensity = 0f; }
     public void StartTabTransition() => TabTransitionAlpha = 1.0f;
-    public void StartReactionSequence(Color color) { ReactionFlashAlpha = 1.0f; _reactionColor = color; AddShake(5f); }
-    public void StartCelebration() { CelebrationFlashAlpha = 1.0f; AddShake(10f); }
+    public void StartReactionSequence(Color color) { ReactionFlashAlpha = 1.0f; _reactionColor = color; AddShake(5f); _cameraZoom = 1.05f; }
+    public void StartCelebration() { CelebrationFlashAlpha = 1.0f; AddShake(10f); _cameraZoom = 1.1f; _cameraRotation = 0.05f; }
     public double GetTotalTime() => _totalTime;
 
     public void Update(float deltaTime, bool engineHasAscended, double totalProduction, ResourceType dominantResource = ResourceType.Aether)
@@ -59,10 +65,14 @@ public class VisualManager
 
         if (_bloomEffect != null)
         {
-            float intensity = (float)(0.5 + Math.Min(2.0, Math.Log10(Math.Max(1, totalProduction)) * 0.2));
-            _bloomEffect.Parameters["BloomIntensity"]?.SetValue(intensity);
+            ProductionIntensity = (float)(0.5 + Math.Min(2.0, Math.Log10(Math.Max(1, totalProduction)) * 0.2));
+            _bloomEffect.Parameters["BloomIntensity"]?.SetValue(ProductionIntensity);
             _bloomEffect.Parameters["BloomThreshold"]?.SetValue(0.4f);
         }
+
+        _cameraZoom = MathHelper.Lerp(_cameraZoom, 1.0f, deltaTime * 2f);
+        _cameraRotation = MathHelper.Lerp(_cameraRotation, 0f, deltaTime * 2f);
+    }
     }
 
     public Vector2 GetShakeOffset()
@@ -72,9 +82,19 @@ public class VisualManager
         return new Vector2((float)(rnd.NextDouble() * 2 - 1) * ScreenShakeIntensity, (float)(rnd.NextDouble() * 2 - 1) * ScreenShakeIntensity);
     }
 
+    public Matrix GetCameraMatrix()
+    {
+        var shake = GetShakeOffset();
+        return Matrix.CreateTranslation(-UiLayout.Width / 2f, -UiLayout.Height / 2f, 0) *
+               Matrix.CreateRotationZ(_cameraRotation) *
+               Matrix.CreateScale(_cameraZoom, _cameraZoom, 1.0f) *
+               Matrix.CreateTranslation(UiLayout.Width / 2f + shake.X, UiLayout.Height / 2f + shake.Y, 0);
+    }
+
     public void LoadEffects(Microsoft.Xna.Framework.Content.ContentManager content, BackgroundManager bg)
     {
         try { _bloomEffect = content.Load<Effect>("Bloom"); } catch { }
+        try { _hologramEffect = content.Load<Effect>("Hologram"); } catch { }
         try { bg.LoadContent(content); } catch { }
     }
 
@@ -214,7 +234,7 @@ public class VisualManager
 
     public void DrawPanel(SpriteBatch sb, Texture2D px, Rectangle r, Color color, float opacity = 0.1f)
     {
-        UiVisuals.DrawPanel(sb, px, r, color, _totalTime, opacity);
+        UiVisuals.DrawPanel(sb, px, r, color, _totalTime, ProductionIntensity, opacity);
         UiMetadataTracker.Register("Panel", "", r);
     }
 

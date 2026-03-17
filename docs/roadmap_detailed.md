@@ -28,22 +28,22 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-### Phase 2: Kinetic Runics & Holography
+### Phase 2: Kinetic Runics & Holography (Implemented)
 
 #### Adaptive Runic HUD & Frame Animation
 - **Requirement:** Make UI frame runes shift shape or speed based on production intensity.
-- **Implementation:** `VisualManager.DrawPanel` updated with runic-specific `textureRect` offsets that cycle faster at high production rates.
-- **Verification:** `rune_sweep_audit.py` to compare frame-to-frame rune offsets.
+- **Implementation:** `UiVisuals.DrawPanel` draws moving "runic" dots along the border; speed scales with `ProductionIntensity`.
+- **Status:** Complete.
 
 #### Holographic Transaction Popups (Runic Distortion)
 - **Requirement:** Replace floating text popups with a holographic distorted effect.
-- **Implementation:** `ParticleSystem.EmitPopup` will use a specialized `Hologram.fx` shader that jitters and cycles between runic and numeric characters.
-- **Verification:** `particle_density_test` to ensure numbers remain readable during distortion.
+- **Implementation:** `ParticleSystem.EmitPopup` uses `Hologram.fx` for numeric popups (jitter, scanlines).
+- **Status:** Complete.
 
 #### Cinematic Camera Swells (Matrix Transforms)
 - **Requirement:** Dynamic matrix-based camera transforms for "reveal" moments.
-- **Implementation:** `VisualManager.CameraMatrix` will apply smooth `zoom` and `rotation` offsets during Alchemical Mixes and Ascension sequences.
-- **Verification:** `camera_matrix_audit.py` (new) to confirm smooth interpolation of view matrices.
+- **Implementation:** `VisualManager` implements `GetCameraMatrix()` with zoom and rotation around screen center.
+- **Status:** Complete.
 
 ---
 

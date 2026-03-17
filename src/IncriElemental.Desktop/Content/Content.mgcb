@@ -28,3 +28,10 @@
 /build:Fluid.fx
 #end Fluid.fx
 
+#begin Hologram.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/build:Hologram.fx
+#end Hologram.fx
+
+

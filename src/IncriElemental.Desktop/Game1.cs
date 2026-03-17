@@ -81,6 +81,8 @@ public class Game1 : Game
             var cp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ai_commands.txt"); 
             _ai.Process(cp, SetTab); 
         }
+        EventBus.ResourceGained += (t, a) => _particles.EmitPopup(new Vector2(400, 300), $"+{a:F1} {t}", _visuals.GetColorForId(t.ToLower()));
+
         base.Initialize();
     }
 
@@ -144,9 +146,9 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         _visuals.BeginRenderToTarget(GraphicsDevice);
-        var shk = _visuals.GetShakeOffset(); var off = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
+        var cam = _visuals.GetCameraMatrix(); var off = (int)_tabScrollOffsets.GetValueOrDefault(_currentTab, 0);
         if (_engine.State.Discoveries.ContainsKey("ascended")) {
-            _visuals.Clear(GraphicsDevice, Color.White); _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shk.X, shk.Y, 0));
+            _visuals.Clear(GraphicsDevice, Color.White); _spriteBatch.Begin(transformMatrix: cam);
             _visuals.DrawAscended(_spriteBatch, _ending, _engine, _font, _pixel, gameTime, _input.MousePosition, _input.IsLeftClick(), () => { _engine.Manifest("reset"); _log.Clear(); });
             _spriteBatch.End();
         } else {
@@ -159,16 +161,19 @@ public class Game1 : Game
             _visuals.Clear(GraphicsDevice, new Color(5, 5, 10)); _spriteBatch.Begin(); _bg.Draw(_spriteBatch, dominantColor);
             if (_currentTab == GameTab.Flow || _currentTab == GameTab.Spire) _visuals.DrawDimmer(_spriteBatch, 0.3f);
             _spriteBatch.End();
-            _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shk.X, shk.Y, 0));
+            _spriteBatch.Begin(transformMatrix: cam);
             _visuals.DrawPanel(_spriteBatch, _pixel, new Rectangle(5, 50, 200, UiLayout.Height - 60), Color.MediumPurple * 0.5f, 0.1f);
             _visuals.DrawPanel(_spriteBatch, _pixel, new Rectangle(UiLayout.Width - 210, 50, 205, UiLayout.Height - 60), Color.MediumPurple * 0.5f, 0.1f);
-            _visuals.DrawWorldElements(_spriteBatch, _log, _font, _pixel, _particles, _buttons); _spriteBatch.End();
+            _log.Draw(_spriteBatch, _font, _pixel, _visuals);
+            _particles.Draw(_spriteBatch, _font, _visuals.HologramEffect, _visuals.GetTotalTime());
+            LayoutSystem.DrawFixedButtons(_spriteBatch, _buttons, _font, _pixel, _visuals);
+            _spriteBatch.End();
             GraphicsDevice.ScissorRectangle = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
-            _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: Matrix.CreateTranslation(shk.X, shk.Y, 0));
+            _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: cam);
             LayoutSystem.DrawTabButtons(_spriteBatch, _buttons, _currentTab, _font, _pixel, _visuals, off);
             _visuals.DrawTabContent(_spriteBatch, _currentTab, _engine, gameTime, _mixing, _input.MousePosition, _map, _font, _pixel, _debug);
             _spriteBatch.End();
-            _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shk.X, shk.Y, 0));
+            _spriteBatch.Begin(transformMatrix: cam);
             _visuals.DrawTooltipsAndStatus(_spriteBatch, _buttons, _currentTab, _font, _pixel, off, _input.IsTooltipPinned, _pinnedButton, _status, _engine, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
             _spriteBatch.End();
             if (_visuals.AscensionTransitionAlpha > 0) { _spriteBatch.Begin(); _visuals.DrawOverlay(_spriteBatch, _visuals.AscensionTransitionAlpha); _spriteBatch.End(); }

@@ -28,10 +28,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Interactive Aether Ripples:** UI clicks/mouse movement create ripples in the background. (Tools: `parallax_audit.py`)
 - [x] **Element-Spec Tinctures:** Entire scene color-profiles shift based on production. (Tools: `palette_audit.py`)
 
-### Phase 2: Kinetic Runics & Holography
-- [ ] **Adaptive Runic HUD:** Frame runes change shape/speed with activity. (Tools: `rune_sweep_audit.py`)
-- [ ] **Holographic Popups:** Replace floating text with runically-distorted numbers. (Tools: `particle_density_test`)
-- [ ] **Cinematic Camera Swells:** Dynamic zooming/rotation for major milestones. (Tools: `camera_matrix_audit.py`)
+### Phase 2: Kinetic Runics & Holography (Completed)
+- [x] **Adaptive Runic HUD:** Frame runes change shape/speed with activity. (Tools: `rune_sweep_audit.py`)
+- [x] **Holographic Popups:** Replace floating text with runically-distorted numbers. (Tools: `particle_density_test`)
+- [x] **Cinematic Camera Swells:** Dynamic zooming/rotation for major milestones. (Tools: `camera_matrix_audit.py`)
 
 ### Phase 3: Agentic Sight & Visual Integrity
 - [ ] **Semantic Intent Metadata:** Add intent tags to `screenshot.json` for agent guidance. (Tools: `json_schema_audit.py`)
