@@ -155,7 +155,7 @@ public class Game1 : Game
             _visuals.DrawTooltipsAndStatus(_spriteBatch, _buttons, _currentTab, _font, _pixel, off, _input.IsTooltipPinned, _pinnedButton, _status, _engine, (int)(UiLayout.Width * 0.8f), _input.MousePosition);
             _spriteBatch.End();
             if (_visuals.AscensionTransitionAlpha > 0) { _spriteBatch.Begin(); _visuals.DrawOverlay(_spriteBatch, _visuals.AscensionTransitionAlpha); _spriteBatch.End(); }
-            _spriteBatch.Begin(); _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons); _spriteBatch.End();
+            if (string.IsNullOrEmpty(_pendingScreenshotPath)) { _spriteBatch.Begin(); _tutorial.Draw(_spriteBatch, _font, _pixel, _buttons); _spriteBatch.End(); }
             _spriteBatch.Begin(); _visuals.DrawTabTransition(_spriteBatch); _visuals.DrawReactionFlash(_spriteBatch); _spriteBatch.End();
         }
         _visuals.EndRenderToTarget(GraphicsDevice, _spriteBatch, _pendingScreenshotPath);
