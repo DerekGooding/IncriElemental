@@ -1,0 +1,26 @@
+# Gallery Capture Script for README
+wait:0.1
+# Tab: Void
+tab:Void
+wait:0.5
+screenshot:void_tab
+# Tab: Spire
+discovery:forge_constructed
+tab:Spire
+wait:0.5
+screenshot:spire_tab
+# Tab: World
+discovery:garden_manifested
+tab:World
+wait:0.5
+screenshot:world_tab
+# Tab: Flow
+discovery:aether_unlocked
+tab:Flow
+wait:0.5
+screenshot:flow_tab
+# Tab: Constellation
+resource:CosmicInsight:10.0
+tab:Constellation
+wait:0.5
+screenshot:constellation_tab

@@ -33,10 +33,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Holographic Popups:** Replace floating text with runically-distorted numbers. (Tools: `particle_density_test`)
 - [x] **Cinematic Camera Swells:** Dynamic zooming/rotation for major milestones. (Tools: `camera_matrix_audit.py`)
 
-### Phase 3: Agentic Sight & Visual Integrity
-- [ ] **Semantic Intent Metadata:** Add intent tags to `screenshot.json` for agent guidance. (Tools: `json_schema_audit.py`)
-- [ ] **Automated Visual Regression:** Scripted comparison against "Golden References." (Tools: `visual_sanity_check.py`)
-- [ ] **Visual Gallery Module:** Automated gallery generation for README documentation. (Tools: `scripts/generate_gallery.py`)
+### Phase 3: Agentic Sight & Visual Integrity (Completed)
+- [x] **Semantic Intent Metadata:** Add intent tags to `screenshot.json` for agent guidance. (Tools: `json_schema_audit.py`)
+- [x] **Automated Visual Regression:** Scripted comparison against "Golden References." (Tools: `visual_sanity_check.py`)
+- [x] **Visual Gallery Module:** Automated gallery generation for README documentation. (Tools: `scripts/generate_gallery.py`)
 
 ### Phase 4: The Final Showcase
 - [ ] **Ultra-High-Fid README:** Integrate dynamic GIFs and high-res screenshots into repository docs.

@@ -10,6 +10,7 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
     public Rectangle Bounds = bounds;
     public string Text = text;
     public string? Subtitle = subtitle;
+    public string Intent = ""; // Semantic Intent for Agentic AI
     public Color Color = color;
     public Action OnClick = onClick;
     public Func<bool> VisibilityFunc = isVisible ?? (() => true);
@@ -38,6 +39,9 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
         var b = new Rectangle(Bounds.X, Bounds.Y + yOffset, Bounds.Width, Bounds.Height);
         float opacity = IsHovered ? 0.3f : 0.15f;
         visuals.DrawPanel(spriteBatch, pixel, b, Color, opacity);
+        
+        // Register button metadata with intent
+        UiMetadataTracker.Register("Button", Text, b, Intent);
 
         if (font != null)
         {
@@ -51,6 +55,7 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
             if (!string.IsNullOrEmpty(Subtitle))
             {
                 locSub = (Subtitle.StartsWith("[") && Subtitle.EndsWith("]")) ? TextService.Instance.Get(Subtitle.Trim('[', ']')) : Subtitle;
+
                 if (string.IsNullOrEmpty(locSub)) locSub = Subtitle;
                 subSize = font.MeasureString(locSub) * 0.8f;
                 textPos.Y -= (subSize.Y / 2 + 2);

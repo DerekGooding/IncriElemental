@@ -9,6 +9,7 @@ public static class UiMetadataTracker
     {
         public string Type { get; set; } = "";
         public string Text { get; set; } = "";
+        public string Intent { get; set; } = ""; // Semantic Intent for Agentic AI
         public Rectangle Bounds { get; set; }
     }
 
@@ -17,10 +18,10 @@ public static class UiMetadataTracker
 
     public static void Clear() => _elements.Clear();
 
-    public static void Register(string type, string text, Rectangle bounds)
+    public static void Register(string type, string text, Rectangle bounds, string intent = "")
     {
         if (!IsEnabled) return;
-        _elements.Add(new UiElement { Type = type, Text = text, Bounds = bounds });
+        _elements.Add(new UiElement { Type = type, Text = text, Bounds = bounds, Intent = intent });
     }
 
     public static List<UiElement> GetElements() => new(_elements);

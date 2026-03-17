@@ -18,14 +18,14 @@ public class LayoutSystem
         var availableWidth = UiLayout.Width - 420;
         var startX = 210 + (availableWidth / 2) - 200;
         
-        buttons.Add(new Button(new Rectangle(startX, 5, tabW, tabH), "[TAB_VOID]", Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 90, 5, tabW, tabH), "[TAB_SPIRE]", Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 180, 5, tabW, tabH), "[TAB_WORLD]", Color.LimeGreen, () => setTab(GameTab.World), () => engine.State.Discoveries.ContainsKey("garden_manifested"), tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 270, 5, 110, tabH), "[TAB_CONSTELLATION]", Color.Gold, () => setTab(GameTab.Constellation), () => engine.State.CosmicInsight > 1.0, tab: GameTab.None));
-        buttons.Add(new Button(new Rectangle(startX + 385, 5, tabW, tabH), "[TAB_FLOW]", Color.Cyan, () => setTab(GameTab.Flow), () => engine.State.Discoveries.ContainsKey("aether_unlocked"), tab: GameTab.None));
+        buttons.Add(new Button(new Rectangle(startX, 5, tabW, tabH), "[TAB_VOID]", Color.MediumPurple, () => setTab(GameTab.Void), tab: GameTab.None) { Intent = "TabNavigation" });
+        buttons.Add(new Button(new Rectangle(startX + 90, 5, tabW, tabH), "[TAB_SPIRE]", Color.Gray, () => setTab(GameTab.Spire), () => engine.State.Discoveries.ContainsKey("forge_constructed"), tab: GameTab.None) { Intent = "TabNavigation" });
+        buttons.Add(new Button(new Rectangle(startX + 180, 5, tabW, tabH), "[TAB_WORLD]", Color.LimeGreen, () => setTab(GameTab.World), () => engine.State.Discoveries.ContainsKey("garden_manifested"), tab: GameTab.None) { Intent = "TabNavigation" });
+        buttons.Add(new Button(new Rectangle(startX + 270, 5, 110, tabH), "[TAB_CONSTELLATION]", Color.Gold, () => setTab(GameTab.Constellation), () => engine.State.CosmicInsight > 1.0, tab: GameTab.None) { Intent = "TabNavigation" });
+        buttons.Add(new Button(new Rectangle(startX + 385, 5, tabW, tabH), "[TAB_FLOW]", Color.Cyan, () => setTab(GameTab.Flow), () => engine.State.Discoveries.ContainsKey("aether_unlocked"), tab: GameTab.None) { Intent = "TabNavigation" });
         
-        if (aiMode) buttons.Add(new Button(new Rectangle(startX + 475, 5, tabW, tabH), "[TAB_DEBUG]", Color.Red, () => setTab(GameTab.Debug), tab: GameTab.None));
-        if (toggleFullscreen != null) buttons.Add(new Button(new Rectangle(5, 5, 120, 20), "[BTN_FULLSCREEN]", Color.Gray * 0.6f, toggleFullscreen, tab: GameTab.None));
+        if (aiMode) buttons.Add(new Button(new Rectangle(startX + 475, 5, tabW, tabH), "[TAB_DEBUG]", Color.Red, () => setTab(GameTab.Debug), tab: GameTab.None) { Intent = "TabNavigation" });
+        if (toggleFullscreen != null) buttons.Add(new Button(new Rectangle(5, 5, 120, 20), "[BTN_FULLSCREEN]", Color.Gray * 0.6f, toggleFullscreen, tab: GameTab.None) { Intent = "SystemControl" });
 
         var centerX = UiLayout.Width / 2;
         var focusBtn = new Button(new Rectangle(centerX - 100, 45, 200, 70), "[BTN_FOCUS]", Color.MediumPurple, () => {
@@ -33,7 +33,7 @@ public class LayoutSystem
             particles.EmitFocus(new Vector2(centerX, 100));
             audio.PlayFocus();
             visuals.AddShake(2f);
-        }, tab: GameTab.Void);
+        }, tab: GameTab.Void) { Intent = "PrimaryAction" };
         focusBtn.TooltipFunc = () => TextService.Instance.Get("TOOLTIP_FOCUS", 1.0 * engine.State.CosmicInsight);
         buttons.Add(focusBtn);
 
@@ -56,7 +56,7 @@ public class LayoutSystem
                 var discovery = !string.IsNullOrEmpty(def.DiscoveryKey) && engine.State.Discoveries.GetValueOrDefault(def.DiscoveryKey);
                 var count = engine.State.Manifestations.GetValueOrDefault(def.Id);
                 return req && (cost || discovery) && count < def.MaxCount;
-            }, def.Subtitle, tab: targetTab);
+            }, def.Subtitle, tab: targetTab) { Intent = "ManifestStructure" };
             
             btn.TooltipFunc = () => visuals.GetManifestationTooltip(def, engine);
             buttons.Add(btn);
@@ -64,11 +64,13 @@ public class LayoutSystem
 
         buttons.Add(new Button(new Rectangle(centerX - 100, 0, 200, 45), TextService.Instance.Get("BTN_COMBUSTION"), Color.OrangeRed, () => {
             if (engine.Mix(ResourceType.Fire, ResourceType.Air)) { audio.PlayManifest(); visuals.AddShake(3f); }
-        }, () => engine.State.Discoveries.ContainsKey("fire_unlocked") && engine.State.Discoveries.ContainsKey("air_unlocked"), "100F / 100Air", GameTab.Void) { TooltipFunc = () => TextService.Instance.Get("TOOLTIP_COMBUSTION") });
+        }, () => engine.State.Discoveries.ContainsKey("fire_unlocked") && engine.State.Discoveries.ContainsKey("air_unlocked"), "100F / 100Air", GameTab.Void) { TooltipFunc = () => TextService.Instance.Get("TOOLTIP_COMBUSTION"), Intent = "AlchemicalMix" });
+
 
         buttons.Add(new Button(new Rectangle(centerX - 100, 0, 200, 45), TextService.Instance.Get("BTN_FERTILITY"), Color.LimeGreen, () => {
             if (engine.Mix(ResourceType.Water, ResourceType.Earth)) { audio.PlayManifest(); visuals.AddShake(3f); }
-        }, () => engine.State.Discoveries.ContainsKey("water_unlocked") && engine.State.Discoveries.ContainsKey("garden_manifested"), "100W / 100E", GameTab.Void) { TooltipFunc = () => TextService.Instance.Get("TOOLTIP_FERTILITY") });
+        }, () => engine.State.Discoveries.ContainsKey("water_unlocked") && engine.State.Discoveries.ContainsKey("garden_manifested"), "100W / 100E", GameTab.Void) { TooltipFunc = () => TextService.Instance.Get("TOOLTIP_FERTILITY"), Intent = "AlchemicalMix" });
+
     }
 
     public static void ApplyLayout(List<Button> buttons, GameTab currentTab)

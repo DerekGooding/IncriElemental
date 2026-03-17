@@ -235,14 +235,14 @@ public class VisualManager
     public void DrawPanel(SpriteBatch sb, Texture2D px, Rectangle r, Color color, float opacity = 0.1f)
     {
         UiVisuals.DrawPanel(sb, px, r, color, _totalTime, ProductionIntensity, opacity);
-        UiMetadataTracker.Register("Panel", "", r);
+        UiMetadataTracker.Register("Panel", "", r, "UIPanel");
     }
 
     public void DrawString(SpriteBatch sb, SpriteFont font, string text, Vector2 pos, Color color, float scale = 1.0f)
     {
         sb.DrawString(font, text, pos, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
         var size = font.MeasureString(text) * scale;
-        UiMetadataTracker.Register("Text", text, new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y));
+        UiMetadataTracker.Register("Text", text, new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y), "DisplayInfo");
     }
 
     public void SaveScreenshot(string path)

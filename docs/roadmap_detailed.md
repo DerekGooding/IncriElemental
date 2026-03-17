@@ -47,22 +47,22 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-### Phase 3: Agentic Sight & Visual Integrity
+### Phase 3: Agentic Sight & Visual Integrity (Implemented)
 
 #### Semantic Intent Metadata (Intent-Aware Tagging)
 - **Requirement:** Add "Semantic Intent" tags to the exported `screenshot.json`.
-- **Implementation:** `LayoutSystem.GetLayoutMetadata` updated to include `Intent` strings (e.g., "CriticalAction," "Navigation," "Information").
-- **Verification:** `json_schema_audit.py` to ensure all metadata files conform to the new intent-aware schema.
+- **Implementation:** `UiMetadataTracker` now includes `Intent` fields. `Button` and `VisualManager` register elements with semantic tags (e.g., "TabNavigation," "ManifestStructure").
+- **Status:** Complete.
 
 #### Automated Visual Regression & "Golden References"
 - **Requirement:** Automate comparing the current game state against a baseline.
-- **Implementation:** `scripts/visual_sanity_check.py` will load `screenshot.json` and compare element positions and visibility against a "Golden Reference" layout.
-- **Verification:** If elements shift > 5 pixels or overlap illegally, the script fails the visual audit.
+- **Implementation:** `scripts/visual_sanity_check.py` compares live `screenshot.json` vs `docs/golden_reference.json`, checking for intent shifts and positional delta.
+- **Status:** Complete.
 
 #### Visual Gallery Module & Documentation Integration
 - **Requirement:** Automated script to capture and organize screenshots for documentation.
-- **Implementation:** `scripts/generate_gallery.py` will trigger the game's internal screenshot system for every major tab and output a markdown mosaic to `review/gallery.md`.
-- **Status:** Planning.
+- **Implementation:** `scripts/generate_gallery.py` runs a multi-tab capture script and generates `review/gallery.md`.
+- **Status:** Complete.
 
 ---
 *Last Updated: Tuesday, March 17, 2026 (Updated by Agent Gemini)*
