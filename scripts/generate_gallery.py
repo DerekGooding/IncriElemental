@@ -55,8 +55,9 @@ def generate_gallery():
         gallery_md += f"## {name}\n"
         gallery_md += f"![{name}](./{f})\n\n"
         
-    with open(os.path.join(base_review, "gallery.md"), 'w') as f:
+    with open(os.path.join(base_review, "gallery.md"), 'w', encoding='utf-8') as f:
         f.write(gallery_md)
+
         
     print(f"Gallery generated at {os.path.join(base_review, 'gallery.md')}")
 
