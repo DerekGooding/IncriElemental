@@ -41,7 +41,7 @@ public class LayoutSystem
         foreach (var def in defs)
         {
             var targetTab = VisualManager.GetTabForDef(def);
-            var btn = new Button(new Rectangle(centerX - 100, 0, 200, 50), def.Name, VisualManager.GetColorForId(def.Id), () => {
+            var btn = new Button(new Rectangle(centerX - 100, 0, 200, 60), def.Name, VisualManager.GetColorForId(def.Id), () => {
                 if (engine.Manifest(def.Id))
                 {
                     audio.PlayManifest();
@@ -62,12 +62,12 @@ public class LayoutSystem
             buttons.Add(btn);
         }
 
-        buttons.Add(new Button(new Rectangle(centerX - 100, 0, 200, 45), TextService.Instance.Get("BTN_COMBUSTION"), Color.OrangeRed, () => {
+        buttons.Add(new Button(new Rectangle(centerX - 100, 0, 200, 60), TextService.Instance.Get("BTN_COMBUSTION"), Color.OrangeRed, () => {
             if (engine.Mix(ResourceType.Fire, ResourceType.Air)) { audio.PlayManifest(); visuals.AddShake(3f); }
         }, () => engine.State.Discoveries.ContainsKey("fire_unlocked") && engine.State.Discoveries.ContainsKey("air_unlocked"), "100F / 100Air", GameTab.Void) { TooltipFunc = () => TextService.Instance.Get("TOOLTIP_COMBUSTION"), Intent = "AlchemicalMix" });
 
 
-        buttons.Add(new Button(new Rectangle(centerX - 100, 0, 200, 45), TextService.Instance.Get("BTN_FERTILITY"), Color.LimeGreen, () => {
+        buttons.Add(new Button(new Rectangle(centerX - 100, 0, 200, 60), TextService.Instance.Get("BTN_FERTILITY"), Color.LimeGreen, () => {
             if (engine.Mix(ResourceType.Water, ResourceType.Earth)) { audio.PlayManifest(); visuals.AddShake(3f); }
         }, () => engine.State.Discoveries.ContainsKey("water_unlocked") && engine.State.Discoveries.ContainsKey("garden_manifested"), "100W / 100E", GameTab.Void) { TooltipFunc = () => TextService.Instance.Get("TOOLTIP_FERTILITY"), Intent = "AlchemicalMix" });
 
@@ -78,7 +78,18 @@ public class LayoutSystem
         var curY = 60; var centerX = UiLayout.Width / 2;
         foreach (var btn in buttons.Where(b => b.Tab == currentTab))
         {
-            if (btn.IsVisible()) { btn.Bounds.Y = curY; btn.Bounds.X = centerX - btn.Bounds.Width / 2; curY += btn.Bounds.Height + 15; }
+            if (!btn.IsVisible()) continue;
+            btn.Bounds.Y = curY;
+            if (currentTab == GameTab.World)
+            {
+                // Move manifestations to the left area (next to log) to avoid map overlap
+                btn.Bounds.X = 215;
+            }
+            else
+            {
+                btn.Bounds.X = centerX - btn.Bounds.Width / 2;
+            }
+            curY += btn.Bounds.Height + 15;
         }
     }
 

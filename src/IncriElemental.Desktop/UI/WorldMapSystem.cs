@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Engine;
+using IncriElemental.Core.Models;
 using IncriElemental.Desktop.Visuals;
 
 namespace IncriElemental.Desktop.UI;
@@ -13,10 +14,11 @@ public class WorldMapSystem
     private Point GetStartPoint(WorldMap map)
     {
         int mapWidth = map.Width * (CellSize + CellPadding);
-        // Center in the area between panels (210 to UiLayout.Width - 210)
-        // Ensure we don't start before 210
-        int availWidth = UiLayout.Width - 420;
-        int startX = 210 + Math.Max(0, (availWidth - mapWidth) / 2);
+        // Buttons end at 215 + 200 = 415. Start map at 430.
+        // The remaining area is 1024 - 430 - 210 = 384.
+        // We can center the map in that 384px area.
+        int availWidth = (UiLayout.Width - 210) - 430;
+        int startX = 430 + Math.Max(0, (availWidth - mapWidth) / 2);
         return new Point(startX, 100);
     }
 
@@ -59,7 +61,7 @@ public class WorldMapSystem
 
         if (font != null)
         {
-            visuals.DrawString(spriteBatch, font, "WORLD EXPLORATION (Click cells to send Familiars)", new Vector2(start.X, start.Y - 30), Color.Gray * 0.5f);
+            visuals.DrawString(spriteBatch, font, "WORLD EXPLORATION (Click cells to send Familiars)", new Vector2(start.X, start.Y - 30), Color.Gray * 0.5f, 0.7f);
         }
         visuals.DrawMap(spriteBatch, engine.State.Map, mousePos, pixel, start.X, start.Y, gt);
     }

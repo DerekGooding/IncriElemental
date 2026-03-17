@@ -1,5 +1,6 @@
 {
-  "Timestamp": "2026-03-17T16:43:29.9039213Z",
+  "Timestamp": "2026-03-17T17:27:52.6333172Z",
+  "CurrentTab": "Spire",
   "Performance": {
     "TotalTime": 1.2500025,
     "ElapsedFrameTime": 16.6667
@@ -9,6 +10,7 @@
       "Text": "[TAB_VOID]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 312,
         "Y": 5,
@@ -21,6 +23,7 @@
       "Text": "[TAB_SPIRE]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 402,
         "Y": 5,
@@ -33,6 +36,7 @@
       "Text": "[TAB_DEBUG]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 787,
         "Y": 5,
@@ -45,6 +49,7 @@
       "Text": "[BTN_FULLSCREEN]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "SystemControl",
       "Bounds": {
         "X": 5,
         "Y": 5,
@@ -52,24 +57,13 @@
         "Height": 20
       },
       "Tab": "None"
-    },
-    {
-      "Text": "[BTN_FOCUS]",
-      "Subtitle": null,
-      "Tooltip": "Gather raw magical potential.\nGain 1.0 [i:aether] [c:purple]Aether[/c] per click.",
-      "Bounds": {
-        "X": 412,
-        "Y": 60,
-        "Width": 200,
-        "Height": 70
-      },
-      "Tab": "Void"
     }
   ],
   "Elements": [
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
       "Bounds": {
         "X": 5,
         "Y": 50,
@@ -80,6 +74,7 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
       "Bounds": {
         "X": 814,
         "Y": 50,
@@ -88,8 +83,20 @@
       }
     },
     {
+      "Type": "Panel",
+      "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 5,
+        "Y": 50,
+        "Width": 200,
+        "Height": 708
+      }
+    },
+    {
       "Type": "Text",
       "Text": "LOG",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 55,
@@ -100,6 +107,7 @@
     {
       "Type": "Text",
       "Text": "Focus to begin manifestin...",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 80,
@@ -110,6 +118,7 @@
     {
       "Type": "Text",
       "Text": "You awaken in the void.",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 105,
@@ -120,6 +129,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 312,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_VOID]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 312,
         "Y": 5,
@@ -130,6 +151,7 @@
     {
       "Type": "Text",
       "Text": "VOID",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 334,
         "Y": 8,
@@ -140,6 +162,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 402,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_SPIRE]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 402,
         "Y": 5,
@@ -150,6 +184,7 @@
     {
       "Type": "Text",
       "Text": "SPIRE",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 419,
         "Y": 8,
@@ -160,6 +195,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 787,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_DEBUG]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 787,
         "Y": 5,
@@ -170,6 +217,7 @@
     {
       "Type": "Text",
       "Text": "DEBUG",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 800,
         "Y": 8,
@@ -180,6 +228,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 5,
+        "Y": 5,
+        "Width": 120,
+        "Height": 20
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[BTN_FULLSCREEN]",
+      "Intent": "SystemControl",
       "Bounds": {
         "X": 5,
         "Y": 5,
@@ -190,6 +250,7 @@
     {
       "Type": "Text",
       "Text": "FULLSCREEN",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 10,
         "Y": 6,
@@ -198,8 +259,42 @@
       }
     },
     {
+      "Type": "Panel",
+      "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 400,
+        "Y": 200,
+        "Width": 200,
+        "Height": 200
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "ALCHEMICAL VESSEL",
+      "Intent": "DisplayInfo",
+      "Bounds": {
+        "X": 414,
+        "Y": 170,
+        "Width": 172,
+        "Height": 18
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "(Empty - Add elements below)",
+      "Intent": "DisplayInfo",
+      "Bounds": {
+        "X": 414,
+        "Y": 220,
+        "Width": 170,
+        "Height": 14
+      }
+    },
+    {
       "Type": "Text",
       "Text": "ESSENCE",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 55,
@@ -210,6 +305,7 @@
     {
       "Type": "Text",
       "Text": "ACTIVE REACTION",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 95,

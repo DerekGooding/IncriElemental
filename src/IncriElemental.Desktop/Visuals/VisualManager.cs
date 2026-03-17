@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using IncriElemental.Core.Models;
 using IncriElemental.Desktop.UI;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace IncriElemental.Desktop.Visuals;
 
@@ -75,7 +76,6 @@ public class VisualManager
 
         _cameraZoom = MathHelper.Lerp(_cameraZoom, 1.0f, deltaTime * 2f);
         _cameraRotation = MathHelper.Lerp(_cameraRotation, 0f, deltaTime * 2f);
-    }
     }
 
     public Vector2 GetShakeOffset()

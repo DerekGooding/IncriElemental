@@ -102,7 +102,7 @@ public class BackgroundManager
                 // Map [-1, 1] to [0, 255] for R channel, use G for absolute intensity
                 byte r = (byte)((val + 1f) * 127.5f);
                 byte g = (byte)(Math.Abs(val) * 255f);
-                _fluidData[y * GridWidth + x] = new Color(r, g, 0, 255);
+                _fluidData[y * GridWidth + x] = new Color((int)r, (int)g, 0, 255);
             }
         }
         _fluidTexture.SetData(_fluidData);

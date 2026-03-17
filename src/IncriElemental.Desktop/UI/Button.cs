@@ -65,7 +65,7 @@ public class Button(Rectangle bounds, string text, Color color, Action onClick, 
 
             if (!string.IsNullOrEmpty(locSub))
             {
-                var subPos = new Vector2(b.Center.X - subSize.X / 2, textPos.Y + textSize.Y - 2);
+                var subPos = new Vector2(b.Center.X - subSize.X / 2, textPos.Y + textSize.Y + 2);
                 visuals.DrawString(spriteBatch, font, locSub, subPos, Color * 0.5f, 0.8f);
             }
         }

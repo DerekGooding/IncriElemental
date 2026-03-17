@@ -1,5 +1,6 @@
 {
-  "Timestamp": "2026-03-17T16:43:30.9438748Z",
+  "Timestamp": "2026-03-17T17:27:53.7015846Z",
+  "CurrentTab": "Flow",
   "Performance": {
     "TotalTime": 2.3166713,
     "ElapsedFrameTime": 16.6667
@@ -9,6 +10,7 @@
       "Text": "[TAB_VOID]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 312,
         "Y": 5,
@@ -21,6 +23,7 @@
       "Text": "[TAB_SPIRE]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 402,
         "Y": 5,
@@ -33,6 +36,7 @@
       "Text": "[TAB_WORLD]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 492,
         "Y": 5,
@@ -45,6 +49,7 @@
       "Text": "[TAB_FLOW]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 697,
         "Y": 5,
@@ -57,6 +62,7 @@
       "Text": "[TAB_DEBUG]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 787,
         "Y": 5,
@@ -69,6 +75,7 @@
       "Text": "[BTN_FULLSCREEN]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "SystemControl",
       "Bounds": {
         "X": 5,
         "Y": 5,
@@ -76,36 +83,13 @@
         "Height": 20
       },
       "Tab": "None"
-    },
-    {
-      "Text": "[BTN_FOCUS]",
-      "Subtitle": null,
-      "Tooltip": "Gather raw magical potential.\nGain 1.0 [i:aether] [c:purple]Aether[/c] per click.",
-      "Bounds": {
-        "X": 412,
-        "Y": 60,
-        "Width": 200,
-        "Height": 70
-      },
-      "Tab": "Void"
-    },
-    {
-      "Text": "GARDEN",
-      "Subtitle": "500E / 500W",
-      "Tooltip": "Produces 2.0 [i:Life] [c:Life]Life[/c]/s",
-      "Bounds": {
-        "X": 412,
-        "Y": 60,
-        "Width": 200,
-        "Height": 50
-      },
-      "Tab": "World"
     }
   ],
   "Elements": [
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
       "Bounds": {
         "X": 5,
         "Y": 50,
@@ -116,6 +100,7 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
       "Bounds": {
         "X": 814,
         "Y": 50,
@@ -124,8 +109,20 @@
       }
     },
     {
+      "Type": "Panel",
+      "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 5,
+        "Y": 50,
+        "Width": 200,
+        "Height": 708
+      }
+    },
+    {
       "Type": "Text",
       "Text": "LOG",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 55,
@@ -136,6 +133,7 @@
     {
       "Type": "Text",
       "Text": "Focus to begin manifestin...",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 80,
@@ -146,6 +144,7 @@
     {
       "Type": "Text",
       "Text": "You awaken in the void.",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 105,
@@ -156,6 +155,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 312,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_VOID]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 312,
         "Y": 5,
@@ -166,6 +177,7 @@
     {
       "Type": "Text",
       "Text": "VOID",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 334,
         "Y": 8,
@@ -176,6 +188,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 402,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_SPIRE]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 402,
         "Y": 5,
@@ -186,6 +210,7 @@
     {
       "Type": "Text",
       "Text": "SPIRE",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 419,
         "Y": 8,
@@ -196,6 +221,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 492,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_WORLD]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 492,
         "Y": 5,
@@ -206,6 +243,7 @@
     {
       "Type": "Text",
       "Text": "WORLD",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 504,
         "Y": 8,
@@ -216,6 +254,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 697,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_FLOW]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 697,
         "Y": 5,
@@ -226,6 +276,7 @@
     {
       "Type": "Text",
       "Text": "[TAB_FLOW]",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 691,
         "Y": 8,
@@ -236,6 +287,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 787,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_DEBUG]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 787,
         "Y": 5,
@@ -246,6 +309,7 @@
     {
       "Type": "Text",
       "Text": "DEBUG",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 800,
         "Y": 8,
@@ -256,6 +320,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 5,
+        "Y": 5,
+        "Width": 120,
+        "Height": 20
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[BTN_FULLSCREEN]",
+      "Intent": "SystemControl",
       "Bounds": {
         "X": 5,
         "Y": 5,
@@ -266,6 +342,7 @@
     {
       "Type": "Text",
       "Text": "FULLSCREEN",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 10,
         "Y": 6,
@@ -276,6 +353,7 @@
     {
       "Type": "Text",
       "Text": "ESSENCE",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 55,
@@ -286,6 +364,7 @@
     {
       "Type": "Text",
       "Text": "ACTIVE REACTION",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 95,
@@ -296,6 +375,7 @@
     {
       "Type": "Text",
       "Text": "MANIFESTATIONS",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 135,
@@ -306,6 +386,7 @@
     {
       "Type": "Text",
       "Text": "FAMILIAR: 1",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 165,

@@ -1,5 +1,6 @@
 {
-  "Timestamp": "2026-03-17T16:43:29.4181905Z",
+  "Timestamp": "2026-03-17T17:27:52.1132994Z",
+  "CurrentTab": "Void",
   "Performance": {
     "TotalTime": 0.7166681,
     "ElapsedFrameTime": 16.6667
@@ -9,6 +10,7 @@
       "Text": "[TAB_VOID]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 312,
         "Y": 5,
@@ -21,6 +23,7 @@
       "Text": "[TAB_DEBUG]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 787,
         "Y": 5,
@@ -33,6 +36,7 @@
       "Text": "[BTN_FULLSCREEN]",
       "Subtitle": null,
       "Tooltip": "",
+      "Intent": "SystemControl",
       "Bounds": {
         "X": 5,
         "Y": 5,
@@ -45,6 +49,7 @@
       "Text": "[BTN_FOCUS]",
       "Subtitle": null,
       "Tooltip": "Gather raw magical potential.\nGain 1.0 [i:aether] [c:purple]Aether[/c] per click.",
+      "Intent": "PrimaryAction",
       "Bounds": {
         "X": 412,
         "Y": 60,
@@ -58,6 +63,7 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
       "Bounds": {
         "X": 5,
         "Y": 50,
@@ -68,6 +74,7 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
       "Bounds": {
         "X": 814,
         "Y": 50,
@@ -76,8 +83,20 @@
       }
     },
     {
+      "Type": "Panel",
+      "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 5,
+        "Y": 50,
+        "Width": 200,
+        "Height": 708
+      }
+    },
+    {
       "Type": "Text",
       "Text": "LOG",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 55,
@@ -88,6 +107,7 @@
     {
       "Type": "Text",
       "Text": "Focus to begin manifestin...",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 80,
@@ -98,6 +118,7 @@
     {
       "Type": "Text",
       "Text": "You awaken in the void.",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 20,
         "Y": 105,
@@ -108,6 +129,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 312,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_VOID]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 312,
         "Y": 5,
@@ -118,6 +151,7 @@
     {
       "Type": "Text",
       "Text": "VOID",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 334,
         "Y": 8,
@@ -128,6 +162,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 787,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[TAB_DEBUG]",
+      "Intent": "TabNavigation",
       "Bounds": {
         "X": 787,
         "Y": 5,
@@ -138,6 +184,7 @@
     {
       "Type": "Text",
       "Text": "DEBUG",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 800,
         "Y": 8,
@@ -148,6 +195,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 5,
+        "Y": 5,
+        "Width": 120,
+        "Height": 20
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[BTN_FULLSCREEN]",
+      "Intent": "SystemControl",
       "Bounds": {
         "X": 5,
         "Y": 5,
@@ -158,6 +217,7 @@
     {
       "Type": "Text",
       "Text": "FULLSCREEN",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 10,
         "Y": 6,
@@ -168,6 +228,18 @@
     {
       "Type": "Panel",
       "Text": "",
+      "Intent": "UIPanel",
+      "Bounds": {
+        "X": 412,
+        "Y": 60,
+        "Width": 200,
+        "Height": 70
+      }
+    },
+    {
+      "Type": "Button",
+      "Text": "[BTN_FOCUS]",
+      "Intent": "PrimaryAction",
       "Bounds": {
         "X": 412,
         "Y": 60,
@@ -178,6 +250,7 @@
     {
       "Type": "Text",
       "Text": "FOCUS",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 483,
         "Y": 86,
@@ -188,6 +261,7 @@
     {
       "Type": "Text",
       "Text": "ESSENCE",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 55,
@@ -198,6 +272,7 @@
     {
       "Type": "Text",
       "Text": "ACTIVE REACTION",
+      "Intent": "DisplayInfo",
       "Bounds": {
         "X": 819,
         "Y": 95,
