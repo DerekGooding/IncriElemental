@@ -1,0 +1,26 @@
+{
+  "ScreenWidth": 1024,
+  "ScreenHeight": 768,
+  "Buttons": [
+    {
+      "Text": "Test1",
+      "Bounds": { "X": 100, "Y": 100, "Width": 50, "Height": 50 },
+      "Tab": "Void"
+    },
+    {
+      "Text": "Test2",
+      "Bounds": { "X": 120, "Y": 120, "Width": 50, "Height": 50 },
+      "Tab": "Void"
+    },
+    {
+        "Text": "OffScreen",
+        "Bounds": { "X": 1100, "Y": 100, "Width": 50, "Height": 50 },
+        "Tab": "Void"
+    },
+    {
+        "Text": "PanelCollision",
+        "Bounds": { "X": 20, "Y": 60, "Width": 50, "Height": 50 },
+        "Tab": "Void"
+    }
+  ]
+}

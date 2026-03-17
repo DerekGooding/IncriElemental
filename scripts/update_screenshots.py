@@ -23,7 +23,7 @@ SCENARIOS = {
         "manifest:speck_of_matter",
         "update:10.0",
         "tab:Spire",
-        "wait:1.0",
+        "update:1.0",
         "screenshot:spire_flow"
     ],
     "world_map": [
@@ -32,7 +32,7 @@ SCENARIOS = {
         "manifest:familiar",
         "update:5.0",
         "tab:World",
-        "wait:1.0",
+        "update:1.0",
         "screenshot:world_map"
     ],
     "mixing_table": [
@@ -41,7 +41,7 @@ SCENARIOS = {
         "manifest:forge",
         "update:5.0",
         "tab:Spire",
-        "wait:1.0",
+        "update:1.0",
         "screenshot:mixing_table"
     ]
 }
