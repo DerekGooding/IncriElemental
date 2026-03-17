@@ -41,7 +41,7 @@ public class StatusSystem
 
         foreach (var res in engine.State.Resources.Values.Where(r => r.Amount > 0 || r.MaxAmount < 1_000_000_000_000))
         {
-            var amountStr = visuals.FormatValue(res.Amount);
+            var amountStr = VisualUtils.FormatValue(res.Amount);
             var resName = TextService.Instance.Get($"RES_{res.Type.ToString().ToUpper()}");
             var label = $"{resName}: {amountStr}";
 

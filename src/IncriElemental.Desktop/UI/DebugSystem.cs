@@ -20,7 +20,7 @@ public class DebugSystem
         {
             var pps = res.PerSecond;
             var fillTime = res.MaxAmount > 1_000_000_000_000 ? "INF" : $"{(res.MaxAmount - res.Amount) / (pps > 0 ? pps : 1):F1}s";
-            var label = $"{res.Type}: +{visuals.FormatValue(pps)}/s (Fill: {fillTime})";
+            var label = $"{res.Type}: +{VisualUtils.FormatValue(pps)}/s (Fill: {fillTime})";
             
             spriteBatch.DrawString(font, label, new Vector2(startX, startY), Color.White);
             startY += 30;

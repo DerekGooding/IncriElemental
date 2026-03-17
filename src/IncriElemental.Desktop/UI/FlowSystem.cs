@@ -40,7 +40,7 @@ public static class FlowSystem
             {
                 if (!_nodePositions.ContainsKey(prod.Type)) continue;
                 var endPos = _nodePositions[prod.Type];
-                var color = VisualManager.GetColorForId(def.Id) * 0.5f;
+                var color = VisualUtils.GetColorForId(def.Id) * 0.5f;
                 foreach (var inputType in inputs)
                 {
                     if (_nodePositions.TryGetValue(inputType, out var startPos)) DrawFlow(sb, pixel, startPos, endPos, color, 1, time);
