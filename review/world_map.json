@@ -1,5 +1,5 @@
 {
-  "Timestamp": "2026-03-17T13:16:06.5070323Z",
+  "Timestamp": "2026-03-17T13:45:24.5825187Z",
   "Performance": {
     "TotalTime": 0.0833335,
     "ElapsedFrameTime": 16.6667
@@ -11,6 +11,18 @@
       "Tooltip": "",
       "Bounds": {
         "X": 312,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      },
+      "Tab": "None"
+    },
+    {
+      "Text": "[TAB_WORLD]",
+      "Subtitle": null,
+      "Tooltip": "",
+      "Bounds": {
+        "X": 492,
         "Y": 5,
         "Width": 85,
         "Height": 25
@@ -129,6 +141,26 @@
       "Type": "Panel",
       "Text": "",
       "Bounds": {
+        "X": 492,
+        "Y": 5,
+        "Width": 85,
+        "Height": 25
+      }
+    },
+    {
+      "Type": "Text",
+      "Text": "WORLD",
+      "Bounds": {
+        "X": 504,
+        "Y": 8,
+        "Width": 60,
+        "Height": 18
+      }
+    },
+    {
+      "Type": "Panel",
+      "Text": "",
+      "Bounds": {
         "X": 787,
         "Y": 5,
         "Width": 85,
@@ -177,11 +209,11 @@
     },
     {
       "Type": "Text",
-      "Text": "Aether: 2.0",
+      "Text": "Life: 100.0",
       "Bounds": {
         "X": 819,
         "Y": 80,
-        "Width": 61,
+        "Width": 59,
         "Height": 14
       }
     },
@@ -194,12 +226,22 @@
         "Width": 102,
         "Height": 12
       }
+    },
+    {
+      "Type": "Text",
+      "Text": "MANIFESTATIONS",
+      "Bounds": {
+        "X": 819,
+        "Y": 165,
+        "Width": 142,
+        "Height": 18
+      }
     }
   ],
   "Resources": [
     {
       "Type": "Aether",
-      "Amount": 2,
+      "Amount": 0,
       "PerSecond": 0
     },
     {
@@ -224,7 +266,7 @@
     },
     {
       "Type": "Life",
-      "Amount": 0,
+      "Amount": 100,
       "PerSecond": 0
     },
     {

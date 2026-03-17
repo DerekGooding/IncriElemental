@@ -1,5 +1,5 @@
 {
-  "Timestamp": "2026-03-17T13:15:49.3220301Z",
+  "Timestamp": "2026-03-17T13:45:11.2799788Z",
   "Performance": {
     "TotalTime": 0.0833335,
     "ElapsedFrameTime": 16.6667
@@ -197,11 +197,11 @@
     },
     {
       "Type": "Text",
-      "Text": "Aether: 2.0",
+      "Text": "Aether: 100.0",
       "Bounds": {
         "X": 819,
         "Y": 80,
-        "Width": 61,
+        "Width": 76,
         "Height": 14
       }
     },
@@ -214,12 +214,22 @@
         "Width": 102,
         "Height": 12
       }
+    },
+    {
+      "Type": "Text",
+      "Text": "MANIFESTATIONS",
+      "Bounds": {
+        "X": 819,
+        "Y": 165,
+        "Width": 142,
+        "Height": 18
+      }
     }
   ],
   "Resources": [
     {
       "Type": "Aether",
-      "Amount": 2,
+      "Amount": 100,
       "PerSecond": 0
     },
     {

@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using IncriElemental.Core.Engine;
+using IncriElemental.Core.Models;
 using IncriElemental.Desktop.Visuals;
 using System.Text.Json;
 using System.IO;
@@ -46,6 +47,10 @@ public class AiModeSystem(GameEngine engine)
             else if (act == "update" && parts.Length > 1) { if (double.TryParse(parts[1], out var v)) _engine.Update(v); }
             else if (act == "tab" && parts.Length > 1) { if (Enum.TryParse<GameTab>(parts[1].Trim(), true, out var t)) _setTab?.Invoke(t); }
             else if (act == "key" && parts.Length > 1) { if (Enum.TryParse<Keys>(parts[1].Trim(), true, out var k)) _pendingKeys.Add(k); }
+            else if (act == "resource" && parts.Length > 1) { var rp = parts[1].Split(':'); if (rp.Length == 2 && Enum.TryParse<ResourceType>(rp[0].Trim(), true, out var rt) && double.TryParse(rp[1].Trim(), out var rv)) _engine.State.GetResource(rt).Amount = rv; }
+            else if (act == "discovery" && parts.Length > 1) _engine.State.Discoveries[parts[1].Trim()] = true;
+            else if (act == "manifestation" && parts.Length > 1) { var mp = parts[1].Split(':'); if (mp.Length == 2 && int.TryParse(mp[1].Trim(), out var mv)) _engine.State.Manifestations[mp[0].Trim()] = mv; }
+            else if (act == "explore" && parts.Length > 1) { var ep = parts[1].Split(':'); if (ep.Length == 2 && int.TryParse(ep[0].Trim(), out var ex) && int.TryParse(ep[1].Trim(), out var ey)) _engine.Explore(ex, ey); }
             else if (act == "pin") _isPinning = true;
             else if (act == "unpin") _isPinning = false;
             else if (act == "hover" && parts.Length > 1) _hoverTarget = parts[1].Trim();

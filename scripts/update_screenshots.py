@@ -9,39 +9,37 @@ REVIEW_DIR = "review"
 # Define scenarios: Name -> List of commands
 SCENARIOS = {
     "void_main": [
-        "focus", "focus", "focus", "focus", "focus",
-        "update:1.0",
-        "manifest:speck_of_matter",
-        "update:1.0",
+        "resource:Aether:100",
+        "discovery:automation_unlocked",
+        "manifestation:rune_of_attraction:1",
         "screenshot:void_main"
     ],
     "spire_flow": [
-        "focus", "focus", "focus", "focus", "focus",
-        "focus", "focus", "focus", "focus", "focus",
-        "manifest:pickaxe",
-        "focus", "focus", "focus", "focus", "focus",
-        "manifest:speck_of_matter",
-        "update:10.0",
+        "resource:Earth:1000",
+        "resource:Fire:1000",
+        "discovery:altar_constructed",
+        "discovery:forge_constructed",
+        "discovery:spire_foundation_ready",
         "tab:Spire",
-        "update:1.0",
         "screenshot:spire_flow"
     ],
     "world_map": [
-        "focus", "focus", "focus", "focus", "focus",
-        "focus", "focus", "focus", "focus", "focus",
-        "manifest:familiar",
-        "update:5.0",
+        "resource:Life:100",
+        "discovery:garden_manifested",
+        "manifestation:familiar:1",
         "tab:World",
-        "update:1.0",
+        "explore:5:5",
+        "explore:5:6",
+        "explore:6:5",
         "screenshot:world_map"
     ],
     "mixing_table": [
-        "focus", "focus", "focus", "focus", "focus",
-        "focus", "focus", "focus", "focus", "focus",
-        "manifest:forge",
-        "update:5.0",
+        "resource:Fire:500",
+        "resource:Earth:500",
+        "discovery:forge_constructed",
+        "discovery:fire_unlocked",
+        "discovery:earth_unlocked",
         "tab:Spire",
-        "update:1.0",
         "screenshot:mixing_table"
     ]
 }

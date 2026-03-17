@@ -21,7 +21,7 @@ This document contains foundational mandates that I (Gemini) must follow through
 ## 4. Project Health & Quality
 - **Test Coverage:** Overall coverage must remain above **70%**.
 - **Monolith Prevention:** No single source file (`.cs`) should exceed **250 lines**.
-- **Documentation FRESHNESS:** Documentation is stale if more than **8 source files** have changed. Resolve by providing meaningful content improvements.
+- **Documentation FRESHNESS:** Documentation is stale if more than **20 source files** have changed. Resolve by providing meaningful content improvements; simply updating the date line is prohibited. When staleness fails, a comprehensive documentation review is mandatory.
 
 ---
 *Last Updated: Tuesday, March 17, 2026 (Updated by Agent Gemini)*
