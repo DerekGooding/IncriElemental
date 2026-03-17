@@ -4,86 +4,64 @@ This document provides granular technical and gameplay requirements for the unfi
 
 ---
 
-## Goal 31: The Aesthetic Awakening (InProgress)
-
-### Phase 1: Foundational Atmosphere & Depth (Implemented)
-
-#### Nebula Vistas
-- **Requirement:** Replace static starfield with multi-layered textures.
-- **Implementation:** `BackgroundManager.cs` now generates procedural nebula blobs and handles 3 layers of stars/clouds with independent parallax.
-- **Verification:** `parallax_audit.py` confirmed non-zero pixel delta during transitions.
-
-#### Glassmorphism Panels
-- **Requirement:** Semi-transparent UI backgrounds with background blurring.
-- **Implementation:** `VisualManager.DrawPanel` implements semi-transparent glass with glowing borders and corner highlights.
-- **Verification:** `palette_audit.py` confirmed compliance with Aetherial Glow scheme.
-
-#### Smart Bloom
-- **Requirement:** Tie HLSL Bloom intensity to `GameState.TotalProduction`.
-- **Implementation:** `Bloom.fx` updated with actual bloom logic; `VisualManager.cs` dynamically scales `BloomIntensity` based on total resource production.
-- **Verification:** `aesthetic_audit.py` confirmed increased glow score during late-game simulation.
-
-#### Void Atmosphere & Color Grading
-- **Requirement:** Pulsing stars and elemental-themed LUTs.
-- **Implementation:** `BackgroundManager` implements `_starPulse` for atmospheric depth; `VisualManager` applies a global scene tint interpolated towards the dominant resource color.
+## Goal 31: The Aesthetic Awakening (Implemented)
 - **Status:** Complete.
+- **Summary:** Transitioned the project from a basic prototype to a high-fidelity glassmorphic UI with runic accents, multi-layered parallax, and smart HLSL bloom.
 
 ---
 
-### Phase 2: Kinetic Interface & Feedback (Implemented)
+## Goal 32: The Visionary's Ascendance (Active)
+*Expanding the visual depth and agentic safeguards to create a showcase-ready masterpiece.*
 
-#### Aura Pulse Borders
-- **Requirement:** Use `Math.Sin` to animate button border thickness and glow.
-- **Implementation:** `VisualManager.DrawPanel` now includes pulsing border and corner highlight logic using `_totalTime`.
-- **Verification:** `aura_pulse_audit.py` confirmed visual delta between frames.
+### Phase 1: Volumetric Depths & Fluidity
 
-#### Impact Shake & Custom Mouse Trails
-- **Requirement:** Apply camera matrices offsets on click; emit particles behind the cursor.
-- **Implementation:** `VisualManager.AddShake` called from `LayoutSystem` button callbacks; `ParticleSystem.EmitTrail` called every frame in `Game1.Update`.
-- **Verification:** `parallax_audit.py` confirmed screen shake movement; metadata confirmed 60 FPS performance.
+#### Volumetric Aether Clouds & Interactive Ripples
+- **Requirement:** Replace background layers with a reactive fluid shader.
+- **Implementation:** `BackgroundManager.cs` to manage a low-resolution grid for fluid simulation; `Fluid.fx` to render interactive "Aether" that ripples when clicking or moving the mouse.
+- **Verification:** `parallax_audit.py` (updated) should confirm non-zero pixel deltas in the background shader on input events.
 
-#### Runically Shaped Button States
-- **Requirement:** High-fidelity Runes replacing standard boxes.
-- **Implementation:** `VisualManager.DrawPanel` updated with runic corner accents and middle nodes.
-- **Status:** Complete.
-
-#### Tab Transitions
-- **Requirement:** Shader-based dissolves and wipes between game tabs.
-- **Implementation:** `VisualManager.TabTransitionAlpha` and `DrawTabTransition` implement a smooth black fade between tab switches.
-- **Status:** Complete.
+#### Element-Spec Scene Tinctures
+- **Requirement:** Shift the entire game scene's color profile based on the dominant resource being produced.
+- **Implementation:** Use `GameState.Resources` to calculate a "Dominance Weight" and interpolate `GlobalTint` and `BloomColor` accordingly.
+- **Verification:** `palette_audit.py` to confirm colors align with resource identity hex codes.
 
 ---
 
-### Phase 3: Information Dynamics & Visualization (Implemented)
+### Phase 2: Kinetic Runics & Holography
 
-#### Resource Sparklines & Flowing Lines
-- **Requirement:** Animate resource trends and energy movement in the Flow Tab.
-- **Implementation:** `StatusSystem.cs` now tracks resource history and draws sparklines; `FlowSystem.cs` animates white particles along production paths using `VisualManager.GetTotalTime()`.
-- **Verification:** `visual_component_testing` used to verify sparkline rendering; `graph_audit.py` confirmed visual density of flow lines.
+#### Adaptive Runic HUD & Frame Animation
+- **Requirement:** Make UI frame runes shift shape or speed based on production intensity.
+- **Implementation:** `VisualManager.DrawPanel` updated with runic-specific `textureRect` offsets that cycle faster at high production rates.
+- **Verification:** `rune_sweep_audit.py` to compare frame-to-frame rune offsets.
 
-#### RPG Narrative Log & Status Medals
-- **Requirement:** Premium typography and high-quality status icons.
-- **Implementation:** `LogSystem.cs` updated with smooth black-to-transparent fading; `StatusSystem.cs` adds pulsing glowing medals next to active buffs.
-- **Verification:** `log_scroll_audit.py` (via manual check) confirmed auto-scroll and fading logic.
+#### Holographic Transaction Popups (Runic Distortion)
+- **Requirement:** Replace floating text popups with a holographic distorted effect.
+- **Implementation:** `ParticleSystem.EmitPopup` will use a specialized `Hologram.fx` shader that jitters and cycles between runic and numeric characters.
+- **Verification:** `particle_density_test` to ensure numbers remain readable during distortion.
 
----
-
-### Phase 4: Mastery & High-Fidelity Events (Implemented)
-
-#### Alchemical Events & Celebration Sequences
-- **Requirement:** Full-screen visual payloads for narrative and mechanical milestones.
-- **Implementation:** `VisualManager.cs` implements `StartReactionSequence` and `StartCelebration` using full-screen alpha fades and screen shake.
-- **Verification:** Sequential frame analysis during mixing confirms visual intensity.
-
-#### Map Biome Shaders
-- **Requirement:** Heat-haze and refraction shaders for specific World Map biomes.
-- **Implementation:** `VisualManager.DrawMap` uses time-based Sin/Cos functions to animate Ocean ripples and Mountain heat-haze.
-- **Verification:** `aura_pulse_audit.py` confirms pixel deltas in biome regions.
-
-#### Ultra-Wide Support
-- **Requirement:** Dynamic anchoring for 21:9 aspect ratios.
-- **Implementation:** `LayoutSystem.SetupButtons` calculates `startX` and `centerX` using `UiLayout.Width`, ensuring center-anchoring regardless of resolution.
-- **Status:** Complete.
+#### Cinematic Camera Swells (Matrix Transforms)
+- **Requirement:** Dynamic matrix-based camera transforms for "reveal" moments.
+- **Implementation:** `VisualManager.CameraMatrix` will apply smooth `zoom` and `rotation` offsets during Alchemical Mixes and Ascension sequences.
+- **Verification:** `camera_matrix_audit.py` (new) to confirm smooth interpolation of view matrices.
 
 ---
-*Last Updated: Friday, March 13, 2026 (Updated by Agent Gemini)*
+
+### Phase 3: Agentic Sight & Visual Integrity
+
+#### Semantic Intent Metadata (Intent-Aware Tagging)
+- **Requirement:** Add "Semantic Intent" tags to the exported `screenshot.json`.
+- **Implementation:** `LayoutSystem.GetLayoutMetadata` updated to include `Intent` strings (e.g., "CriticalAction," "Navigation," "Information").
+- **Verification:** `json_schema_audit.py` to ensure all metadata files conform to the new intent-aware schema.
+
+#### Automated Visual Regression & "Golden References"
+- **Requirement:** Automate comparing the current game state against a baseline.
+- **Implementation:** `scripts/visual_sanity_check.py` will load `screenshot.json` and compare element positions and visibility against a "Golden Reference" layout.
+- **Verification:** If elements shift > 5 pixels or overlap illegally, the script fails the visual audit.
+
+#### Visual Gallery Module & Documentation Integration
+- **Requirement:** Automated script to capture and organize screenshots for documentation.
+- **Implementation:** `scripts/generate_gallery.py` will trigger the game's internal screenshot system for every major tab and output a markdown mosaic to `review/gallery.md`.
+- **Status:** Planning.
+
+---
+*Last Updated: Tuesday, March 17, 2026 (Updated by Agent Gemini)*
