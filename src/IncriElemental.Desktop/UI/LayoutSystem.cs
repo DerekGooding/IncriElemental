@@ -40,8 +40,8 @@ public class LayoutSystem
         var defs = engine.GetDefinitions();
         foreach (var def in defs)
         {
-            var targetTab = VisualManager.GetTabForDef(def);
-            var btn = new Button(new Rectangle(centerX - 100, 0, 200, 60), def.Name, VisualManager.GetColorForId(def.Id), () => {
+            var targetTab = VisualUtils.GetTabForDef(def);
+            var btn = new Button(new Rectangle(centerX - 100, 0, 200, 60), def.Name, VisualUtils.GetColorForId(def.Id), () => {
                 if (engine.Manifest(def.Id))
                 {
                     audio.PlayManifest();

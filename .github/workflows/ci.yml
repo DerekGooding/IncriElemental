@@ -26,6 +26,8 @@ jobs:
       working-directory: src/IncriElemental.Desktop
     - name: Setup Font for MGCB
       run: python scripts/download_font.py
+    - name: Install Python Dependencies
+      run: pip install Pillow numpy
     - name: Restore dependencies
       run: dotnet restore
     - name: Build

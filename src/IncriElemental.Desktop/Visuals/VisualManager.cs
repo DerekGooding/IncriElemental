@@ -116,7 +116,7 @@ public class VisualManager
     {
         gd.SetRenderTarget(null);
 
-        if (!string.IsNullOrEmpty(screenshotPath)) SaveScreenshot(screenshotPath);
+        if (!string.IsNullOrEmpty(screenshotPath)) VisualUtils.SaveScreenshot(screenshotPath, _renderTarget);
 
         gd.Clear(Color.Black);
         sb.Begin(effect: _bloomEffect);
@@ -156,24 +156,6 @@ public class VisualManager
     public Color GetColor(ResourceType type) => ColorPalette.ElementColors.GetValueOrDefault(type, Color.White);
     public Color GetCellColor(CellType type) => ColorPalette.CellColors.GetValueOrDefault(type, Color.Black);
 
-    public static Color GetColorForId(string id)
-    {
-        if (id.Contains("aether") || id.Contains("attraction")) return Color.MediumPurple;
-        if (id.Contains("speck") || id.Contains("foundation") || id.Contains("pickaxe")) return Color.SaddleBrown;
-        if (id.Contains("spark") || id.Contains("forge") || id.Contains("brazier")) return Color.OrangeRed;
-        if (id.Contains("droplet") || id.Contains("well")) return Color.DodgerBlue;
-        if (id.Contains("breeze") || id.Contains("shaft") || id.Contains("clouds")) return Color.LightCyan;
-        if (id.Contains("garden")) return Color.LimeGreen;
-        return id.Contains("constellation") ? Color.Gold : Color.Gray;
-    }
-
-    public static GameTab GetTabForDef(ManifestationDefinition def)
-    {
-        if (def.Id.Contains("spire") || def.Id.Contains("well") || def.Id.Contains("brazier") || def.Id.Contains("forge") || def.Id.Contains("clouds")) return GameTab.Spire;
-        if (def.Id.Contains("garden") || def.Id.Contains("familiar")) return GameTab.World;
-        return def.Id.Contains("constellation") ? GameTab.Constellation : GameTab.Void;
-    }
-
     public void DrawMap(SpriteBatch sb, WorldMap map, Point mouse, Texture2D px, int sx, int sy, GameTime gt)
     {
         var size = 20; var pad = 2; var time = gt.TotalGameTime.TotalSeconds;
@@ -212,29 +194,7 @@ public class VisualManager
         if (disc.ContainsKey("spire_complete")) { var p = (float)Math.Sin(time * 2) * 0.2f + 0.8f; sb.Draw(_pixel, new Rectangle(502, 480, 20, 20), Color.Gold * p); }
     }
 
-    public string FormatValue(double v)
-    {
-        if (v >= 1_000_000_000) return $"{v / 1_000_000_000:F2}G";
-        if (v >= 1_000_000) return $"{v / 1_000_000:F2}M";
-        return v >= 1_000 ? $"{v / 1_000:F2}K" : v.ToString("F1");
-    }
-
-    public string GetManifestationTooltip(ManifestationDefinition d, IncriElemental.Core.Engine.GameEngine e)
-    {
-        var l = new List<string>(); var count = e.State.Manifestations.GetValueOrDefault(d.Id);
-        foreach (var ef in d.Effects)
-        {
-            if (ef.PerSecondBonus != 0) { var b = ef.PerSecondBonus * e.State.CosmicInsight; l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES", b, ef.Type)); if (count > 0) l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PRODUCES_TOTAL", b * count, ef.Type)); }
-            if (ef.MaxAmountBonus != 0) l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_STORAGE", ef.MaxAmountBonus, ef.Type));
-        }
-        foreach (var c in d.Components) l.Add(c.GetDescription());
-        if (d.Id == "rune_of_attraction") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_RUNE_ATTRACTION"));
-        if (d.Id == "pickaxe") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_PICKAXE"));
-        if (d.Id == "forge") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FORGE"));
-        if (d.Id == "familiar") l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_FAMILIAR"));
-        if (d.Id.Contains("spire")) l.Add(IncriElemental.Core.Systems.TextService.Instance.Get("TOOLTIP_SPIRE_PART"));
-        return string.Join("\n", l);
-    }
+    public string GetManifestationTooltip(ManifestationDefinition d, IncriElemental.Core.Engine.GameEngine e) => VisualUtils.GetManifestationTooltip(d, e);
 
     public void DrawTooltip(SpriteBatch sb, SpriteFont font, Texture2D px, string text, Point mouse) => UiVisuals.DrawTooltip(sb, font, px, text, mouse, _totalTime, this);
 
@@ -278,12 +238,4 @@ public class VisualManager
         UiMetadataTracker.Register("Text", text, new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y), "DisplayInfo");
     }
 
-    public void SaveScreenshot(string path)
-    {
-        if (_renderTarget == null) return;
-        var dir = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
-        using var stream = File.Open(path, FileMode.Create);
-        _renderTarget.SaveAsPng(stream, _renderTarget.Width, _renderTarget.Height);
-    }
 }

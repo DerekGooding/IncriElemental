@@ -85,7 +85,7 @@ public class Game1 : Game
             _ai.Process(cp, SetTab); 
         }
         EventBus.ResourceGained += (t, a) => {
-            _particles.EmitPopup(new Vector2(400, 300), $"+{a:F1} {t}", VisualManager.GetColorForId(t.ToLower()));
+            _particles.EmitPopup(new Vector2(400, 300), $"+{a:F1} {t}", VisualUtils.GetColorForId(t.ToLower()));
             _visuals.AddResonance(0.1f);
         };
 
