@@ -64,5 +64,19 @@ This document provides granular technical and gameplay requirements for the unfi
 - **Implementation:** `scripts/generate_gallery.py` runs a multi-tab capture script and generates `review/gallery.md`.
 - **Status:** Complete.
 
----
-*Last Updated: Tuesday, March 17, 2026 (Updated by Agent Gemini)*
+### Phase 5: Resonance & Fractal Audits (Implemented)
+
+#### Acoustic UI Resonance (Shiver Effects)
+- **Requirement:** Panels "shiver" and pulse in sync with void hum and production peaks.
+- **Implementation:** `VisualManager.ResonanceIntensity` tracks alchemical activity. `GetResonanceMatrix()` applies shaky offsets to UI panels and logs.
+- **Status:** Complete.
+
+#### Tooltip Materialization Metadata (Audit Safety)
+- **Requirement:** Track tooltip state in JSON to prevent click collisions.
+- **Implementation:** `UiVisuals.DrawTooltip` registers itself in `UiMetadataTracker` with "InformationPopup" intent.
+- **Status:** Complete.
+
+#### Fractal Safety Maps (Obscuration Tracking)
+- **Requirement:** Export screen "safe zones" during high-intensity sequences.
+- **Implementation:** `VisualManager` registers "VisualObscuration" elements in metadata when flashes exceed opacity thresholds.
+- **Status:** Complete.

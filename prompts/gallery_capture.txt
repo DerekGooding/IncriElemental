@@ -11,9 +11,11 @@ wait:0.5
 screenshot:spire_tab
 # Tab: World
 discovery:garden_manifested
+manifestation:familiar:1
 tab:World
 wait:0.5
 screenshot:world_tab
+
 # Tab: Flow
 discovery:aether_unlocked
 tab:Flow

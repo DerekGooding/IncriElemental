@@ -15,6 +15,7 @@ public class VisualManager
     private RenderTarget2D? _renderTarget;
     public float ProductionIntensity { get; private set; } = 0.5f;
     public float ScreenShakeIntensity { get; private set; } = 0f;
+    public float ResonanceIntensity { get; private set; } = 0f;
 
     public float AscensionTransitionAlpha { get; private set; } = 0f;
     public float TabTransitionAlpha { get; private set; } = 0f;
@@ -45,7 +46,8 @@ public class VisualManager
     public void ClearTransitions() { TabTransitionAlpha = 0f; ReactionFlashAlpha = 0f; CelebrationFlashAlpha = 0f; ScreenShakeIntensity = 0f; }
     public void StartTabTransition() => TabTransitionAlpha = 1.0f;
     public void StartReactionSequence(Color color) { ReactionFlashAlpha = 1.0f; _reactionColor = color; AddShake(5f); _cameraZoom = 1.05f; }
-    public void StartCelebration() { CelebrationFlashAlpha = 1.0f; AddShake(10f); _cameraZoom = 1.1f; _cameraRotation = 0.05f; }
+    public void StartCelebration() { CelebrationFlashAlpha = 1.0f; AddShake(10f); _cameraZoom = 1.1f; _cameraRotation = 0.05f; ResonanceIntensity = 1.0f; }
+    public void AddResonance(float amount) => ResonanceIntensity = Math.Min(1.0f, ResonanceIntensity + amount);
     public double GetTotalTime() => _totalTime;
 
     public void Update(float deltaTime, bool engineHasAscended, double totalProduction, ResourceType dominantResource = ResourceType.Aether)
@@ -55,6 +57,7 @@ public class VisualManager
         if (TabTransitionAlpha > 0) TabTransitionAlpha = Math.Max(0, TabTransitionAlpha - deltaTime * 2f);
         if (ReactionFlashAlpha > 0) ReactionFlashAlpha = Math.Max(0, ReactionFlashAlpha - deltaTime * 1.5f);
         if (CelebrationFlashAlpha > 0) CelebrationFlashAlpha = Math.Max(0, CelebrationFlashAlpha - deltaTime * 0.5f);
+        if (ResonanceIntensity > 0) ResonanceIntensity = Math.Max(0, ResonanceIntensity - deltaTime * 1.5f);
         if (engineHasAscended && !_isAscending) { _isAscending = true; ScreenShakeIntensity = 10f; }
         if (_isAscending && AscensionTransitionAlpha < 1.0f) AscensionTransitionAlpha += deltaTime * 0.5f;
         if (!engineHasAscended && _isAscending) { _isAscending = false; AscensionTransitionAlpha = 0f; }
@@ -91,6 +94,15 @@ public class VisualManager
                Matrix.CreateTranslation(UiLayout.Width / 2f + shake.X, UiLayout.Height / 2f + shake.Y, 0);
     }
 
+    public Matrix GetResonanceMatrix()
+    {
+        if (ResonanceIntensity <= 0) return Matrix.Identity;
+        var rnd = new Random((int)(_totalTime * 100));
+        float ox = (float)(rnd.NextDouble() * 2 - 1) * ResonanceIntensity * 2f;
+        float oy = (float)(rnd.NextDouble() * 2 - 1) * ResonanceIntensity * 2f;
+        return Matrix.CreateTranslation(ox, oy, 0);
+    }
+
     public void LoadEffects(Microsoft.Xna.Framework.Content.ContentManager content, BackgroundManager bg)
     {
         try { _bloomEffect = content.Load<Effect>("Bloom"); } catch { }
@@ -116,9 +128,30 @@ public class VisualManager
 
     public void DrawOverlay(SpriteBatch sb, float alpha) { if (alpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * alpha); }
     public void DrawDimmer(SpriteBatch sb, float alpha) { if (alpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.Black * alpha); }
-    public void DrawReactionFlash(SpriteBatch sb) { if (ReactionFlashAlpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), _reactionColor * (ReactionFlashAlpha * 0.5f)); }
-    public void DrawCelebration(SpriteBatch sb) { if (CelebrationFlashAlpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * CelebrationFlashAlpha); }
-    public void DrawTabTransition(SpriteBatch sb) { if (TabTransitionAlpha > 0) sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.Black * TabTransitionAlpha); }
+    public void DrawReactionFlash(SpriteBatch sb) 
+    { 
+        if (ReactionFlashAlpha > 0) 
+        {
+            sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), _reactionColor * (ReactionFlashAlpha * 0.5f)); 
+            if (ReactionFlashAlpha > 0.5f) UiMetadataTracker.Register("VisualObscuration", "ReactionFlash", new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), "PostProcessNoise");
+        }
+    }
+    public void DrawCelebration(SpriteBatch sb) 
+    { 
+        if (CelebrationFlashAlpha > 0) 
+        {
+            sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.White * CelebrationFlashAlpha); 
+            if (CelebrationFlashAlpha > 0.3f) UiMetadataTracker.Register("VisualObscuration", "CelebrationWhiteout", new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), "PostProcessNoise");
+        }
+    }
+    public void DrawTabTransition(SpriteBatch sb) 
+    { 
+        if (TabTransitionAlpha > 0) 
+        {
+            sb.Draw(_pixel, new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), Color.Black * TabTransitionAlpha); 
+            if (TabTransitionAlpha > 0.7f) UiMetadataTracker.Register("VisualObscuration", "TabTransitionFade", new Rectangle(0, 0, UiLayout.Width, UiLayout.Height), "PostProcessNoise");
+        }
+    }
 
     public Color GetColor(ResourceType type) => ColorPalette.ElementColors.GetValueOrDefault(type, Color.White);
     public Color GetCellColor(CellType type) => ColorPalette.CellColors.GetValueOrDefault(type, Color.Black);

@@ -49,7 +49,15 @@ public class AiModeSystem(GameEngine engine)
             else if (act == "key" && parts.Length > 1) { if (Enum.TryParse<Keys>(parts[1].Trim(), true, out var k)) _pendingKeys.Add(k); }
             else if (act == "resource" && parts.Length > 1) { var rp = parts[1].Split(':'); if (rp.Length == 2 && Enum.TryParse<ResourceType>(rp[0].Trim(), true, out var rt) && double.TryParse(rp[1].Trim(), out var rv)) _engine.State.GetResource(rt).Amount = rv; }
             else if (act == "discovery" && parts.Length > 1) _engine.State.Discoveries[parts[1].Trim()] = true;
-            else if (act == "manifestation" && parts.Length > 1) { var mp = parts[1].Split(':'); if (mp.Length == 2 && int.TryParse(mp[1].Trim(), out var mv)) _engine.State.Manifestations[mp[0].Trim()] = mv; }
+            else if (act == "manifestation" && parts.Length > 1) { 
+                var mp = parts[1].Split(':'); 
+                if (mp.Length == 2 && int.TryParse(mp[1].Trim(), out var mv)) {
+                    var key = mp[0].Trim();
+                    // Find actual key from definitions to avoid case sensitivity issues
+                    var actualKey = _engine.GetDefinitions().FirstOrDefault(d => d.Id.Equals(key, StringComparison.OrdinalIgnoreCase))?.Id ?? key;
+                    _engine.State.Manifestations[actualKey] = mv; 
+                }
+            }
             else if (act == "explore" && parts.Length > 1) { var ep = parts[1].Split(':'); if (ep.Length == 2 && int.TryParse(ep[0].Trim(), out var ex) && int.TryParse(ep[1].Trim(), out var ey)) _engine.Explore(ex, ey); }
             else if (act == "pin") _isPinning = true;
             else if (act == "unpin") _isPinning = false;
@@ -94,6 +102,7 @@ public class AiModeSystem(GameEngine engine)
     {
         var metadata = new { 
             Timestamp = DateTime.UtcNow, 
+            CurrentTab = _game?.GetCurrentTab().ToString() ?? "None",
             Performance = new { TotalTime = gameTime.TotalGameTime.TotalSeconds, ElapsedFrameTime = gameTime.ElapsedGameTime.TotalMilliseconds }, 
             Buttons = buttons.Where(b => b.IsVisible()).Select(b => new { Text = b.Text, Subtitle = b.Subtitle, Tooltip = b.TooltipFunc?.Invoke() ?? "", Intent = b.Intent, Bounds = new { b.Bounds.X, b.Bounds.Y, b.Bounds.Width, b.Bounds.Height }, Tab = b.Tab.ToString() }).ToList(), 
             Elements = UiMetadataTracker.GetElements().Select(e => new { e.Type, e.Text, e.Intent, Bounds = new { e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height } }).ToList(),

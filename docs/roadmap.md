@@ -42,6 +42,11 @@ This document tracks the long-term goals and task history for **IncriElemental**
 - [x] **Ultra-High-Fid README:** Integrate dynamic GIFs and high-res screenshots into repository docs.
 - [x] **Visual Audit Pass:** Final verification of all visual systems for "Staleness" and "Integrity." (Tools: `review/audit_report.md`)
 
+### Phase 5: Resonance & Fractal Audits
+- [ ] **Acoustic UI Resonance:** Panels "shiver" and pulse in sync with the void hum and production peaks.
+- [ ] **Tooltip Materialization Metadata:** Track tooltip animation/opacity in JSON to prevent click collisions.
+- [ ] **Fractal Safety Maps:** Export screen "safe zones" during high-intensity visual glitches/reactions.
+
 
 ---
 *Last Updated: Tuesday, March 17, 2026 (Updated by Agent Gemini)*

@@ -46,6 +46,7 @@ public class Game1 : Game
     private Button? _pinnedButton;
 
     public void RequestScreenshot(string path) => _pendingScreenshotPath = path;
+    public GameTab GetCurrentTab() => _currentTab;
 
     public Game1()
     {
@@ -81,7 +82,10 @@ public class Game1 : Game
             var cp = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ai_commands.txt"); 
             _ai.Process(cp, SetTab); 
         }
-        EventBus.ResourceGained += (t, a) => _particles.EmitPopup(new Vector2(400, 300), $"+{a:F1} {t}", _visuals.GetColorForId(t.ToLower()));
+        EventBus.ResourceGained += (t, a) => {
+            _particles.EmitPopup(new Vector2(400, 300), $"+{a:F1} {t}", _visuals.GetColorForId(t.ToLower()));
+            _visuals.AddResonance(0.1f);
+        };
 
         base.Initialize();
     }
@@ -161,13 +165,19 @@ public class Game1 : Game
             _visuals.Clear(GraphicsDevice, new Color(5, 5, 10)); _spriteBatch.Begin(); _bg.Draw(_spriteBatch, dominantColor);
             if (_currentTab == GameTab.Flow || _currentTab == GameTab.Spire) _visuals.DrawDimmer(_spriteBatch, 0.3f);
             _spriteBatch.End();
-            _spriteBatch.Begin(transformMatrix: cam);
+            
+            var resMat = _visuals.GetResonanceMatrix();
+            _spriteBatch.Begin(transformMatrix: cam * resMat);
             _visuals.DrawPanel(_spriteBatch, _pixel, new Rectangle(5, 50, 200, UiLayout.Height - 60), Color.MediumPurple * 0.5f, 0.1f);
             _visuals.DrawPanel(_spriteBatch, _pixel, new Rectangle(UiLayout.Width - 210, 50, 205, UiLayout.Height - 60), Color.MediumPurple * 0.5f, 0.1f);
             _log.Draw(_spriteBatch, _font, _pixel, _visuals);
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(transformMatrix: cam);
             _particles.Draw(_spriteBatch, _font, _visuals.HologramEffect, _visuals.GetTotalTime());
             LayoutSystem.DrawFixedButtons(_spriteBatch, _buttons, _font, _pixel, _visuals);
             _spriteBatch.End();
+            
             GraphicsDevice.ScissorRectangle = new Rectangle(5, 45, UiLayout.Width - 10, UiLayout.Height - 50);
             _spriteBatch.Begin(rasterizerState: _scissorState, transformMatrix: cam);
             LayoutSystem.DrawTabButtons(_spriteBatch, _buttons, _currentTab, _font, _pixel, _visuals, off);

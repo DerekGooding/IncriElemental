@@ -40,6 +40,9 @@ public static class UiVisuals
             RichTextSystem.Draw(sb, font, tokens, new Vector2(pos.X, curY), Color.LightGoldenrodYellow, scale, visuals);
             curY += font.LineSpacing * scale + 4;
         }
+
+        // Register tooltip in metadata
+        UiMetadataTracker.Register("Tooltip", text, r, "InformationPopup");
     }
 
     private static List<string> WrapText(SpriteFont font, string text, int maxW, float scale)
