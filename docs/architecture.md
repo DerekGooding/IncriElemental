@@ -13,15 +13,16 @@ The game uses a specialized rendering coordinator to maintain the "Aetherial Glo
 - **HLSL Bloom:** A custom shader (`Bloom.fx`) applies a multi-tap blur and threshold to bright pixels, scaling intensity based on total resource production.
 - **Color Grading:** A dynamic tint is applied to the final scene, interpolating between neutral white and the color of the dominant resource.
 - **Kinetic Systems:** Centralized screen-shake and tab transition logic ensure consistent visual feedback.
-
 ## 3. UI Framework
 The UI is built on a custom, resolution-independent layout system:
 - **`UiLayout.cs`:** Provides relative positioning and dynamic anchoring for consistent rendering on 16:9 and ultra-wide displays.
 - **`Button.cs`:** Implements glassmorphism panels with runic highlights and pulsing borders.
-- **`RichTextSystem.cs`:** A tag-based parser supporting inline icons (`[i:icon]`) and colors (`[c:gold]`).
+- **`RichTextSystem.cs`:** A tag-based parser supporting inline icons (`[i:icon]`) and colors (`[c:gold]`), with built-in truncation for overflow prevention.
 - **`StatusSystem.cs`:** Tracks 20-second historical data to render dynamic resource sparklines.
+- **`UiMetadataTracker.cs`:** A static tracking system that captures the bounding boxes of all drawn UI elements (panels, labels, buttons) for collision and overflow auditing.
 
-## 4. Background Systems (`BackgroundManager.cs`)
+---
+*Last Updated: Tuesday, March 17, 2026 (Updated by Agent Gemini)*
 "The Void" is rendered as a deep, multi-layered environment:
 - **Nebula Vistas:** Procedural soft-blob textures move at very slow speeds in the farthest layer.
 - **Parallax Layers:** Three distinct star/cloud layers move at varying vectors to provide a sense of vast depth.
