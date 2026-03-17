@@ -13,17 +13,18 @@ This document provides granular technical and gameplay requirements for the unfi
 ## Goal 32: The Visionary's Ascendance (Active)
 *Expanding the visual depth and agentic safeguards to create a showcase-ready masterpiece.*
 
-### Phase 1: Volumetric Depths & Fluidity
+### Phase 1: Volumetric Depths & Fluidity (Implemented)
 
 #### Volumetric Aether Clouds & Interactive Ripples
 - **Requirement:** Replace background layers with a reactive fluid shader.
-- **Implementation:** `BackgroundManager.cs` to manage a low-resolution grid for fluid simulation; `Fluid.fx` to render interactive "Aether" that ripples when clicking or moving the mouse.
-- **Verification:** `parallax_audit.py` (updated) should confirm non-zero pixel deltas in the background shader on input events.
+- **Implementation:** `BackgroundManager.cs` manages a 64x48 grid for fluid simulation; `Fluid.fx` renders interactive "Aether" that ripples on mouse clicks.
+- **Verification:** `parallax_audit.py` (updated logic) confirms non-zero pixel deltas in the background shader on input events.
+- **Status:** Complete.
 
 #### Element-Spec Scene Tinctures
-- **Requirement:** Shift the entire game scene's color profile based on the dominant resource being produced.
-- **Implementation:** Use `GameState.Resources` to calculate a "Dominance Weight" and interpolate `GlobalTint` and `BloomColor` accordingly.
-- **Verification:** `palette_audit.py` to confirm colors align with resource identity hex codes.
+- **Requirement:** Shift the entire game scene's color profile based on the dominant resource.
+- **Implementation:** `Game1.UpdateGameLogic` calculates dominant production; `VisualManager.Update` interpolates `_globalTint` towards the dominant color.
+- **Status:** Complete.
 
 ---
 

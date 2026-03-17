@@ -9,6 +9,7 @@ public class VisualManager
 {
     private readonly Texture2D _pixel;
     private Effect? _bloomEffect;
+    private Effect? _fluidEffect;
     private RenderTarget2D? _renderTarget;
     public float ScreenShakeIntensity { get; private set; } = 0f;
     public float AscensionTransitionAlpha { get; private set; } = 0f;
@@ -71,9 +72,10 @@ public class VisualManager
         return new Vector2((float)(rnd.NextDouble() * 2 - 1) * ScreenShakeIntensity, (float)(rnd.NextDouble() * 2 - 1) * ScreenShakeIntensity);
     }
 
-    public void LoadEffects(Microsoft.Xna.Framework.Content.ContentManager content)
+    public void LoadEffects(Microsoft.Xna.Framework.Content.ContentManager content, BackgroundManager bg)
     {
         try { _bloomEffect = content.Load<Effect>("Bloom"); } catch { }
+        try { bg.LoadContent(content); } catch { }
     }
 
     public void BeginRenderToTarget(GraphicsDevice graphicsDevice) => graphicsDevice.SetRenderTarget(_renderTarget);

@@ -23,10 +23,10 @@ This document tracks the long-term goals and task history for **IncriElemental**
 ## 32. Goal: The Visionary's Ascendance (In Progress)
 *Elevating visuals to "Masterpiece" level and the final implementation of Agentic Visual Integrity.*
 
-### Phase 1: Volumetric Depths & Fluidity
-- [ ] **Volumetric Aether Clouds:** Replace 2D nebulas with reactive fluid-light shaders. (Tools: `fluid_audit.py`)
-- [ ] **Interactive Aether Ripples:** UI clicks/mouse movement create ripples in the background. (Tools: `parallax_audit.py`)
-- [ ] **Element-Spec Tinctures:** Entire scene color-profiles shift based on production. (Tools: `palette_audit.py`)
+### Phase 1: Volumetric Depths & Fluidity (Completed)
+- [x] **Volumetric Aether Clouds:** Replace 2D nebulas with reactive fluid-light shaders. (Tools: `fluid_audit.py`)
+- [x] **Interactive Aether Ripples:** UI clicks/mouse movement create ripples in the background. (Tools: `parallax_audit.py`)
+- [x] **Element-Spec Tinctures:** Entire scene color-profiles shift based on production. (Tools: `palette_audit.py`)
 
 ### Phase 2: Kinetic Runics & Holography
 - [ ] **Adaptive Runic HUD:** Frame runes change shape/speed with activity. (Tools: `rune_sweep_audit.py`)

@@ -86,7 +86,7 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
-        _spriteBatch = new SpriteBatch(GraphicsDevice); _visuals.LoadEffects(Content);
+        _spriteBatch = new SpriteBatch(GraphicsDevice); _visuals.LoadEffects(Content, _bg);
         try { _font = Content.Load<SpriteFont>("main_font"); } catch { }
     }
 
@@ -124,9 +124,20 @@ public class Game1 : Game
     {
         _engine.Update(deltaTime); _particles.Update(deltaTime);
         _particles.EmitTrail(new Vector2(_input.MousePosition.X, _input.MousePosition.Y), _visuals.GetColor(ResourceType.Aether));
-        _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount);
+        
+        Point? ripple = _input.IsLeftClick() ? _input.MousePosition : null;
+        _bg.Update(deltaTime, _engine.State.GetResource(ResourceType.Aether).Amount, ripple);
+        
+        // Find dominant resource for visuals
+        var dominant = ResourceType.Aether;
+        double maxProd = 0;
+        foreach (var kvp in _engine.State.Resources)
+        {
+            if (kvp.Value.PerSecond > maxProd) { maxProd = kvp.Value.PerSecond; dominant = kvp.Key; }
+        }
+
         _status.Update(deltaTime, _engine); _tutorial.Update(_engine.State);
-        _visuals.Update(deltaTime, _engine.State.Discoveries.ContainsKey("ascended"), _engine.TotalProduction);
+        _visuals.Update(deltaTime, _engine.State.Discoveries.ContainsKey("ascended"), _engine.TotalProduction, dominant);
         while (_lastProcessedHistoryCount < _engine.State.History.Count) { _log.AddToLog(_engine.State.History[_lastProcessedHistoryCount]); _lastProcessedHistoryCount++; }
     }
 
@@ -139,7 +150,13 @@ public class Game1 : Game
             _visuals.DrawAscended(_spriteBatch, _ending, _engine, _font, _pixel, gameTime, _input.MousePosition, _input.IsLeftClick(), () => { _engine.Manifest("reset"); _log.Clear(); });
             _spriteBatch.End();
         } else {
-            _visuals.Clear(GraphicsDevice, new Color(5, 5, 10)); _spriteBatch.Begin(); _bg.Draw(_spriteBatch);
+            // Draw background with dominant color tincture
+            var dominant = ResourceType.Aether;
+            double maxProd = 0;
+            foreach (var kvp in _engine.State.Resources) if (kvp.Value.PerSecond > maxProd) { maxProd = kvp.Value.PerSecond; dominant = kvp.Key; }
+            var dominantColor = _visuals.GetColor(dominant);
+
+            _visuals.Clear(GraphicsDevice, new Color(5, 5, 10)); _spriteBatch.Begin(); _bg.Draw(_spriteBatch, dominantColor);
             if (_currentTab == GameTab.Flow || _currentTab == GameTab.Spire) _visuals.DrawDimmer(_spriteBatch, 0.3f);
             _spriteBatch.End();
             _spriteBatch.Begin(transformMatrix: Matrix.CreateTranslation(shk.X, shk.Y, 0));

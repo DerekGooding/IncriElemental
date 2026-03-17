@@ -21,3 +21,10 @@
 /processor:EffectProcessor
 /build:Bloom.fx
 #end Bloom.fx
+
+#begin Fluid.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/build:Fluid.fx
+#end Fluid.fx
+
