@@ -48,7 +48,7 @@ public class MixingTableSystem
             drawRect.X += (int)shake;
         }
 
-        spriteBatch.Draw(pixel, drawRect, Color.DarkSlateGray * 0.5f);
+        visuals.DrawPanel(spriteBatch, pixel, drawRect, Color.DarkSlateGray * 0.5f, 0.5f);
         
         var borderColor = Color.Gold;
         if (_successPulse > 0) borderColor = Color.White * _successPulse;
@@ -57,25 +57,26 @@ public class MixingTableSystem
         spriteBatch.Draw(pixel, new Rectangle(drawRect.X, drawRect.Bottom - 2, drawRect.Width, 2), borderColor);
 
         var title = "ALCHEMICAL VESSEL";
-        spriteBatch.DrawString(font, title, new Vector2(drawRect.Center.X - font.MeasureString(title).X / 2, drawRect.Y - 30), Color.Gold);
+        visuals.DrawString(spriteBatch, font, title, new Vector2(drawRect.Center.X - font.MeasureString(title).X / 2, drawRect.Y - 30), Color.Gold);
 
-        var y = drawRect.Y + 20;
+        var y = (float)drawRect.Y + 20;
         if (!_currentIngredients.Any())
         {
             var msg = "(Empty - Add elements below)";
-            spriteBatch.DrawString(font, msg, new Vector2(drawRect.Center.X - font.MeasureString(msg).X * 0.4f / 2, y), Color.Gray, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+            visuals.DrawString(spriteBatch, font, msg, new Vector2(drawRect.Center.X - font.MeasureString(msg).X * 0.8f / 2, y), Color.Gray, 0.8f);
         }
         else
         {
             foreach (var kvp in _currentIngredients)
             {
                 var line = $"{kvp.Key}: {kvp.Value}";
-                spriteBatch.DrawString(font, line, new Vector2(drawRect.X + 20, y), visuals.GetColor(kvp.Key), 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+                var lineSize = font.MeasureString(line) * 0.8f;
+                visuals.DrawString(spriteBatch, font, line, new Vector2(drawRect.Center.X - lineSize.X / 2, y), visuals.GetColor(kvp.Key), 0.8f);
                 y += 25;
             }
             
             var prompt = "CLICK VESSEL TO MIX";
-            spriteBatch.DrawString(font, prompt, new Vector2(drawRect.Center.X - font.MeasureString(prompt).X * 0.8f / 2, drawRect.Bottom - 30), Color.White * 0.8f, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+            visuals.DrawString(spriteBatch, font, prompt, new Vector2(drawRect.Center.X - font.MeasureString(prompt).X * 0.8f / 2, drawRect.Bottom - 30), Color.White * 0.8f, 0.8f);
         }
 
         // Ingredient Buttons
@@ -91,7 +92,7 @@ public class MixingTableSystem
             var rect = new Rectangle(curX, btnY, 60, 30);
             var hover = rect.Contains(mousePos);
             spriteBatch.Draw(pixel, rect, visuals.GetColor(type) * (hover ? 0.6f : 0.3f));
-            spriteBatch.DrawString(font, type.ToString()[..1], new Vector2(rect.Center.X - 5, rect.Center.Y - 10), Color.White);
+            visuals.DrawString(spriteBatch, font, type.ToString()[..1], new Vector2(rect.Center.X - 5, rect.Center.Y - 10), Color.White);
             
             curX += 70;
         }

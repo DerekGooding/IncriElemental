@@ -15,46 +15,63 @@ def detect_collisions(buttons, elements):
     
     # 1. Check if Text overflows its likely container (Button or Panel)
     for t in text_elements:
+        tb = t['Bounds']
+        # Skip empty text
+        if tb['Width'] == 0 or tb['Height'] == 0: continue
+        
         found_container = False
-        # Check buttons first
+        potential_overflow = None
+
+        # Check buttons
         for b in buttons:
-            if is_contained(t['Bounds'], b['Bounds']):
-                found_container = True
-                break
-            # If it overlaps but isn't contained, it might be an overflow
-            if (t['Bounds']['X'] < b['Bounds']['X'] + b['Bounds']['Width'] and
-                t['Bounds']['X'] + t['Bounds']['Width'] > b['Bounds']['X'] and
-                t['Bounds']['Y'] < b['Bounds']['Y'] + b['Bounds']['Height'] and
-                t['Bounds']['Y'] + t['Bounds']['Height'] > b['Bounds']['Y']):
-                # It overlaps! Is it too large?
-                if t['Bounds']['Width'] > b['Bounds']['Width'] or t['Bounds']['Height'] > b['Bounds']['Height']:
-                    collisions.append(f"Text '{t['Text']}' overflows Button '{b.get('Text', 'Unknown')}'")
-                found_container = True # We consider this its container even if it overflows
-                break
+            bb = b['Bounds']
+            # If they overlap at all
+            if (tb['X'] < bb['X'] + bb['Width'] and
+                tb['X'] + tb['Width'] > bb['X'] and
+                tb['Y'] < bb['Y'] + bb['Height'] and
+                tb['Y'] + tb['Height'] > bb['Y']):
+                
+                if is_contained(tb, bb):
+                    found_container = True
+                    break
+                else:
+                    # Overlaps but not contained -> potential overflow
+                    potential_overflow = f"Text '{t['Text']}' overflows Button '{b.get('Text', 'Unknown')}'"
+                    found_container = True # Mark as found so we don't treat as floating
+                    break
         
         if not found_container:
             # Check panels
+            # We want the SMALLEST panel that contains it or overlaps it most
+            candidate_panels = []
             for p in panels:
-                if is_contained(t['Bounds'], p['Bounds']):
-                    found_container = True
-                    break
-                if (t['Bounds']['X'] < p['Bounds']['X'] + p['Bounds']['Width'] and
-                    t['Bounds']['X'] + t['Bounds']['Width'] > p['Bounds']['X'] and
-                    t['Bounds']['Y'] < p['Bounds']['Y'] + p['Bounds']['Height'] and
-                    t['Bounds']['Y'] + t['Bounds']['Height'] > p['Bounds']['Y']):
-                    if t['Bounds']['Width'] > p['Bounds']['Width'] or t['Bounds']['Height'] > p['Bounds']['Height']:
-                        collisions.append(f"Text '{t['Text']}' overflows Panel")
-                    found_container = True
-                    break
+                pb = p['Bounds']
+                if (tb['X'] < pb['X'] + pb['Width'] and
+                    tb['X'] + tb['Width'] > pb['X'] and
+                    tb['Y'] < pb['Y'] + pb['Height'] and
+                    tb['Y'] + tb['Height'] > pb['Y']):
+                    candidate_panels.append(p)
+            
+            if candidate_panels:
+                # Sort by area ascending to find the most specific container
+                candidate_panels.sort(key=lambda x: x['Bounds']['Width'] * x['Bounds']['Height'])
+                p = candidate_panels[0]
+                if not is_contained(tb, p['Bounds']):
+                    potential_overflow = f"Text '{t['Text']}' overflows Panel"
+                found_container = True
+
+        if potential_overflow:
+            collisions.append(potential_overflow)
         
         # If still no container found, it might be floating text
         # Check if it overlaps with any button it shouldn't be in
-        if not found_container:
+        elif not found_container:
             for b in buttons:
-                if (t['Bounds']['X'] < b['Bounds']['X'] + b['Bounds']['Width'] and
-                    t['Bounds']['X'] + t['Bounds']['Width'] > b['Bounds']['X'] and
-                    t['Bounds']['Y'] < b['Bounds']['Y'] + b['Bounds']['Height'] and
-                    t['Bounds']['Y'] + t['Bounds']['Height'] > b['Bounds']['Y']):
+                bb = b['Bounds']
+                if (tb['X'] < bb['X'] + bb['Width'] and
+                    tb['X'] + tb['Width'] > bb['X'] and
+                    tb['Y'] < bb['Y'] + bb['Height'] and
+                    tb['Y'] + tb['Height'] > bb['Y']):
                     collisions.append(f"Floating Text '{t['Text']}' overlaps with Button '{b.get('Text', 'Unknown')}'")
 
     # 2. Check for Button-Button collisions (unrelated to text)

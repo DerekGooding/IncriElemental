@@ -40,6 +40,10 @@ SCENARIOS = {
         "discovery:fire_unlocked",
         "discovery:earth_unlocked",
         "tab:Spire",
+        "hover:Fire",
+        "click",
+        "hover:Earth",
+        "click",
         "screenshot:mixing_table"
     ]
 }

@@ -24,6 +24,9 @@ public class LogSystem
 
     public void Draw(SpriteBatch spriteBatch, SpriteFont? font, Texture2D pixel, VisualManager visuals)
     {
+        // Register the log background area as a panel for overflow auditing
+        visuals.DrawPanel(spriteBatch, pixel, new Rectangle(5, 50, 200, UiLayout.Height - 60), Color.Transparent, 0f);
+
         if (font != null)
         {
             visuals.DrawString(spriteBatch, font, "LOG", new Vector2(20, 55), Color.Gray * 0.5f);
